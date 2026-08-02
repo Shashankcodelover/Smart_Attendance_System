@@ -8,6 +8,33 @@
       "section": "A",
       "year": 3,
       "avatar_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDzZN9rs10ZaNHQlGZC291aVwftnrpmYF6_VICDftYHDDBXaeFblUMihY5gqNPGGrrkTmq0WJeIoCflnh8Mb1tIdS9aQEvRPYuOdlzxR_Q_56a_lOZuYp8JuKH85TdxMNbSR_rG1ieqHO-sZjfMq7N8SjvmNFXAsIpVI11mEvlC89zkg6zMyunDo9AG91ih46KmuDI4Zzu5-Z2pHUt-pwIZLip8-78TDF_cLZxR78TJqz5dL962FxANfuG9XsS2bTHiy47xU4y72RSf"
+    },
+    {
+      "usn": "TEST_USN_1785661120612",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785661198374",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785661257603",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
     }
   ],
   "sessions": [
@@ -658,7 +685,28 @@
       "verification_option": "BLUE_CIRCLE",
       "lecturer_email": "shhs@sjce.edu",
       "timeline": "11:30 AM - 12:30 PM"
+    },
+    {
+      "id": "test_sess_1785660897991",
+      "subject_code": "CS999",
+      "subject_name": "Software Testing",
+      "department": "CSE",
+      "course": "B.E.",
+      "year": 4,
+      "section": "A",
+      "otp": "1234",
+      "status": "DRAFT",
+      "created_at": "2026-08-02T08:54:57.991Z",
+      "expires_at": null,
+      "marked_count": 0,
+      "expected_count": 50,
+      "verification_option": "SHAPE_BLUE_CIRCLE",
+      "lecturer_email": "tester@sjce.edu",
+      "timeline": "10:00 AM - 11:00 AM"
     }
   ],
-  "attendance_records": []
+  "attendance_records": [],
+  "timetables": [],
+  "override_audits": [],
+  "alert_configs": []
 }
