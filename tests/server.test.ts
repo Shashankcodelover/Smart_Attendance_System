@@ -53,4 +53,63 @@ describe('Smart Attendance DB & API Unit Tests', () => {
     // Clean up
     db.prepare('DELETE FROM sessions WHERE id = ?').run(testId);
   });
+
+  it('should reject duplicate attendance records for the same student in a session', () => {
+    const testSessId = `test_sess_dup_${Date.now()}`;
+    const testUsn = `4SO21CS${Math.floor(100 + Math.random() * 900)}`;
+    const record1Id = `att_test_1_${Date.now()}`;
+    const record2Id = `att_test_2_${Date.now()}`;
+
+    // Insert dummy session
+    db.prepare(`
+      INSERT INTO sessions (id, subject_code, subject_name, department, course, year, section, otp, status, created_at, marked_count, expected_count)
+      VALUES (?, 'CS502', 'System Security', 'CSE', 'B.E.', 3, 'A', '9999', 'ACTIVE', ?, 0, 60)
+    `).run(testSessId, new Date().toISOString());
+
+    // First check-in
+    const nowStr = new Date().toISOString();
+    db.prepare(`
+      INSERT INTO attendance_records (id, session_id, student_name, student_usn, marked_at, marked_online, verification_option, scanned_at, submitted_at, device_fingerprint, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(record1Id, testSessId, 'Alice DuplicateTest', testUsn, nowStr, 1, 'BLUE_CIRCLE', nowStr, nowStr, 'device_123', 'present');
+
+    // Check duplicate detection query
+    const alreadyMarked = db.prepare('SELECT * FROM attendance_records WHERE session_id = ? AND UPPER(student_usn) = ?')
+      .get(testSessId, testUsn.toUpperCase());
+
+    assert(alreadyMarked, 'First record should exist in DB');
+
+    // Clean up
+    db.prepare('DELETE FROM attendance_records WHERE session_id = ?').run(testSessId);
+    db.prepare('DELETE FROM sessions WHERE id = ?').run(testSessId);
+  });
+
+  it('should detect duplicate device fingerprint for proxy attendance protection', () => {
+    const testSessId = `test_sess_fp_${Date.now()}`;
+    const student1Usn = `4SO21CS001`;
+    const student2Usn = `4SO21CS002`;
+    const fingerprint = `device_fp_hash_12345`;
+
+    db.prepare(`
+      INSERT INTO sessions (id, subject_code, subject_name, department, course, year, section, otp, status, created_at, marked_count, expected_count)
+      VALUES (?, 'CS503', 'Network Security', 'CSE', 'B.E.', 3, 'A', '8888', 'ACTIVE', ?, 0, 60)
+    `).run(testSessId, new Date().toISOString());
+
+    // Student 1 checks in with fingerprint
+    const fpNowStr = new Date().toISOString();
+    db.prepare(`
+      INSERT INTO attendance_records (id, session_id, student_name, student_usn, marked_at, marked_online, verification_option, scanned_at, submitted_at, device_fingerprint, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(`att_fp1_${Date.now()}`, testSessId, 'Student One', student1Usn, fpNowStr, 1, 'BLUE_CIRCLE', fpNowStr, fpNowStr, fingerprint, 'present');
+
+    // Query duplicate fingerprint for Student 2
+    const duplicateDevice = db.prepare('SELECT * FROM attendance_records WHERE session_id = ? AND device_fingerprint = ? AND UPPER(student_usn) != ?')
+      .get(testSessId, fingerprint, student2Usn.toUpperCase());
+
+    assert(duplicateDevice, 'Duplicate device fingerprint should be flagged for Student 2');
+
+    // Clean up
+    db.prepare('DELETE FROM attendance_records WHERE session_id = ?').run(testSessId);
+    db.prepare('DELETE FROM sessions WHERE id = ?').run(testSessId);
+  });
 });

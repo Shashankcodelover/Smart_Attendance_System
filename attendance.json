@@ -35,6 +35,42 @@
       "section": "A",
       "year": 3,
       "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785761479327",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785761562878",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785761597408",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785761611024",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
     }
   ],
   "sessions": [
@@ -703,9 +739,41 @@
       "verification_option": "SHAPE_BLUE_CIRCLE",
       "lecturer_email": "tester@sjce.edu",
       "timeline": "10:00 AM - 11:00 AM"
+    },
+    {
+      "id": "test_sess_dup_1785761562975",
+      "subject_code": "2026-08-03T12:52:42.975Z",
+      "lecturer_email": "admin@sjce.edu",
+      "timeline": "10:00 AM - 11:00 AM"
+    },
+    {
+      "id": "test_sess_fp_1785761563025",
+      "subject_code": "2026-08-03T12:52:43.025Z",
+      "lecturer_email": "admin@sjce.edu",
+      "timeline": "10:00 AM - 11:00 AM"
     }
   ],
-  "attendance_records": [],
+  "attendance_records": [
+    {
+      "id": "att_test_1_1785761562975",
+      "session_id": "test_sess_dup_1785761562975",
+      "student_name": "4SO21CS906",
+      "student_usn": "2026-08-03T12:52:42.995Z",
+      "device_fingerprint": null,
+      "status": "present"
+    },
+    {
+      "id": "att_fp1_1785761563049",
+      "session_id": "test_sess_fp_1785761563025",
+      "student_name": "4SO21CS001",
+      "student_usn": "2026-08-03T12:52:43.049Z",
+      "marked_at": "device_fp_hash_12345",
+      "scanned_at": "device_fp_hash_12345",
+      "submitted_at": "device_fp_hash_12345",
+      "device_fingerprint": null,
+      "status": "present"
+    }
+  ],
   "timetables": [],
   "override_audits": [],
   "alert_configs": []

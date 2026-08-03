@@ -25,9 +25,11 @@ smart-attendance/
 ├── index.html                  # Landing & auth portal entry
 ├── lecturer.html               # Lecturer management portal entry
 ├── student.html                # Student check-in portal entry
-├── server.ts                   # Express backend server with active session cache & AI chat
+├── server.ts                   # Express backend server with active session cache & AI chat delegation
 ├── db.ts                       # JSON storage engine & Excel CSV export generator
 ├── attendance.json             # DB JSON data file
+├── controllers/
+│   └── aiController.ts         # Gemini AI chat assistant & offline regex fallback controller
 ├── vite.config.ts              # Vite 6 multi-page build configuration
 ├── package.json                # Dependencies & scripts
 ├── src/

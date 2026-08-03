@@ -208,12 +208,12 @@ const db = {
           const [email] = args;
           return [...state.sessions]
             .filter(s => s.lecturer_email === email)
-            .sort((a, b) => b.created_at.localeCompare(a.created_at));
+            .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
         }
 
         // 1b. SELECT * FROM sessions ORDER BY created_at DESC (Fallback/All)
         if (cleanedSql.includes('SELECT * FROM sessions') && cleanedSql.includes('ORDER BY created_at DESC')) {
-          return [...state.sessions].sort((a, b) => b.created_at.localeCompare(a.created_at));
+          return [...state.sessions].sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
         }
         
         // 2. SELECT * FROM students ORDER BY usn
@@ -329,6 +329,12 @@ const db = {
         if (cleanedSql.includes('SELECT * FROM attendance_records WHERE session_id = ? AND UPPER(student_usn) = ?')) {
           const [sessionId, studentUsn] = args;
           return state.attendance_records.find(r => r.session_id === sessionId && r.student_usn.toUpperCase() === studentUsn.toUpperCase());
+        }
+
+        // 9b. SELECT * FROM attendance_records WHERE session_id = ? AND device_fingerprint = ? AND UPPER(student_usn) != ?
+        if (cleanedSql.includes('SELECT * FROM attendance_records WHERE session_id = ? AND device_fingerprint = ? AND UPPER(student_usn) != ?')) {
+          const [sessionId, fingerprint, studentUsn] = args;
+          return state.attendance_records.find(r => r.session_id === sessionId && r.device_fingerprint === fingerprint && (r.student_usn || '').toUpperCase() !== (studentUsn || '').toUpperCase());
         }
 
         // 10. SELECT * FROM timetables WHERE id = ?
