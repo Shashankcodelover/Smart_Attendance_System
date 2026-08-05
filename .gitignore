@@ -1,10 +1,34 @@
+# Dependencies & Build Output
 node_modules/
-.env
 dist/
 build/
-.DS_Store
-*.log
+
+# Local Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# SQLite Database Files
+*.db
+*.sqlite
+attendance.db
 sqlite.db
 db.sqlite
 attendance-Backend/sqlite.db
 attendance-Backend/db.sqlite
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.kiro/
+scratch/
+*.tmp
+
+# Logs
+*.log
+npm-debug.log*
