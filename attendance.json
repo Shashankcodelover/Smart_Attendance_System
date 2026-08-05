@@ -71,6 +71,24 @@
       "section": "A",
       "year": 3,
       "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785938803736",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
+    },
+    {
+      "usn": "TEST_USN_1785944235634",
+      "name": "Test Student",
+      "attendance_rate": 90,
+      "course_code": "CS501",
+      "section": "A",
+      "year": 3,
+      "avatar_url": "https://example.com/avatar.png"
     }
   ],
   "sessions": [

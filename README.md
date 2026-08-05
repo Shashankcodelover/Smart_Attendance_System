@@ -6,15 +6,15 @@ A resilient, privacy-first, web-based attendance gateway built to solve classroo
 
 ## 🚀 Architecture & Tech Stack
 
-* **Frontend Framework:** React 19 (`react`, `react-dom`) with TypeScript ~5.8
-* **Styling & Design:** Tailwind CSS v4 (`@tailwindcss/vite`) with custom acrylic glassmorphism UI & Google Fonts (Outfit / Inter)
-* **Build System:** Vite 6 with multi-page entry points (`index.html`, `lecturer.html`, `student.html`)
-* **Backend Server:** Node.js Express 4 (`server.ts`) bundled with `esbuild`
-* **Database Engine:** JSON file database engine (`db.ts` / `attendance.json`) with automated Excel CSV export generation (`exports/`)
-* **Performance Optimization:** In-Memory Active Session Caching Map for sub-millisecond check-in verification
-* **Security Guardrails:** Device fingerprint proxy detection, HMAC-SHA256 signed rotating QR tokens, and parameterized secret defaults
-* **AI Capabilities:** Gemini 2.4 AI assistant endpoint (`/api/ai/chat`) for conversational queries, timetable parsing, and automated section scheduling
-* **Test Suite:** Native Node.js test runner suite (`tests/server.test.ts`) executed via `npm test`
+- **Frontend Framework:** React 19 (`react`, `react-dom`) with TypeScript ~5.8
+- **Styling & Design:** Tailwind CSS v4 (`@tailwindcss/vite`) with custom acrylic glassmorphism UI & Google Fonts (Outfit / Inter)
+- **Build System:** Vite 6 with multi-page entry points (`index.html`, `lecturer.html`, `student.html`)
+- **Backend Server:** Node.js Express 4 (`server.ts`) bundled with `esbuild`
+- **Database Engine:** SQLite database engine (`db.ts` / `Better-SQLite3`) with automated CSV export generation (`exports/`)
+- **Containerization:** Production Dockerfile & Docker Compose configuration on Port `3000`
+- **Security Guardrails:** Device fingerprint proxy detection, HMAC-SHA256 signed rotating QR tokens, and anti-fraud filters
+- **AI Capabilities:** Gemini AI assistant (`/api/ai/chat`) for conversational queries, timetable PDF parsing, and automated section scheduling
+- **Test Suite:** Native Node.js test runner suite (`tests/server.test.ts`) executed via `npm test`
 
 ---
 
@@ -25,55 +25,62 @@ smart-attendance/
 ├── index.html                  # Landing & auth portal entry
 ├── lecturer.html               # Lecturer management portal entry
 ├── student.html                # Student check-in portal entry
-├── server.ts                   # Express backend server with active session cache & AI chat delegation
-├── db.ts                       # JSON storage engine & Excel CSV export generator
-├── attendance.json             # DB JSON data file
+├── server.ts                   # Express backend server with active session cache
+├── db.ts                       # Better-SQLite3 database initialization & storage
 ├── controllers/
-│   └── aiController.ts         # Gemini AI chat assistant & offline regex fallback controller
-├── vite.config.ts              # Vite 6 multi-page build configuration
-├── package.json                # Dependencies & scripts
-├── src/
-│   ├── main.tsx                # Landing App entry
-│   ├── lecturer-entry.tsx      # Lecturer App entry
-│   ├── student-entry.tsx       # Student App entry
-│   ├── components/             # React views (Dashboard, QR Scanner, TourGuide, etc.)
-│   └── services/               # Firebase & rotation helper services
+│   ├── aiController.ts         # Gemini AI chat assistant & timetable parser
+│   ├── sessionController.ts    # Session creation, rotation, and lifecycle manager
+│   └── attendanceController.ts # HMAC QR check-in & offline reconciliation controller
+├── Dockerfile                  # Multi-stage production Docker build recipe
+├── docker-compose.yml          # Container compose service configuration
+├── SETUP.md                    # Setup guide, .env reference & file inventory breakdown
+├── README.md                   # Primary project summary & quick start guide
 └── tests/
     └── server.test.ts          # Unit test suite for DB operations & API logic
 ```
 
 ---
 
-## 🚦 Quick Start Guide
+## ⚡ Quick Start
 
-### 1. Install Dependencies
+### Method 1: Docker Compose (Recommended — Instant Setup)
+
 ```bash
+# 1. Copy environment template
+cp .env.example .env
+
+# 2. Build & launch containers
+docker-compose up -d --build
+```
+
+- 🌐 **Home Portal**: `http://localhost:3000`
+- 🎓 **Student Check-In**: `http://localhost:3000/student`
+- 👨‍🏫 **Lecturer Dashboard**: `http://localhost:3000/lecturer`
+
+### Method 2: Local Development & Automated Tests
+
+```bash
+# 1. Install dependencies
 npm install
-```
 
-### 2. Type Check & Linting
-```bash
-npm run lint
-```
-
-### 3. Run Unit Tests
-```bash
+# 2. Run unit tests
 npm test
-```
 
-### 4. Development Server
-Start the local server with hot reloading:
-```bash
+# 3. Run dev server
 npm run dev
-```
-Open your browser at `http://localhost:3000`:
-- **Landing Page:** `/`
-- **Lecturer Portal:** `/lecturer`
-- **Student Portal:** `/student`
 
-### 5. Production Build
-Build client bundles and backend server artifact:
-```bash
+# 4. Build production bundle
 npm run build
-npm start
 ```
+
+---
+
+## 📚 Complete Documentation & File Inventory
+
+For a comprehensive guide on environment variables, setup instructions, and a file-by-file inventory of all roles in the project, please see:
+📖 **[SETUP.md](SETUP.md)**
+
+---
+
+## 📜 License & Security Standards
+Licensed under the **MIT License**. Built in compliance with **GDPR** and **FERPA** privacy guidelines.
