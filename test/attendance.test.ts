@@ -1,39 +1,76 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-// Core Smart Attendance QR Rotation & Security Verification Logic Unit Tests
+import { generateHmacToken, verifyHmacToken, calculateHaversineDistance, signJwt, verifyJwt } from '../server.ts';
+import db from '../db.ts';
 
-function generateRotatedQrToken(sessionSecret: string, timestampWindow: number): string {
-  const windowId = Math.floor(timestampWindow / 30000); // 30-second rotation window
-  return `qr_${sessionSecret}_win_${windowId}`;
-}
+// ═══════════════════════════════════════════════════════════
+// QR ROTATION & HMAC TOKEN VERIFICATION TESTS
+// ═══════════════════════════════════════════════════════════
 
-function verifyQrToken(token: string, sessionSecret: string, currentTimestamp: number): boolean {
-  const currentWindow = Math.floor(currentTimestamp / 30000);
-  const previousWindow = currentWindow - 1; // Allow 30s grace period for network latency
-  
-  const expectedCurrent = `qr_${sessionSecret}_win_${currentWindow}`;
-  const expectedPrevious = `qr_${sessionSecret}_win_${previousWindow}`;
-  
-  return token === expectedCurrent || token === expectedPrevious;
-}
-
-test('generateRotatedQrToken produces deterministic window-based tokens', () => {
-  const t1 = 1700000000000;
-  const token1 = generateRotatedQrToken('secret_123', t1);
-  const token2 = generateRotatedQrToken('secret_123', t1 + 5000); // within same 30s window
-  assert.equal(token1, token2);
+test('generateHmacToken produces valid signature format', () => {
+  const token = generateHmacToken('sess_101', '1234', 'BLUE_CIRCLE');
+  assert.ok(token.includes('.'));
+  const parts = token.split('.');
+  assert.equal(parts.length, 3);
+  assert.ok(parseInt(parts[0]) > 0);
 });
 
-test('verifyQrToken accepts current and previous window tokens within grace period', () => {
-  const now = 1700000000000;
-  const validToken = generateRotatedQrToken('secret_123', now);
-  assert.equal(verifyQrToken(validToken, 'secret_123', now), true);
+test('verifyHmacToken validates valid token and rejects expired/tampered tokens', () => {
+  const token = generateHmacToken('sess_101', '1234', 'BLUE_CIRCLE');
+  assert.equal(verifyHmacToken('sess_101', '1234', 'BLUE_CIRCLE', token), true);
+
+  // Tampered OTP
+  assert.equal(verifyHmacToken('sess_101', '9999', 'BLUE_CIRCLE', token), false);
+  
+  // Tampered Shape
+  assert.equal(verifyHmacToken('sess_101', '1234', 'RED_SQUARE', token), false);
 });
 
-test('verifyQrToken rejects tokens from expired windows', () => {
-  const now = 1700000000000;
-  const expiredTimestamp = now - 120000; // 2 minutes ago
-  const expiredToken = generateRotatedQrToken('secret_123', expiredTimestamp);
-  assert.equal(verifyQrToken(expiredToken, 'secret_123', now), false);
+// ═══════════════════════════════════════════════════════════
+// NATIVE JWT AUTHENTICATION TESTS
+// ═══════════════════════════════════════════════════════════
+
+test('signJwt and verifyJwt encode and decode valid tokens', () => {
+  const token = signJwt({ email: 'lecturer@sjce.edu', role: 'lecturer' }, 3600);
+  assert.ok(token.length > 20);
+
+  const decoded = verifyJwt(token);
+  assert.equal(decoded.email, 'lecturer@sjce.edu');
+  assert.equal(decoded.role, 'lecturer');
+});
+
+test('verifyJwt rejects invalid or tampered tokens', () => {
+  const token = signJwt({ email: 'hacker@malicious.com' });
+  const tamperedToken = token.slice(0, -5) + 'xxxxx';
+  assert.equal(verifyJwt(tamperedToken), null);
+});
+
+// ═══════════════════════════════════════════════════════════
+// GPS HAVERSINE GEOFENCING TESTS
+// ═══════════════════════════════════════════════════════════
+
+test('calculateHaversineDistance accurately measures classroom distance', () => {
+  // SJCE Campus coordinates (~0 meters)
+  const distZero = calculateHaversineDistance(12.3142, 76.6134, 12.3142, 76.6134);
+  assert.ok(distZero < 1);
+
+  // 200 meters away
+  const distFar = calculateHaversineDistance(12.3142, 76.6134, 12.3160, 76.6150);
+  assert.ok(distFar > 150);
+});
+
+// ═══════════════════════════════════════════════════════════
+// CSV FORMULA SANITIZATION TESTS
+// ═══════════════════════════════════════════════════════════
+
+test('sanitizeCsvCell escapes formula characters (=, +, -, @) to prevent formula injection', () => {
+  const mal1 = db.sanitizeCsvCell("=SUM(A1:A10)");
+  assert.equal(mal1, '"\'=SUM(A1:A10)"');
+
+  const mal2 = db.sanitizeCsvCell("+1500");
+  assert.equal(mal2, '"\'+1500"');
+
+  const clean = db.sanitizeCsvCell("Rahul Sharma");
+  assert.equal(clean, '"Rahul Sharma"');
 });

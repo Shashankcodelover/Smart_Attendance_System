@@ -1,59 +1,42 @@
 # SMART ATTENDANCE — DAILY OPERATING DIRECTIVES
 
-## DAILY WORKFLOW — ONE COMPLETE DUAL-PASS CYCLE PER DAY
+## DAILY WORKFLOW — ONE COMPLETE THREE-PHASE CYCLE PER DAY
 
-Every session follows a **SINGLE COMPLETE DUAL-PASS CYCLE** combining both the **BUILDER** and **REJECTOR** identities in sequence. This cycle runs **once per day at 07:00 PM** (or when the daily session is started).
+Every session follows a **SINGLE COMPLETE THREE-PHASE CYCLE** combining the **BUILDER**, **REJECTOR**, and **BUILDER (RESOLVER)** identities in strict sequence. This cycle runs **once per day at 07:00 PM** (or when the daily session is started). The standard is **10X improvement per day**.
 
 ---
 
-### 🔄 THE COMPLETE DAILY CYCLE WORKFLOW
+### 🔄 THE COMPLETE DAILY THREE-PHASE CYCLE
 
 ```text
-                               ┌──────────────────────────────────────────┐
-                               │  START DAILY SESSION (07:00 PM Trigger)  │
-                               └────────────────────┬─────────────────────┘
-                                                    │
-                                                    ▼
- ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
- │  PART 1: THE BUILD / RESOLVER PASS (BUILDER_PROMPT.md)                                           │
- ├──────────────────────────────────────────────────────────────────────────────────────────────────┤
- │  1. Go to `AGENT_PROMPTS/BUILDER_PROMPT.md` and adopt the Master Identity.                      │
- │  2. Read `REJECTION_REPORT.md` at root for open Critical/Major items to resolve.                │
- │  3. Read `docs/upcoming-features/` for upcoming features.                                        │
- │  4. Move through the 6 Roles in sequence:                                                       │
- │     • Role 1: Research & Competitive Intelligence                                                │
- │     • Role 2: UI/UX Design                                                                       │
- │     • Role 3: Software & Feature Engineering (Fix rejections + build feature increments)          │
- │     • Role 4: QA / Test Engineering (Run tests — 100% pass required)                            │
- │     • Role 5: Security Engineering                                                               │
- │     • Role 6: Documentation & Knowledge-Base Engineer (README, TASKS, ROADMAP, CHANGELOG)        │
- └──────────────────────────────────────────────────┬───────────────────────────────────────────────┘
-                                                    │
-                                                    ▼
- ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
- │  PART 2: THE REJECTOR AUDIT PASS (REJECTOR_PROMPT.md)                                            │
- ├──────────────────────────────────────────────────────────────────────────────────────────────────┤
- │  1. Switch identity to THE REJECTOR by reading `AGENT_PROMPTS/REJECTOR_PROMPT.md`.              │
- │  2. Perform an independent, adversarial audit of the updated codebase and features.             │
- │  3. Score all 8 categories harshly (0–10).                                                        │
- │  4. Update `REJECTION_REPORT.md` at project root with updated verdict, scores, and open items.   │
- └──────────────────────────────────────────────────┬───────────────────────────────────────────────┘
-                                                    │
-                                                    ▼
-                               ┌──────────────────────────────────────────┐
-                               │   END DAILY CYCLE (Commit & Report)      │
-                               └──────────────────────────────────────────┘
+ PHASE 1: BUILDER (Research + Build 5–10 features, 10–15 checklist, test all)
+    ↓
+ PHASE 2: REJECTOR (Audit entire codebase, find 10–15 loopholes, score 0–10)
+    ↓
+ PHASE 3: BUILDER-RESOLVER (Fix ALL Critical/Major rejections, test 100%, commit)
 ```
+
+---
+
+## 📐 DAILY OUTPUT STANDARDS (NON-NEGOTIABLE)
+
+| Metric | Minimum Requirement |
+| :--- | :--- |
+| **Phase 1 Research Checklist** | 10–15 actionable items with web-sourced evidence |
+| **Phase 1 Features Built** | 5–10 new features/improvements implemented |
+| **Phase 1 Tests Written** | Unit + integration tests for every new feature |
+| **Phase 2 Rejection Points** | 10–15 real, evidenced loopholes found |
+| **Phase 2 Scorecard** | All 8 categories scored 0–10, harshly |
+| **Phase 3 Fixes Applied** | ALL Critical + Major rejections resolved |
+| **Phase 3 Test Pass Rate** | 100% across full test suite |
+| **Net Daily Improvement** | 10X measurable advancement over yesterday |
 
 ---
 
 ## 📌 PERMISSION & SIGN-OFF PROTOCOL
 
-- **Local Execution (Autonomous)**: The agent has full authority to edit files, run tests, create documentation, and commit locally to branch `daily-improvements`.
-- **User Permission Required**: The agent will explicitly ask for your sign-off before:
-  1. Pushing to any remote GitHub repository (`git push`).
-  2. Merging `daily-improvements` into `main`.
-  3. Modifying production credentials or environment secrets.
+- **Local Execution (Autonomous)**: Full authority to edit, test, commit locally to `daily-improvements`.
+- **User Permission Required**: Push to remote, merge to `main`, modify credentials.
 
 ---
 
