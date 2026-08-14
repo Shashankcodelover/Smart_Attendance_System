@@ -766,6 +766,93 @@ app.post('/api/v2/offline/sync-batch', (req, res) => {
   }
 });
 
+// --- IR-12 DUAL 15-FEATURE SUITE IMPORTS & REST ENDPOINTS ---
+import { studentSuite } from './src/services/studentSuite.ts';
+import { teacherSuite } from './src/services/teacherSuite.ts';
+
+// Student Endpoints
+app.post('/api/v2/student/hall-ticket-passport', (req, res) => {
+  try {
+    const { usn, name, courses } = req.body;
+    const passport = studentSuite.generateHallTicketPassport(usn, name, courses || []);
+    res.json({ success: true, passport });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v2/student/peer-voucher', (req, res) => {
+  try {
+    const { claimantUsn, peerWitnessUsn, sessionId, reason } = req.body;
+    const voucher = studentSuite.issuePeerVoucher(claimantUsn, peerWitnessUsn, sessionId, reason);
+    res.json({ success: true, voucher });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v2/student/absence-forecast', (req, res) => {
+  try {
+    const { totalHeld, attended, upcomingMissCount } = req.body;
+    const forecast = studentSuite.forecastAbsenceImpact(totalHeld, attended, upcomingMissCount || 2);
+    res.json({ success: true, forecast });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v2/student/certificate', (req, res) => {
+  try {
+    const { usn, name, semester, overallPct } = req.body;
+    const cert = studentSuite.exportAttendanceCertificate(usn, name, semester || 5, overallPct || 85);
+    res.json({ success: true, cert });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Teacher Endpoints
+app.post('/api/v2/teacher/statutory-shortage-report', (req, res) => {
+  try {
+    const { students } = req.body;
+    const report = teacherSuite.generateStatutoryShortageReport(students || []);
+    res.json({ success: true, report });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v2/teacher/live-headcount-radar', (req, res) => {
+  try {
+    const { enrolledCount, checkedInCount } = req.body;
+    const radar = teacherSuite.generateLiveHeadcountRadar(enrolledCount || 60, checkedInCount || 0);
+    res.json({ success: true, radar });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v2/teacher/proxy-ring-detection', (req, res) => {
+  try {
+    const { checkins } = req.body;
+    const ringAnalysis = teacherSuite.detectProxyRingsAndAnomalies(checkins || []);
+    res.json({ success: true, ringAnalysis });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v2/teacher/accreditation-report', (req, res) => {
+  try {
+    const { department, academicYear, overallPresencePct, totalConductedLectures } = req.body;
+    const auditReport = teacherSuite.generateAccreditationAuditReport(department || 'CSE', academicYear || '2025-2026', overallPresencePct || 80, totalConductedLectures || 100);
+    res.json({ success: true, auditReport });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+
 
 if (process.env.NODE_ENV !== 'test' && !process.env.TEST && !process.argv.some(a => a.includes('test'))) {
   app.listen(PORT, () => {
