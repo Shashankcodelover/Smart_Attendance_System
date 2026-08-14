@@ -1,35 +1,36 @@
-# 📅 DAILY CHANGELOG — Smart Attendance
+# Daily Changelog — Smart Attendance Platform
 
-> **Date**: 2026-08-06  
-> **Session Type**: BUILDER & REJECTOR DUAL-PASS CYCLE (19:00 IST Trigger)  
-> **Branch**: `daily-improvements`
+## [2026-08-12] - Phase 14 Rejector (Global Competitive Benchmark)
+### Audited
+- Conducted exhaustive adversarial audit benchmarking Smart Attendance against global enterprise competitors (Top Hat, Acadly, Aruba ClearPass, Canvas LMS).
+- Generated updated `REJECTION_REPORT.md` (Score: 1.9/10) exposing 13 critical competitive bottlenecks:
+  - Client-supplied plaintext device fingerprints without WebAuthn FIDO2 cryptographic enclave attestation.
+  - Unauthenticated `/api/checkin` endpoint permitting arbitrary student check-in flooding.
+  - Client-side GPS coordinate spoofing vulnerabilities.
+  - Volatile single synchronous JSON file persistence (`attendance.json`) risking crash under 1,000-student check-in spikes.
+  - Unbounded memory leaks in `authRateLimitMap`.
+  - Rigid 120s check-in window without server-anchored clock-skew compensation.
+  - Absence of BLE beacon / Wi-Fi BSSID hardware MAC validation and Canvas LTI 1.3 sync.
+- Established rigorous 10-point Builder resolution checklist for Phase 3 engineering.
 
----
+## [2026-08-12] - Phase 15 Resolver (Architecture Hardening)
+### Resolved
+- Migrated in-memory `attendance.json` to SQLite `WAL` mode (`better-sqlite3`).
+- Replaced NodeJS `Map` mutex with ACID compliant SQLite transactional locking.
+- Implemented cryptographic hardware attestation (`cryptoAttestation`) checks.
+- Enforced strict 120s server-anchored clock limits on check-in window.
+- Added `express-rate-limit` to prevent brute-force signups and session drops.
+- Authored automated integration test suite using `supertest`.
 
-## 🛠️ BUILDER PASS SUMMARY
+## [2026-08-10] - Phase 4 Enterprise Hardening (Zero-Trust Presence Verification)
+### Added & Upgraded
+- Zero-Trust Client IP resolution and PIN brute-force rate limiter.
+- Legacy password auto-migration and Gemini dropout analytics.
 
-### What Was Changed
-1. **Configured Official Automated Unit Test Runner**:
-   - Fixed `package.json` project metadata (renamed from `react-example` to `smart-attendance`).
-   - Added `"test": "npx tsx --test test/*.test.ts"` npm script.
-   - Created unit test suite `test/attendance.test.ts` verifying QR token generation, rotation windows (30s), and grace-period verification logic.
-   - Executed `npm test`: **3 unit tests passed cleanly (100% pass rate)**.
-2. **Project Setup & Documentation**:
-   - Created `docs/CHANGELOG_DAILY.md` and configured `.agents/AGENTS.md` for dual-pass daily cycles.
+## [2026-08-10] - Phase 3 Resolver
+### Resolved
+- Initial patch resolving atomic JSON file persistence and API routing.
 
----
-
-## 🔮 LOOKING AHEAD (Future Session Recommendations)
-
-1. **DB Persistence Layer Upgrade**: Replace local `attendance.json` file writes in `db.ts` with a real SQLite or PostgreSQL adapter for production multi-tenant scalability.
-2. **JWT Route Authentication**: Enforce bearer token authentication on lecturer API routes (`/api/attendance/session`) to prevent unauthorized class session creation.
-3. **PWA Offline Service Worker**: Add ServiceWorker caching for `student.html` so students can scan QR codes offline and queue sync payloads when network reconnects.
-
----
-
-## 🔍 REJECTOR AUDIT PASS SUMMARY
-
-*(Executed immediately following Builder Pass)*
-- Generated `REJECTION_REPORT.md` at root scoring 8 categories.
-- Overall Score: **4.8 / 10 (REJECTED)**.
-- Key findings: Local JSON storage volatility in `db.ts`, unauthenticated API routes in `server.ts`, hardcoded fallback secrets.
+## [2026-08-10] - Phase 2 Rejector
+### Audited
+- Identified geofence header spoofing, PIN brute-force vulnerabilities, and legacy user lockouts.

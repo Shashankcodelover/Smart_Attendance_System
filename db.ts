@@ -1,26 +1,39 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const FILE_PATH = path.join(process.cwd(), 'attendance.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const FILE_PATH = path.resolve(__dirname, 'attendance.json');
+const EXPORTS_DIR = path.resolve(__dirname, 'exports');
 
 // Interface for DB state
-interface DBState {
+export interface DBState {
   students: any[];
   sessions: any[];
   attendance_records: any[];
   timetables: any[];
   override_audits: any[];
   alert_configs: any[];
+  users: any[];
+  device_bindings?: Record<string, string>; // usn -> hardwareId
 }
+
+let inMemoryState: DBState | null = null;
 
 // Load database from file or initialize with seed data
 function loadDB(): DBState {
+  if (inMemoryState) return inMemoryState;
+
   if (fs.existsSync(FILE_PATH)) {
     try {
       const state = JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8'));
       if (!state.timetables) state.timetables = [];
       if (!state.override_audits) state.override_audits = [];
       if (!state.alert_configs) state.alert_configs = [];
+      if (!state.users) state.users = [];
+      if (!state.device_bindings) state.device_bindings = {};
       
       if (state.sessions) {
         state.sessions = state.sessions.map((s: any) => ({
@@ -29,6 +42,7 @@ function loadDB(): DBState {
           timeline: s.timeline || '10:00 AM - 11:00 AM'
         }));
       }
+      inMemoryState = state;
       return state;
     } catch (e) {
       console.error('[DB Load Error]: Error reading attendance.json:', e);
@@ -41,10 +55,13 @@ function loadDB(): DBState {
     attendance_records: [],
     timetables: [],
     override_audits: [],
-    alert_configs: []
+    alert_configs: [],
+    users: [],
+    device_bindings: {}
   };
 
   saveDB(dbState);
+  inMemoryState = dbState;
   return dbState;
 }
 
@@ -60,17 +77,17 @@ function getDeptFromCourseCode(courseCode: string): string {
 }
 
 function getDegreeFromDeptAndYear(dept: string, year: number): string {
-  const d = dept.toLowerCase();
+  const d = (dept || '').toLowerCase();
   if (d.includes('data science') || d.includes('ds') || d.includes('software engineering') || d.includes('(se)')) {
     return 'M.Tech (Master of Technology)';
   }
-  return 'B.E. (Bachelor of Engineering)';
+  return year > 4 ? 'M.Tech (Master of Technology)' : 'B.E. (Bachelor of Engineering)';
 }
 
 /**
  * Sanitizes CSV cell strings to prevent CSV Formula Injection (=, +, -, @, tab, cr).
  */
-function sanitizeCsvCell(cellVal: any): string {
+export function sanitizeCsvCell(cellVal: any): string {
   let str = String(cellVal ?? '');
   if (/^[=\+\-@\t\r]/.test(str)) {
     str = `'` + str;
@@ -78,18 +95,16 @@ function sanitizeCsvCell(cellVal: any): string {
   return `"${str.replace(/"/g, '""')}"`;
 }
 
-async function syncExcelSheetsAsync(state: DBState) {
+async function syncExcelSheetsAsync(state: DBState): Promise<void> {
   try {
-    const exportsDir = path.join(process.cwd(), 'exports');
-    if (!fs.existsSync(exportsDir)) {
-      await fs.promises.mkdir(exportsDir, { recursive: true });
+    if (!fs.existsSync(EXPORTS_DIR)) {
+      await fs.promises.mkdir(EXPORTS_DIR, { recursive: true });
     }
 
     const students = state.students || [];
     const sessions = state.sessions || [];
     const records = state.attendance_records || [];
 
-    const getCleanDirName = (name: string) => name.replace(/[\\/:*?"<>|]/g, '_');
     const sectionsToSync = new Set<string>();
 
     students.forEach((std: any) => {
@@ -131,71 +146,66 @@ async function syncExcelSheetsAsync(state: DBState) {
       
       sectionSessions.forEach((s: any) => {
         const dateStr = s.created_at ? new Date(s.created_at).toLocaleDateString().replace(/\//g, '-') : 'Date';
-        headers.push(`${s.subject_code}_${dateStr}_${s.timeline.replace(/[\s:-]+/g, '_')}`);
+        headers.push(`${s.subject_code}_${dateStr}_${(s.timeline || '10_00').replace(/[\s:-]+/g, '_')}`);
       });
 
       const rows = sectionStudents.map((std: any) => {
         const studentUsnUpper = std.usn.toUpperCase();
         let presentCount = 0;
         const rowSessionStatuses = sectionSessions.map((s: any) => {
-          const isPresent = records.some((r: any) => r.session_id === s.id && r.student_usn.toUpperCase() === studentUsnUpper);
+          const isPresent = records.some((r: any) => r.session_id === s.id && (r.student_usn || '').toUpperCase() === studentUsnUpper);
           if (isPresent) presentCount++;
           return isPresent ? 'P' : 'A';
         });
 
         const rate = sectionSessions.length > 0 
-          ? Math.round((presentCount / sectionSessions.length) * 100)
-          : std.attendance_rate || 100;
+          ? Math.round((presentCount / sectionSessions.length) * 100) 
+          : 100;
 
         return [
-          std.usn,
-          std.name,
-          std.course_code,
-          String(std.year),
-          std.section,
-          `${rate}%`,
-          ...rowSessionStatuses
-        ];
+          sanitizeCsvCell(std.usn),
+          sanitizeCsvCell(std.name),
+          sanitizeCsvCell(std.course_code),
+          sanitizeCsvCell(std.year),
+          sanitizeCsvCell(std.section),
+          sanitizeCsvCell(`${rate}%`),
+          ...rowSessionStatuses.map(st => sanitizeCsvCell(st))
+        ].join(',');
       });
 
-      const csvContent = [
-        headers.map(sanitizeCsvCell).join(','),
-        ...rows.map(r => r.map(sanitizeCsvCell).join(','))
-      ].join('\n');
+      const csvContent = [headers.map(h => sanitizeCsvCell(h)).join(','), ...rows].join('\n');
+      const filename = `Attendance_${degree.split(' ')[0]}_${dept.split(' ')[0]}_Year${year}_Sec${section}.csv`.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath = path.join(EXPORTS_DIR, filename);
 
-      const targetDir = path.join(exportsDir, getCleanDirName(degree), getCleanDirName(dept), `Year ${year}`);
-      if (!fs.existsSync(targetDir)) {
-        await fs.promises.mkdir(targetDir, { recursive: true });
-      }
-
-      const filePath = path.join(targetDir, `Section_${section}_Attendance.csv`);
       await fs.promises.writeFile(filePath, csvContent, 'utf-8');
     }
-  } catch (error) {
-    console.error('[SyncExcelSheets Error]:', error);
+  } catch (err) {
+    console.error('[Export Pipeline Error]: Failed to sync excel sheets:', err);
   }
 }
 
-// Debounced async disk persistence queue
-let saveDebounceTimer: NodeJS.Timeout | null = null;
+// Atomic file writing to prevent JSON truncation
 function saveDB(state: DBState) {
-  if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
-  saveDebounceTimer = setTimeout(async () => {
-    try {
-      await fs.promises.writeFile(FILE_PATH, JSON.stringify(state, null, 2), 'utf-8');
-      await syncExcelSheetsAsync(state);
-    } catch (e) {
-      console.error('[saveDB Async Error]:', e);
-    }
-  }, 100);
+  inMemoryState = state;
+  try {
+    const tempPath = `${FILE_PATH}.tmp.${Date.now()}`;
+    fs.writeFileSync(tempPath, JSON.stringify(state, null, 2), 'utf-8');
+    fs.renameSync(tempPath, FILE_PATH);
+    
+    // Safely execute async CSV export with error boundary
+    syncExcelSheetsAsync(state).catch(err => {
+      console.error('[Background Export Error]:', err);
+    });
+  } catch (e) {
+    console.error('[DB Save Error]: Error saving attendance.json:', e);
+  }
 }
 
-const dbState = loadDB();
-
 export default {
-  getState: () => dbState,
-  saveState: () => saveDB(dbState),
-  loadDB,
-  saveDB,
-  sanitizeCsvCell
+  getState: () => loadDB(),
+  saveState: () => {
+    if (inMemoryState) saveDB(inMemoryState);
+  },
+  sanitizeCsvCell,
+  getExportsDir: () => EXPORTS_DIR
 };

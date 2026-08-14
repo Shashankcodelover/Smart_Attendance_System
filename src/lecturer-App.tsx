@@ -112,15 +112,17 @@ export default function LecturerApp() {
   const refreshData = async () => {
     try {
       const email = currentUser?.codeOrUsn || 'admin@sjce.edu';
-      const sRes = await fetch(`/api/sessions?lecturer=${encodeURIComponent(email)}`);
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : undefined;
+      const sRes = await fetch(`/api/sessions?lecturer=${encodeURIComponent(email)}`, { headers });
       const sData = await sRes.json();
       setSessions(sData);
 
-      const aRes = await fetch('/api/attendance/records');
+      const aRes = await fetch('/api/attendance/records', { headers });
       const aData = await aRes.json();
       setAttendanceRecords(aData);
 
-      const stdRes = await fetch('/api/students');
+      const stdRes = await fetch('/api/students', { headers });
       const stdData = await stdRes.json();
       setStudents(stdData);
     } catch (e) {
@@ -200,9 +202,13 @@ export default function LecturerApp() {
     };
 
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const response = await fetch('/api/students', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify(brandNew)
       });
       const data = await response.json();
@@ -245,9 +251,13 @@ export default function LecturerApp() {
       }]);
 
       try {
+        const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
         const response = await fetch('/api/sessions/batch-create', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          },
           body: JSON.stringify({
             lecturerEmail: currentUser?.codeOrUsn || 'admin@sjce.edu',
             course: 'B.E.',
@@ -342,9 +352,13 @@ export default function LecturerApp() {
         setAgentLoading(true);
 
         try {
+          const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
           const r = await fetch('/api/sessions/create', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': token ? `Bearer ${token}` : ''
+            },
             body: JSON.stringify({
               ...completedData,
               status: 'READY',
@@ -386,9 +400,13 @@ export default function LecturerApp() {
     setAgentLoading(true);
 
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({ 
           message: text, 
           history: [],
@@ -458,9 +476,13 @@ export default function LecturerApp() {
     timeline: string;
   }) => {
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const r = await fetch('/api/sessions/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({
           ...sessionData,
           status: 'READY',
@@ -507,9 +529,13 @@ export default function LecturerApp() {
   // Activate session
   const handleActivateSession = async (sessionId: string) => {
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const r = await fetch('/api/sessions/activate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({ sessionId }),
       });
       const d = await r.json();
@@ -531,9 +557,13 @@ export default function LecturerApp() {
   // Close attendance session
   const handleCloseSession = async (sessionId: string) => {
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const r = await fetch('/api/sessions/cancel', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({ sessionId }),
       });
       const d = await r.json();
@@ -555,9 +585,13 @@ export default function LecturerApp() {
   // Reopen closed session (grace period)
   const handleReopenSession = async (sessionId: string) => {
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const r = await fetch('/api/sessions/reopen', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({ sessionId }),
       });
       const d = await r.json();

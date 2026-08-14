@@ -60,10 +60,14 @@ export default function UserProfileView({
     try {
       if (persona === 'student') {
         const currentRate = studentDbRec?.attendanceRate || 75;
+        const token = localStorage.getItem('sjce_auth_token_student') || localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
         // Call backend API to save the student parameters
         const res = await fetch('/api/students', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          },
           body: JSON.stringify({
             usn: emailOrUsn.toUpperCase(),
             name: name.trim(),

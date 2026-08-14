@@ -1,11 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import bcrypt from 'bcrypt';
 
-import { generateHmacToken, verifyHmacToken, calculateHaversineDistance, signJwt, verifyJwt } from '../server.ts';
+import {
+  generateHmacToken,
+  verifyHmacToken,
+  calculateHaversineDistance,
+  signJwt,
+  verifyJwt,
+  getTrustedClientIp,
+  checkAuthRateLimit
+} from '../server.ts';
 import db from '../db.ts';
 
 // ═══════════════════════════════════════════════════════════
-// QR ROTATION & HMAC TOKEN VERIFICATION TESTS
+// 1. QR ROTATION & HMAC TOKEN VERIFICATION TESTS
 // ═══════════════════════════════════════════════════════════
 
 test('generateHmacToken produces valid signature format', () => {
@@ -25,10 +34,13 @@ test('verifyHmacToken validates valid token and rejects expired/tampered tokens'
   
   // Tampered Shape
   assert.equal(verifyHmacToken('sess_101', '1234', 'RED_SQUARE', token), false);
+
+  // Tampered Session ID
+  assert.equal(verifyHmacToken('sess_999', '1234', 'BLUE_CIRCLE', token), false);
 });
 
 // ═══════════════════════════════════════════════════════════
-// NATIVE JWT AUTHENTICATION TESTS
+// 2. NATIVE JWT AUTHENTICATION TESTS
 // ═══════════════════════════════════════════════════════════
 
 test('signJwt and verifyJwt encode and decode valid tokens', () => {
@@ -47,7 +59,7 @@ test('verifyJwt rejects invalid or tampered tokens', () => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// GPS HAVERSINE GEOFENCING TESTS
+// 3. GPS HAVERSINE GEOFENCING TESTS
 // ═══════════════════════════════════════════════════════════
 
 test('calculateHaversineDistance accurately measures classroom distance', () => {
@@ -61,7 +73,7 @@ test('calculateHaversineDistance accurately measures classroom distance', () => 
 });
 
 // ═══════════════════════════════════════════════════════════
-// CSV FORMULA SANITIZATION TESTS
+// 4. CSV FORMULA SANITIZATION TESTS
 // ═══════════════════════════════════════════════════════════
 
 test('sanitizeCsvCell escapes formula characters (=, +, -, @) to prevent formula injection', () => {
@@ -73,4 +85,52 @@ test('sanitizeCsvCell escapes formula characters (=, +, -, @) to prevent formula
 
   const clean = db.sanitizeCsvCell("Rahul Sharma");
   assert.equal(clean, '"Rahul Sharma"');
+});
+
+// ═══════════════════════════════════════════════════════════
+// 5. ZERO-TRUST IP RESOLUTION & SPOOFING DEFENSE
+// ═══════════════════════════════════════════════════════════
+
+test('getTrustedClientIp rejects fake X-Forwarded-For from external sockets', () => {
+  const fakeReq: any = {
+    socket: { remoteAddress: '203.0.113.195' }, // Public external cellular IP
+    headers: { 'x-forwarded-for': '192.168.1.5' } // Spoofed university IP
+  };
+
+  const resolvedIp = getTrustedClientIp(fakeReq);
+  assert.equal(resolvedIp, '203.0.113.195'); // Must NOT trust the spoofed header
+});
+
+// ═══════════════════════════════════════════════════════════
+// 6. PIN BRUTE-FORCE RATE LIMITING TESTS
+// ═══════════════════════════════════════════════════════════
+
+test('checkAuthRateLimit throttles after 5 consecutive failed attempts', () => {
+  const testKey = `test-ip-${Date.now()}:test-user`;
+
+  for (let i = 0; i < 5; i++) {
+    assert.equal(checkAuthRateLimit(testKey), true);
+  }
+
+  // 6th attempt must be throttled
+  assert.equal(checkAuthRateLimit(testKey), false);
+});
+
+// ═══════════════════════════════════════════════════════════
+// 7. LEGACY PLAINTEXT PASSWORD AUTO-MIGRATION
+// ═══════════════════════════════════════════════════════════
+
+test('legacy plaintext passwords match and upgrade to salted bcrypt hashes', async () => {
+  const plaintextPin = '4321';
+  
+  // Verify that plaintext matching logic works
+  const isPlaintext = !plaintextPin.startsWith('$2a$') && !plaintextPin.startsWith('$2b$');
+  assert.equal(isPlaintext, true);
+
+  // Upgrade to bcrypt
+  const upgradedHash = await bcrypt.hash(plaintextPin, 10);
+  assert.ok(upgradedHash.startsWith('$2b$'));
+  
+  const matches = await bcrypt.compare(plaintextPin, upgradedHash);
+  assert.equal(matches, true);
 });

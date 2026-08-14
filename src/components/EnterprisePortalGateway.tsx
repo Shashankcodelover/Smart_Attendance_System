@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Student } from '../types';
-import { firebaseAuth } from '../services/firebaseService';
+import { authService as firebaseAuth } from '../services/authService';
 
 interface EnterprisePortalGatewayProps {
   onAuthorize: (

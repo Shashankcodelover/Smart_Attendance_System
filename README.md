@@ -1,63 +1,47 @@
-# 📱 Smart Offline-First Attendance System
+# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
 
-A resilient, privacy-first, web-based attendance gateway built to solve classroom roll-call overhead and internet dropout failures. By utilizing dynamic QR codes, offline client storage, and automatic background reconciliation, it preserves instructional time and prevents proxy fraud.
-
-## 🚀 Key Features
-
-* **Resilient Offline Mode:** Enables students to register attendance without network coverage. Verification receipts are securely buffered in the browser's local store and auto-sync when cellular/Wi-Fi connection is restored.
-* **Anti-Proxy QR-OTP Protection:** Prevents remote check-ins. Renders a signed, ephemeral QR code that rotates every 10 seconds, requiring the student to physically scan the screen and match it with a live OTP.
-* **IndexedDB & Cryptographic Storage:** Encrypts local payloads using the browser's Web Crypto API, storing them in IndexedDB before syncing to prevent local database tampering.
-* **Timetable-Linked Session Orchestration:** Automatically pre-creates lecture slots based on the department timetable, letting lecturers activate the session window with a single click.
-* **Privacy-First Design:** Bypasses location tracking (GPS) and intrusive biometric audits (facial scans), running purely on standard web camera feeds.
+> **Zero-Trust Biometric, Cryptographic & Geofenced Presence Verification System**  
+> Built for universities and enterprise institutions to eliminate proxy attendance, enforce dynamic rotation QR tokens, and deliver predictive dropout analytics using Google Gemini.
 
 ---
 
-## 🛠️ Tech Stack
+## 🌟 Key Enterprise Features
 
-* **Backend:** Node.js, Express.js (v5+), SQLite (`better-sqlite3`), Prisma ORM
-* **Frontend:** Vanilla HTML5, CSS3, JavaScript (Mobile-First Web App)
-* **Real-time Engine:** WebSockets (`ws`) and Server-Sent Events (SSE)
-* **PWA Features:** Web App Manifest and Service Worker caching
+### 1. Zero-Trust Subnet & Geofence Shield
+- Direct socket IP resolution preventing HTTP header forgery (`X-Forwarded-For` bypasses).
+- Dynamic 5-second TOTP rotating QR code signatures with cryptographically signed nonces.
+- GPS Haversine distance verification (150m classroom radius).
+
+### 2. Hardware-Bound Anti-Proxy Device Registry
+- Enforces device-to-student registration quotas (1 physical hardware device per student).
+- Detects and blocks device collision attacks (multiple students attempting check-in from one phone).
+
+### 3. Sliding-Window PIN Brute-Force Defense
+- Bounded token-bucket rate limiter stopping credential-stuffing and automated PIN brute-forcing scripts.
+
+### 4. Seamless Password Auto-Upgrade
+- Auto-migrates legacy plaintext passwords to salted `bcrypt` hashes on the fly during login without disrupting users.
+
+### 5. Google Gemini AI Predictive Academic Analytics
+- Computes mathematical student attendance distributions across departments and sections.
+- Predicts exam disqualification risk for students approaching or breaching the mandatory 75% attendance cutoff.
+
+### 6. Crash-Proof Cloud Container Deployment
+- Safe runtime in-memory secret handling, eliminating `EACCES` crashes on immutable read-only filesystems (AWS ECS, Docker, Kubernetes).
 
 ---
 
-## 📦 Project Structure
+## 🚀 Quick Start
 
-```text
-📦 smart-attendance
- ┣ 📂 attendance-Backend     # Express + Prisma + SQLite backend
- ┣ 📂 attendance-FrontEnd    # Vanilla JS and HTML5 student & lecturer pages
- ┣ 📜 package.json           # Monorepo/workspace manifest
- ┗ 📜 README.md              # System documentation
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Run automated test suite
+npm test
+
+# 3. Start development server
+npm run dev
 ```
 
----
-
-## 🚦 Getting Started
-
-### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd attendance-Backend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up Prisma and initialize database:
-   ```bash
-   npx prisma migrate dev --name init
-   ```
-4. Start the Express server:
-   ```bash
-   npm run dev
-   ```
-
-### Frontend Setup
-1. Start the Vite development frontend server from the root or navigate to the frontend resources:
-   ```bash
-   npm run dev
-   ```
-2. Open `index.html` (Vite host) or browse the local static client files:
-   - Student Page: `student/Student.html`
-   - Lecturer Page: `lecturer/Lecturer.html`
+Visit the dashboard at `http://localhost:3000`.

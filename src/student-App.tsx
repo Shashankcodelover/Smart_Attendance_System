@@ -180,11 +180,13 @@ export default function StudentApp() {
   // Initial Fetch roster & sessions
   const refreshData = async () => {
     try {
-      const sRes = await fetch('/api/sessions');
+      const token = localStorage.getItem('sjce_auth_token_student');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : undefined;
+      const sRes = await fetch('/api/sessions', { headers });
       const sData = await sRes.json();
       setSessions(sData);
 
-      const stdRes = await fetch('/api/students');
+      const stdRes = await fetch('/api/students', { headers });
       const stdData = await stdRes.json();
       setStudents(stdData);
     } catch (e) {
