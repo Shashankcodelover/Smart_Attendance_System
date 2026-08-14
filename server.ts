@@ -852,6 +852,89 @@ app.post('/api/v2/teacher/accreditation-report', (req, res) => {
   }
 });
 
+// --- IR-13 SOVEREIGN ENGINE IMPORTS & REST ENDPOINTS ---
+import { biometricAttestationEngine } from './src/services/biometricAttestationEngine.ts';
+import { meshAttendanceEngine } from './src/services/meshAttendanceEngine.ts';
+import { aiRetentionRadar } from './src/services/aiRetentionRadar.ts';
+import { nfcWebauthnGateway } from './src/services/nfcWebauthnGateway.ts';
+import { kalmanGeofenceEngine } from './src/services/kalmanGeofenceEngine.ts';
+
+// 1. Biometric Attestation Endpoints
+app.post('/api/v3/biometric/challenge', (req, res) => {
+  try {
+    const { usn } = req.body;
+    const challenge = biometricAttestationEngine.issueLivenessChallenge(usn || 'STUDENT');
+    res.json({ success: true, challenge });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v3/biometric/verify', (req, res) => {
+  try {
+    const { usn, liveVector, nonce, action } = req.body;
+    const result = biometricAttestationEngine.verifyLivenessAttestation(usn, liveVector, nonce, action);
+    res.json({ success: result.isVerified, result });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 2. Decentralized Mesh Routing Endpoints
+app.post('/api/v3/mesh/packet', (req, res) => {
+  try {
+    const { studentUsn, sessionId } = req.body;
+    const packet = meshAttendanceEngine.createStudentMeshPacket(studentUsn, sessionId);
+    res.json({ success: true, packet });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/v3/mesh/ingest-batch', (req, res) => {
+  try {
+    const { packets, sessionId } = req.body;
+    const batch = meshAttendanceEngine.ingestMeshBatchAtLecturer(packets || [], sessionId);
+    res.json({ success: true, batch });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 3. AI Retention Radar Endpoint
+app.post('/api/v3/ai/retention-radar', (req, res) => {
+  try {
+    const { usn, name, history, totalHeld, attended, remaining } = req.body;
+    const report = aiRetentionRadar.forecastStudentRetention(usn || '4JC21CS001', name || 'Candidate', history || [], totalHeld || 30, attended || 20, remaining || 20);
+    res.json({ success: true, report });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 4. NFC / FIDO2 Gateway Endpoints
+app.post('/api/v3/nfc/verify-tap', (req, res) => {
+  try {
+    const { usn, cardUid, cardSignature } = req.body;
+    const tapResult = nfcWebauthnGateway.verifyNFCCardTap(usn, cardUid, cardSignature);
+    res.json({ success: tapResult.isVerified, tapResult });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 5. Kalman Geofence Smoother Endpoint
+app.post('/api/v3/geofence/kalman-verify', (req, res) => {
+  try {
+    const { readings, classroomCenter, maxRadiusMeters } = req.body;
+    const geofenceResult = kalmanGeofenceEngine.verifyClassroomGeofence(readings || [], classroomCenter || { latitude: 12.3, longitude: 76.6 }, maxRadiusMeters || 30);
+    res.json({ success: geofenceResult.isInsideClassroom, geofenceResult });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+
 
 
 if (process.env.NODE_ENV !== 'test' && !process.env.TEST && !process.argv.some(a => a.includes('test'))) {
