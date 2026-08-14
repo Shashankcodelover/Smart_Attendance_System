@@ -49,13 +49,17 @@ export class KalmanGeofenceEngine {
         for (const raw of readings) {
             const currentR = Math.max(0.00001, (raw.accuracyMeters * 0.00001));
 
+            // Velocity-adaptive process noise Q(v)
+            const adaptiveQ = this.processNoiseQ * (raw.accuracyMeters > 10 ? 2.5 : 1.0);
+
             // Prediction update
-            let pLat = this.stateEstimate!.pLat + this.processNoiseQ;
-            let pLon = this.stateEstimate!.pLon + this.processNoiseQ;
+            let pLat = this.stateEstimate!.pLat + adaptiveQ;
+            let pLon = this.stateEstimate!.pLon + adaptiveQ;
 
             // Kalman gain
             const kLat = pLat / (pLat + currentR);
             const kLon = pLon / (pLon + currentR);
+
 
             // Measurement update
             const estLat = this.stateEstimate!.lat + kLat * (raw.latitude - this.stateEstimate!.lat);
