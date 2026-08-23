@@ -47,9 +47,13 @@ export default function AIDataExplorerView({
     setLoading(true);
 
     try {
+      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify({
           message: textToSend,
           history: messages.slice(-10), // Send last 10 messages for conversation state

@@ -1,72 +1,58 @@
-const CACHE_NAME = 'sjce-attendance-v1';
+const CACHE_NAME = 'smart-attendance-v1';
 const ASSETS_TO_CACHE = [
   '/',
-  '/student',
-  '/lecturer',
   '/index.html',
-  '/student.html',
-  '/lecturer.html',
-  '/icon.png',
   '/manifest.json'
 ];
 
-// Install Event
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-// Activate Event
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => {
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch Event
-self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
+self.addEventListener('fetch', (event) => {
+  // Only intercept GET requests
+  if (event.request.method !== 'GET') return;
+  
+  // Don't intercept API calls
+  if (event.request.url.includes('/api/')) return;
 
-  // Bypass caching for API endpoints
-  if (url.pathname.startsWith('/api/')) {
-    e.respondWith(fetch(e.request));
-    return;
-  }
-
-  // Network first, falling back to cache for page assets
-  e.respondWith(
-    fetch(e.request)
+  event.respondWith(
+    caches.match(event.request)
       .then((response) => {
-        if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(e.request, responseClone);
+        // Return cached response if found, else fetch from network
+        return response || fetch(event.request).then((fetchRes) => {
+          return caches.open(CACHE_NAME).then((cache) => {
+            // Cache new requests dynamically (optional, but good for Vite assets)
+            if (event.request.url.startsWith(self.location.origin)) {
+              cache.put(event.request, fetchRes.clone());
+            }
+            return fetchRes;
           });
-        }
-        return response;
+        });
       })
       .catch(() => {
-        return caches.match(e.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          if (e.request.mode === 'navigate') {
-            return caches.match('/student.html') || caches.match('/lecturer.html') || caches.match('/index.html');
-          }
-        });
+        // Fallback for offline if HTML is requested
+        if (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html')) {
+          return caches.match('/');
+        }
       })
   );
 });

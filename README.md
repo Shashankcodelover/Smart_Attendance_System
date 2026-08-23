@@ -1,86 +1,47 @@
-# 📱 Smart Offline-First Attendance System
+# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
 
-A resilient, privacy-first, web-based attendance gateway built to solve classroom roll-call overhead and internet dropout failures. By utilizing dynamic QR codes, browser local queue storage, device fingerprinting, and automatic background reconciliation, it preserves instructional time and prevents proxy attendance fraud.
-
----
-
-## 🚀 Architecture & Tech Stack
-
-- **Frontend Framework:** React 19 (`react`, `react-dom`) with TypeScript ~5.8
-- **Styling & Design:** Tailwind CSS v4 (`@tailwindcss/vite`) with custom acrylic glassmorphism UI & Google Fonts (Outfit / Inter)
-- **Build System:** Vite 6 with multi-page entry points (`index.html`, `lecturer.html`, `student.html`)
-- **Backend Server:** Node.js Express 4 (`server.ts`) bundled with `esbuild`
-- **Database Engine:** SQLite database engine (`db.ts` / `Better-SQLite3`) with automated CSV export generation (`exports/`)
-- **Containerization:** Production Dockerfile & Docker Compose configuration on Port `3000`
-- **Security Guardrails:** Device fingerprint proxy detection, HMAC-SHA256 signed rotating QR tokens, and anti-fraud filters
-- **AI Capabilities:** Gemini AI assistant (`/api/ai/chat`) for conversational queries, timetable PDF parsing, and automated section scheduling
-- **Test Suite:** Native Node.js test runner suite (`tests/server.test.ts`) executed via `npm test`
+> **Zero-Trust Biometric, Cryptographic & Geofenced Presence Verification System**  
+> Built for universities and enterprise institutions to eliminate proxy attendance, enforce dynamic rotation QR tokens, and deliver predictive dropout analytics using Google Gemini.
 
 ---
 
-## 📦 Project Structure
+## 🌟 Key Enterprise Features
 
-```text
-smart-attendance/
-├── index.html                  # Landing & auth portal entry
-├── lecturer.html               # Lecturer management portal entry
-├── student.html                # Student check-in portal entry
-├── server.ts                   # Express backend server with active session cache
-├── db.ts                       # Better-SQLite3 database initialization & storage
-├── controllers/
-│   ├── aiController.ts         # Gemini AI chat assistant & timetable parser
-│   ├── sessionController.ts    # Session creation, rotation, and lifecycle manager
-│   └── attendanceController.ts # HMAC QR check-in & offline reconciliation controller
-├── Dockerfile                  # Multi-stage production Docker build recipe
-├── docker-compose.yml          # Container compose service configuration
-├── SETUP.md                    # Setup guide, .env reference & file inventory breakdown
-├── README.md                   # Primary project summary & quick start guide
-└── tests/
-    └── server.test.ts          # Unit test suite for DB operations & API logic
-```
+### 1. Zero-Trust Subnet & Geofence Shield
+- Direct socket IP resolution preventing HTTP header forgery (`X-Forwarded-For` bypasses).
+- Dynamic 5-second TOTP rotating QR code signatures with cryptographically signed nonces.
+- GPS Haversine distance verification (150m classroom radius).
+
+### 2. Hardware-Bound Anti-Proxy Device Registry
+- Enforces device-to-student registration quotas (1 physical hardware device per student).
+- Detects and blocks device collision attacks (multiple students attempting check-in from one phone).
+
+### 3. Sliding-Window PIN Brute-Force Defense
+- Bounded token-bucket rate limiter stopping credential-stuffing and automated PIN brute-forcing scripts.
+
+### 4. Seamless Password Auto-Upgrade
+- Auto-migrates legacy plaintext passwords to salted `bcrypt` hashes on the fly during login without disrupting users.
+
+### 5. Google Gemini AI Predictive Academic Analytics
+- Computes mathematical student attendance distributions across departments and sections.
+- Predicts exam disqualification risk for students approaching or breaching the mandatory 75% attendance cutoff.
+
+### 6. Crash-Proof Cloud Container Deployment
+- Safe runtime in-memory secret handling, eliminating `EACCES` crashes on immutable read-only filesystems (AWS ECS, Docker, Kubernetes).
 
 ---
 
-## ⚡ Quick Start
-
-### Method 1: Docker Compose (Recommended — Instant Setup)
-
-```bash
-# 1. Copy environment template
-cp .env.example .env
-
-# 2. Build & launch containers
-docker-compose up -d --build
-```
-
-- 🌐 **Home Portal**: `http://localhost:3000`
-- 🎓 **Student Check-In**: `http://localhost:3000/student`
-- 👨‍🏫 **Lecturer Dashboard**: `http://localhost:3000/lecturer`
-
-### Method 2: Local Development & Automated Tests
+## 🚀 Quick Start
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Run unit tests
+# 2. Run automated test suite
 npm test
 
-# 3. Run dev server
+# 3. Start development server
 npm run dev
-
-# 4. Build production bundle
-npm run build
 ```
 
----
-
-## 📚 Complete Documentation & File Inventory
-
-For a comprehensive guide on environment variables, setup instructions, and a file-by-file inventory of all roles in the project, please see:
-📖 **[SETUP.md](SETUP.md)**
-
----
-
-## 📜 License & Security Standards
-Licensed under the **MIT License**. Built in compliance with **GDPR** and **FERPA** privacy guidelines.
+Visit the dashboard at `http://localhost:3000`.

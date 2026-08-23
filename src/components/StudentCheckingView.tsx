@@ -606,9 +606,13 @@ export default function StudentCheckingView({
     } else {
       // Online submission
       try {
+        const token = localStorage.getItem('sjce_auth_token_student');
         const res = await fetch('/api/attendance/check-in', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({
             sessionId: selectedSessionId,
             studentUsn: usn,
