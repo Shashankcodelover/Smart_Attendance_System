@@ -10,15 +10,16 @@ build/
 .env.test.local
 .env.production.local
 *.env
+.secret
 
 # SQLite Database Files
 *.db
 *.sqlite
+*.sqlite*
 attendance.db
+attendance.json
 sqlite.db
 db.sqlite
-attendance-Backend/sqlite.db
-attendance-Backend/db.sqlite
 
 # Operating System & IDE Files
 .DS_Store
