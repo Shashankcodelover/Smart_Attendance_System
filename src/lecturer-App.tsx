@@ -8,6 +8,8 @@ import EnterprisePortalGateway from './components/EnterprisePortalGateway';
 import TourGuide from './components/TourGuide';
 import UserProfileView from './components/UserProfileView';
 import ManualSpreadsheetView from './components/ManualSpreadsheetView';
+import AgentBotModal from './components/AgentBotModal';
+import OnboardingAuthModal from './components/OnboardingAuthModal';
 import { Session, AttendanceRecord, Student } from './types';
 
 export default function LecturerApp() {
@@ -1198,6 +1200,14 @@ export default function LecturerApp() {
           </button>
         </div>
       </nav>
+
+      {/* Floating Interactive BUNKR AI Agent Bot */}
+      <AgentBotModal
+        userRole="lecturer"
+        userEmail={currentUser?.codeOrUsn || 'admin@sjce.edu'}
+        userName={currentUser?.name || 'Faculty Member'}
+        onRefresh={() => refreshData()}
+      />
     </div>
   );
 }

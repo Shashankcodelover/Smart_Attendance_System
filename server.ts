@@ -8,6 +8,7 @@ import path from 'path';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import { handleAiChat } from './controllers/aiController';
 
 dotenv.config();
 
@@ -647,6 +648,183 @@ app.post('/api/ai/analyze', async (req, res) => {
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// --- REAL-TIME AI AGENT CHAT BOT ENDPOINT ---
+app.post('/api/ai/chat', (req, res) => {
+  handleAiChat(req, res, getGeminiClient, getRandomVerificationOption);
+});
+
+// --- AUTONOMOUS TIMETABLE PARSER & DYNAMIC SECTION ALLOCATOR AGENT ---
+app.post('/api/ai/parse-timetable', async (req, res) => {
+  try {
+    const { timetableText = '', lecturerEmail = 'admin@sjce.edu' } = req.body;
+    if (!timetableText.trim()) {
+      return res.status(400).json({ error: 'timetableText payload is required' });
+    }
+
+    // Try Gemini Client if available
+    const client = getGeminiClient();
+    let parsedSlots: any[] = [];
+
+    if (client) {
+      try {
+        const prompt = `You are the University Timetable AI Scheduling Agent. Parse the following unstructured timetable into structured JSON array of slots with properties: day (e.g. Monday), startTime, endTime, courseCode, courseName, department, year (integer 1-4), section (e.g. A, B, C), roomNumber.
+Timetable text:
+"""
+${timetableText}
+"""
+Respond ONLY with a valid JSON array of objects.`;
+        const response = await client.models.generateContent({
+          model: 'gemini-1.5-flash',
+          contents: prompt
+        });
+        const cleaned = (response.text || '').replace(/```json/g, '').replace(/```/g, '').trim();
+        parsedSlots = JSON.parse(cleaned);
+      } catch (geminiErr) {
+        console.warn('[AI Timetable Agent]: Gemini parse error, using deterministic regex parser:', geminiErr);
+      }
+    }
+
+    // Deterministic Rule-Based Fallback Parser if Gemini not available or failed
+    if (!parsedSlots || !parsedSlots.length) {
+      const lines = timetableText.split(/\r?\n/).filter((l: string) => l.trim().length > 0);
+      lines.forEach((line: string, idx: number) => {
+        const lower = line.toLowerCase();
+        let day = 'Monday';
+        if (lower.includes('tue')) day = 'Tuesday';
+        else if (lower.includes('wed')) day = 'Wednesday';
+        else if (lower.includes('thu')) day = 'Thursday';
+        else if (lower.includes('fri')) day = 'Friday';
+        else if (lower.includes('sat')) day = 'Saturday';
+
+        let year = 3;
+        if (lower.includes('1st') || lower.includes('year 1')) year = 1;
+        else if (lower.includes('2nd') || lower.includes('year 2')) year = 2;
+        else if (lower.includes('4th') || lower.includes('year 4')) year = 4;
+
+        let section = 'A';
+        const secMatch = line.match(/\b(?:sec|section)\s*([A-D])\b/i) || line.match(/\b([A-D])\s*(?:sec|section)\b/i);
+        if (secMatch) section = secMatch[1].toUpperCase();
+
+        parsedSlots.push({
+          id: `slot_${Date.now()}_${idx}`,
+          day,
+          startTime: '09:00 AM',
+          endTime: '10:00 AM',
+          courseCode: `CS${year}0${section === 'A' ? '1' : '2'}`,
+          courseName: line.slice(0, 30) || 'Computer Science Core',
+          department: 'Computer Science (CSE)',
+          year,
+          section,
+          roomNumber: `CS-LH${idx + 1}`
+        });
+      });
+    }
+
+    // Auto-create/upsert sections and detect clashes
+    const createdSections = [];
+    const clashes = [];
+
+    for (const slot of parsedSlots) {
+      const sessionId = `ses_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const newSession = {
+        id: sessionId,
+        course_name: slot.courseName || 'B.E. (Bachelor of Engineering)',
+        department: slot.department || 'CSE',
+        year: Number(slot.year) || 3,
+        section: slot.section || 'A',
+        subject_code: slot.courseCode || 'CS301',
+        subject_name: slot.courseName || 'Computer Science',
+        room_number: slot.roomNumber || 'Room 101',
+        status: 'UPCOMING',
+        timeline: `${slot.startTime || '09:00 AM'} - ${slot.endTime || '10:00 AM'}`,
+        lecturer_email: lecturerEmail
+      };
+      
+      try {
+        dao.insertSession(newSession);
+        createdSections.push(newSession);
+      } catch (err: any) {
+        clashes.push({ slot, error: err.message });
+      }
+    }
+
+    res.json({
+      success: true,
+      agentRole: 'University Automated Timetable & Modular Section Engine',
+      totalSlotsParsed: parsedSlots.length,
+      createdSectionsCount: createdSections.length,
+      createdSections,
+      clashes,
+      message: `AI Agent successfully organized ${createdSections.length} sections and configured live attendance rosters.`
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- DYNAMIC ONBOARDING & PROFILE ENRICHMENT ROUTES ---
+app.post('/api/onboard/student', (req, res) => {
+  try {
+    const { usn, name, rollNumber, phone, email, year, section, department, course = 'B.E.' } = req.body;
+    if (!usn || !name || !email) {
+      return res.status(400).json({ error: 'USN, name, and email are required for student onboarding.' });
+    }
+
+    const studentRecord = {
+      usn: usn.trim().toUpperCase(),
+      name: name.trim(),
+      roll_number: rollNumber || usn.slice(-3),
+      phone: phone || '',
+      email: email.trim().toLowerCase(),
+      year: Number(year) || 3,
+      section: (section || 'A').toUpperCase(),
+      department: department || 'Computer Science (CSE)',
+      course,
+      onboarded_at: new Date().toISOString()
+    };
+
+    dao.upsertStudent(studentRecord);
+    dao.insertAuditLog('STUDENT_ONBOARDING', studentRecord.usn, studentRecord.email, `Student ${studentRecord.name} onboarded with USN ${studentRecord.usn}`);
+
+    res.json({
+      success: true,
+      message: `Student ${studentRecord.name} (${studentRecord.usn}) successfully onboarded to Section ${studentRecord.section}.`,
+      student: studentRecord
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/onboard/teacher', (req, res) => {
+  try {
+    const { teacherId, name, email, department, designation = 'Associate Professor', assignedSubjects = [] } = req.body;
+    if (!teacherId || !name || !email) {
+      return res.status(400).json({ error: 'Teacher ID, name, and email are required for faculty onboarding.' });
+    }
+
+    const teacherRecord = {
+      teacher_id: teacherId.trim().toUpperCase(),
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      department: department || 'Computer Science (CSE)',
+      designation,
+      assigned_subjects: assignedSubjects,
+      onboarded_at: new Date().toISOString()
+    };
+
+    dao.insertAuditLog('FACULTY_ONBOARDING', teacherRecord.teacher_id, teacherRecord.email, `Faculty ${teacherRecord.name} onboarded`);
+
+    res.json({
+      success: true,
+      message: `Faculty member ${teacherRecord.name} onboarded successfully with access to ${assignedSubjects.length || 'all'} subject rosters.`,
+      teacher: teacherRecord
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 });
 

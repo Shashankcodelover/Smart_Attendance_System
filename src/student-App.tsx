@@ -6,6 +6,8 @@ import AcademicResourcesView from './components/AcademicResourcesView';
 import EnterprisePortalGateway from './components/EnterprisePortalGateway';
 import TourGuide from './components/TourGuide';
 import UserProfileView from './components/UserProfileView';
+import AgentBotModal from './components/AgentBotModal';
+import OnboardingAuthModal from './components/OnboardingAuthModal';
 import { Session, AttendanceRecord, Student } from './types';
 
 const ENCRYPTION_PASSPHRASE = 'sjce_web_crypto_key_2026';
@@ -529,6 +531,14 @@ export default function StudentApp() {
           </button>
         </div>
       </nav>
+
+      {/* Interactive Sovereign AI Attendance Agent Bot */}
+      <AgentBotModal
+        userRole="student"
+        userEmail={currentUser?.codeOrUsn}
+        userName={currentUser?.name}
+        onRefresh={refreshData}
+      />
     </div>
   );
 }
