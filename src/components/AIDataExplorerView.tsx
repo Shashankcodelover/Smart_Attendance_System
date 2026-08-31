@@ -151,26 +151,35 @@ export default function AIDataExplorerView({
               Quick Queries
             </h3>
             <ul className="space-y-3 font-sans text-xs font-bold">
-              <li 
-                onClick={() => handleSend("Who is below 80% in Section A?")}
-                className="flex items-center gap-2 text-[#6b38d4] cursor-pointer hover:translate-x-1 transition-transform group"
-              >
-                <span className="material-symbols-outlined text-[16px] text-[#6b38d4]/70">history</span>
-                Below 80% attendance (Section A)
+              <li>
+                <button 
+                  onClick={() => handleSend("Who is below 80% in Section A?")}
+                  className="w-full flex items-center gap-2 text-[#6b38d4] text-left cursor-pointer hover:translate-x-1 transition-transform group"
+                  aria-label="Ask who is below 80% in Section A"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-[#6b38d4]/70">history</span>
+                  Below 80% attendance (Section A)
+                </button>
               </li>
-              <li 
-                onClick={() => handleSend("Who is on the critical roster for CS501?")}
-                className="flex items-center gap-2 text-[#494454] hover:text-[#6b38d4] cursor-pointer hover:translate-x-1 transition-transform"
-              >
-                <span className="material-symbols-outlined text-[16px] text-[#7b7486]">history</span>
-                Roster for CS501
+              <li>
+                <button 
+                  onClick={() => handleSend("Who is on the critical roster for CS501?")}
+                  className="w-full flex items-center gap-2 text-[#494454] text-left hover:text-[#6b38d4] cursor-pointer hover:translate-x-1 transition-transform"
+                  aria-label="Ask who is on the critical roster for CS501"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-[#7b7486]">history</span>
+                  Roster for CS501
+                </button>
               </li>
-              <li 
-                onClick={() => handleSend("Redirect me to the student check in page")}
-                className="flex items-center gap-2 text-[#494454] hover:text-[#6b38d4] cursor-pointer hover:translate-x-1 transition-transform"
-              >
-                <span className="material-symbols-outlined text-[16px] text-[#7b7486]">history</span>
-                Redirect page link
+              <li>
+                <button 
+                  onClick={() => handleSend("Redirect me to the student check in page")}
+                  className="w-full flex items-center gap-2 text-[#494454] text-left hover:text-[#6b38d4] cursor-pointer hover:translate-x-1 transition-transform"
+                  aria-label="Ask to redirect to student check in page"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-[#7b7486]">history</span>
+                  Redirect page link
+                </button>
               </li>
             </ul>
           </div>
@@ -230,8 +239,8 @@ export default function AIDataExplorerView({
 
                         {/* Rendering list database responses */}
                         {msg.actionCard.type === 'query_result' && Array.isArray(msg.actionCard.data) && (
-                          <div className="border border-[#6b38d4]/10 rounded-xl overflow-hidden text-xs">
-                            <table className="w-full text-left">
+                          <div className="border border-[#6b38d4]/10 rounded-xl overflow-hidden overflow-x-auto text-xs">
+                            <table className="w-full text-left min-w-max">
                               <thead className="bg-[#eceef0]/50 font-sans tracking-wider uppercase font-semibold text-[9px] text-[#7b7486]">
                                 <tr>
                                   <th className="px-3 py-2">Student Name</th>
@@ -291,11 +300,16 @@ export default function AIDataExplorerView({
 
               {/* Bot loading state */}
               {loading && (
-                <div className="flex items-start gap-2 animate-pulse font-sans text-xs text-[#7b7486] font-bold pl-1 uppercase">
-                  <span className="material-symbols-outlined animate-spin text-[16px] text-[#6b38d4]">
-                    sync
-                  </span>
-                  Alpine compiling natural query logic...
+                <div className="flex flex-col items-start space-y-2 mb-2 animate-pulse w-full max-w-md">
+                  <div className="flex items-center gap-2 px-1">
+                    <div className="w-5 h-5 bg-[#57dffe]/30 rounded-md"></div>
+                    <div className="h-3 w-16 bg-slate-200 rounded"></div>
+                  </div>
+                  <div className="bg-[#f2f4f6]/60 p-4 rounded-2xl rounded-tl-sm space-y-2 w-3/4">
+                    <div className="h-4 bg-slate-200/60 rounded w-full"></div>
+                    <div className="h-4 bg-slate-200/60 rounded w-5/6"></div>
+                    <div className="h-4 bg-slate-200/60 rounded w-4/6"></div>
+                  </div>
                 </div>
               )}
 
@@ -332,9 +346,9 @@ export default function AIDataExplorerView({
           {/* Footer Quick Links Bento Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
-            <div 
+            <button 
               onClick={() => handleSend("What are the attendance patterns and trends this week?")}
-              className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#6b38d4]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10"
+              className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#6b38d4]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10 w-full text-left"
             >
               <div className="p-2.5 rounded-lg bg-[#e9ddff] text-[#6b38d4] group-hover:bg-[#6b38d4] group-hover:text-white transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">auto_graph</span>
@@ -343,11 +357,11 @@ export default function AIDataExplorerView({
                 <p className="font-display font-bold text-xs text-[#191c1e]">Weekly Trends</p>
                 <p className="text-[10px] text-[#7b7486]">Analyze attendance dip</p>
               </div>
-            </div>
+            </button>
 
-            <div 
+            <button 
               onClick={() => handleSend("Show me the student roster")}
-              className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#00687a]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10"
+              className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#00687a]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10 w-full text-left"
             >
               <div className="p-2.5 rounded-lg bg-[#acedff] text-[#004e5c] group-hover:bg-[#00687a] group-hover:text-white transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">groups</span>
@@ -356,11 +370,11 @@ export default function AIDataExplorerView({
                 <p className="font-display font-bold text-xs text-[#191c1e]">Class Roster</p>
                 <p className="text-[10px] text-[#7b7486]">Manage student files</p>
               </div>
-            </div>
+            </button>
 
-            <div 
+            <button 
               onClick={() => handleSend("Who is on the critical red list in Section A?")}
-              className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#ba1a1a]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10"
+              className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#ba1a1a]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10 w-full text-left"
             >
               <div className="p-2.5 rounded-lg bg-[#ffdadb] text-[#40000d] group-hover:bg-[#ba1a1a] group-hover:text-white transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">report</span>
@@ -369,7 +383,7 @@ export default function AIDataExplorerView({
                 <p className="font-display font-bold text-xs text-[#191c1e]">Red List Alerts</p>
                 <p className="text-[10px] text-[#7b7486]">List critical shortage</p>
               </div>
-            </div>
+            </button>
 
           </div>
 

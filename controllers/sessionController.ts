@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import db from '../db';
+import db, { dao } from '../db-sqlite';
 
 export function getSessions(req: Request, res: Response, activeSessionsCache: Map<string, any>) {
   try {

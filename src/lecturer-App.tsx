@@ -623,6 +623,8 @@ export default function LecturerApp() {
       const data = await response.json();
       if (data.success) {
         await refreshData();
+        setToast({ type: 'success', text: `✓ Attendance updated for ${studentUsn}` });
+        setTimeout(() => setToast(null), 3000);
       } else {
         throw new Error(data.error || 'Failed to toggle manual attendance.');
       }

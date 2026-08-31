@@ -1,12 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import db from '../db';
+import db from '../db-sqlite';
 
 describe('Smart Attendance DB & API Unit Tests', () => {
   it('should support student upsert and retrieval in db', () => {
     const testUsn = `TEST_USN_${Date.now()}`;
     db.prepare(`
-      INSERT OR REPLACE INTO students (usn, name, attendance_rate, course_code, section, year, avatar_url)
+      INSERT OR REPLACE INTO students (usn, name, attendanceRate, courseCode, section, year, avatarUrl)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(testUsn, 'Test Student', 90, 'CS501', 'A', 3, 'https://example.com/avatar.png');
 
@@ -14,7 +14,7 @@ describe('Smart Attendance DB & API Unit Tests', () => {
     assert(Array.isArray(students), 'Students should be an array');
     const found = students.find((s: any) => s.usn === testUsn);
     assert(found, 'Should find inserted test student');
-    assert.strictEqual(found.name, 'Test Student');
+    assert.strictEqual((found as any).name, 'Test Student');
   });
 
   it('should retrieve sessions list from db', () => {
@@ -58,7 +58,6 @@ describe('Smart Attendance DB & API Unit Tests', () => {
     const testSessId = `test_sess_dup_${Date.now()}`;
     const testUsn = `4SO21CS${Math.floor(100 + Math.random() * 900)}`;
     const record1Id = `att_test_1_${Date.now()}`;
-    const record2Id = `att_test_2_${Date.now()}`;
 
     // Insert dummy session
     db.prepare(`
@@ -69,9 +68,9 @@ describe('Smart Attendance DB & API Unit Tests', () => {
     // First check-in
     const nowStr = new Date().toISOString();
     db.prepare(`
-      INSERT INTO attendance_records (id, session_id, student_name, student_usn, marked_at, marked_online, verification_option, scanned_at, submitted_at, device_fingerprint, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(record1Id, testSessId, 'Alice DuplicateTest', testUsn, nowStr, 1, 'BLUE_CIRCLE', nowStr, nowStr, 'device_123', 'present');
+      INSERT INTO attendance_records (id, session_id, student_name, student_usn, is_online, verification_option, scanned_at, submitted_at, device_fingerprint, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(record1Id, testSessId, 'Alice DuplicateTest', testUsn, 1, 'BLUE_CIRCLE', nowStr, nowStr, 'device_123', 'present');
 
     // Check duplicate detection query
     const alreadyMarked = db.prepare('SELECT * FROM attendance_records WHERE session_id = ? AND UPPER(student_usn) = ?')
@@ -98,9 +97,9 @@ describe('Smart Attendance DB & API Unit Tests', () => {
     // Student 1 checks in with fingerprint
     const fpNowStr = new Date().toISOString();
     db.prepare(`
-      INSERT INTO attendance_records (id, session_id, student_name, student_usn, marked_at, marked_online, verification_option, scanned_at, submitted_at, device_fingerprint, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(`att_fp1_${Date.now()}`, testSessId, 'Student One', student1Usn, fpNowStr, 1, 'BLUE_CIRCLE', fpNowStr, fpNowStr, fingerprint, 'present');
+      INSERT INTO attendance_records (id, session_id, student_name, student_usn, is_online, verification_option, scanned_at, submitted_at, device_fingerprint, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(`att_fp1_${Date.now()}`, testSessId, 'Student One', student1Usn, 1, 'BLUE_CIRCLE', fpNowStr, fpNowStr, fingerprint, 'present');
 
     // Query duplicate fingerprint for Student 2
     const duplicateDevice = db.prepare('SELECT * FROM attendance_records WHERE session_id = ? AND device_fingerprint = ? AND UPPER(student_usn) != ?')

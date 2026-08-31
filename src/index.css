@@ -170,3 +170,8 @@ body {
   50% { top: 100%; }
 }
 
+/* Table responsiveness utilities */
+.table-responsive {
+  @apply overflow-x-auto -mx-1 px-1;
+}
+

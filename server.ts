@@ -15,6 +15,9 @@ dotenv.config();
 // Initialize SQLite DB Schema
 initializeSchema();
 
+// Auto-seed sample data for demo/development
+try { dao.seedSampleData(); } catch (e) { /* already seeded */ }
+
 // --- CRASH-PROOF SECRET INITIALIZATION ---
 let runtimeSecret = process.env.JWT_SECRET || process.env.HMAC_SECRET || '';
 if (!runtimeSecret) {
@@ -425,7 +428,7 @@ app.post('/api/sessions/batch-create', authenticateLecturer, (req: any, res: any
 });
 
 // ZERO-TRUST HARDENED CHECK-IN ENDPOINT
-app.post('/api/checkin', authenticateStudent, async (req: any, res: any) => {
+app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, async (req: any, res: any) => {
   try {
     const {
       sessionId,
@@ -846,12 +849,26 @@ import { leaveWorkflowEngine } from './src/services/leaveWorkflowEngine.ts';
 import { offlineSyncEngine } from './src/services/offlineSyncEngine.ts';
 
 // 1. Timetable CSV Import
-app.post('/api/v2/timetable/import-csv', (req, res) => {
+app.post(['/api/v2/timetable/import-csv', '/api/timetable/import-csv'], (req, res) => {
   try {
-    const { csvContent } = req.body;
+    const csvContent = req.body.csvContent || req.body.csvText || req.body.csv;
     if (!csvContent) return res.status(400).json({ error: 'csvContent is required' });
     const entries = timetableImporter.parseTimetableCsv(csvContent);
     const conflicts = timetableImporter.detectScheduleConflicts(entries);
+    for (const item of entries) {
+      dao.insertTimetableEntry({
+        day: item.dayOfWeek,
+        time_slot: `${item.startTime} - ${item.endTime}`,
+        subject_code: item.subjectCode,
+        subject_name: item.subjectName,
+        department: 'Computer Science (CSE)',
+        course: 'B.E.',
+        year: 3,
+        section: 'A',
+        room: item.classroom || 'Room 301',
+        lecturer_email: item.lecturerEmail
+      });
+    }
     res.json({ success: true, count: entries.length, entries, conflicts });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
@@ -859,11 +876,24 @@ app.post('/api/v2/timetable/import-csv', (req, res) => {
 });
 
 // 2. Student Roster Import
-app.post('/api/v2/roster/import-csv', (req, res) => {
+app.post(['/api/v2/roster/import-csv', '/api/students/import-csv'], (req, res) => {
   try {
-    const { csvContent } = req.body;
-    if (!csvContent) return res.status(400).json({ error: 'csvContent is required' });
+    const csvContent = req.body.csvContent || req.body.csvText || req.body.csv;
+    if (!csvContent) return res.status(400).json({ error: 'csvContent or csvText is required' });
     const roster = timetableImporter.parseStudentRosterCsv(csvContent);
+    for (const st of roster) {
+      dao.upsertStudent({
+        usn: st.usn,
+        name: st.name,
+        email: st.email,
+        section: 'A',
+        year: Math.ceil(st.semester / 2) || 3,
+        department: st.department || 'Computer Science (CSE)',
+        attendanceRate: 90,
+        roll_number: st.usn.slice(-3),
+        onboarded_at: new Date().toISOString()
+      });
+    }
     res.json({ success: true, count: roster.length, roster });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
@@ -1110,9 +1140,270 @@ app.post('/api/v3/geofence/kalman-verify', (req, res) => {
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }
+});// --- MISSING API ROUTES FOR FRONTEND COMPATIBILITY ---
+
+app.post('/api/attendance/toggle-manual', authenticateLecturer, (req: any, res: any) => {
+  try {
+    const { sessionId, studentUsn, studentName } = req.body;
+    if (!sessionId || !studentUsn) {
+      return res.status(400).json({ error: 'sessionId and studentUsn are required.' });
+    }
+    const result = dao.toggleAttendanceManual(sessionId, studentUsn, studentName || 'Unknown', req.user?.email || 'admin@sjce.edu');
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
+app.get('/api/override-audits', (req, res) => {
+  try {
+    const logs = dao.getAuditLogs();
+    res.json(logs);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
+app.post('/api/attendance/sync-offline', (req, res) => {
+  try {
+    const { records } = req.body;
+    if (!records || !Array.isArray(records)) {
+      return res.status(400).json({ error: 'records array is required.' });
+    }
+    const results = [];
+    for (const record of records) {
+      try {
+        dao.insertAttendanceRecord({
+          session_id: record.sessionId,
+          student_usn: record.studentUsn,
+          student_name: record.studentName,
+          scanned_at: record.scannedAt,
+          submitted_at: record.submittedAt || new Date().toISOString(),
+          is_online: false,
+          verification_option: record.verificationOption,
+          status: 'OFFLINE_SYNCED',
+          device_fingerprint: record.deviceFingerprint
+        });
+        results.push({ usn: record.studentUsn, synced: true });
+      } catch (e: any) {
+        results.push({ usn: record.studentUsn, synced: false, error: e.message });
+      }
+    }
+    res.json({ success: true, syncedCount: results.filter(r => r.synced).length, results });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/sessions/update-rotation', authenticateLecturer, (req: any, res: any) => {
+  try {
+    const { sessionId, otp, verificationOption } = req.body;
+    if (!sessionId) return res.status(400).json({ error: 'sessionId is required.' });
+    dao.updateSessionOtp(sessionId, otp, verificationOption);
+    res.json({ success: true, message: 'Rotation updated.' });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Sample data seeding (for development/demo)
+app.post('/api/seed-sample-data', (req, res) => {
+  try {
+    const result = dao.seedSampleData();
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Student personal dashboard stats
+app.get('/api/student/dashboard/:usn', (req, res) => {
+  try {
+    const usn = req.params.usn;
+    const student = dao.getStudentByUsn(usn);
+    const records = dao.getAttendanceForStudent(usn);
+    const stats = dao.getStudentAttendanceStats(usn);
+    res.json({ student, records, stats });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Department analytics
+app.get('/api/analytics/departments', (req, res) => {
+  try {
+    const stats = dao.getDepartmentStats();
+    res.json(stats);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Students below attendance threshold
+app.get('/api/analytics/at-risk', (req, res) => {
+  try {
+    const threshold = parseInt(req.query.threshold as string) || 75;
+    const students = dao.getStudentsBelowThreshold(threshold);
+    res.json(students);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Timetable endpoints
+app.get('/api/timetable', (req, res) => {
+  try {
+    const { department, year, section } = req.query;
+    const entries = dao.getTimetableEntries(department as string, year ? parseInt(year as string) : undefined, section as string);
+    res.json(entries);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Leave request endpoints
+app.post('/api/leave/submit', authenticateStudent, (req: any, res: any) => {
+  try {
+    dao.insertLeaveRequest({ ...req.body, student_usn: req.user?.email });
+    res.json({ success: true, message: 'Leave request submitted.' });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/leave/requests', (req, res) => {
+  try {
+    const { studentUsn, status } = req.query;
+    const requests = dao.getLeaveRequests({ studentUsn: studentUsn as string, status: status as string });
+    res.json(requests);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/leave/review', authenticateLecturer, (req: any, res: any) => {
+  try {
+    const { leaveId, decision, comment } = req.body;
+    dao.reviewLeaveRequest(leaveId, decision, req.user?.email || 'admin@sjce.edu', comment);
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE session
+app.delete('/api/sessions/:sessionId', authenticateLecturer, (req: any, res: any) => {
+  try {
+    dao.deleteSession(req.params.sessionId);
+    dao.insertAuditLog('SESSION_DELETED', req.params.sessionId, req.user?.email || 'admin@sjce.edu', `Session ${req.params.sessionId} deleted`);
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Live Class Preview (Real-time student count and attendance average from DB)
+app.get('/api/classes/preview', (req, res) => {
+  try {
+    const department = (req.query.department as string) || 'Computer Science (CSE)';
+    const course = (req.query.course as string) || 'B.E.';
+    const year = parseInt(req.query.year as string) || 3;
+    const section = (req.query.section as string) || 'A';
+    const preview = dao.getClassPreview(department, course, year, section);
+    res.json(preview);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Timetable CRUD
+app.post('/api/timetable/add', (req, res) => {
+  try {
+    const { day, time_slot, subject_code, subject_name, lecturer_email, lecturer_name, department, course, year, section, room } = req.body;
+    if (!day || !time_slot || !subject_code || !subject_name) {
+      return res.status(400).json({ error: 'day, time_slot, subject_code, and subject_name are required' });
+    }
+    const entry = dao.insertTimetableEntry(req.body);
+    res.json({ success: true, entry });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/timetable/:id', (req, res) => {
+  try {
+    dao.deleteTimetableEntry(req.params.id);
+    res.json({ success: true, message: `Timetable slot ${req.params.id} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Academic Resources / Syllabus CRUD
+app.get('/api/resources', (req, res) => {
+  try {
+    const { department, year } = req.query;
+    const resources = dao.getAcademicResources(department as string, year ? parseInt(year as string) : undefined);
+    res.json(resources);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/resources/add', (req, res) => {
+  try {
+    const resource = dao.insertAcademicResource(req.body);
+    res.json({ success: true, resource });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/resources/:id', (req, res) => {
+  try {
+    dao.deleteAcademicResource(req.params.id);
+    res.json({ success: true, message: `Resource ${req.params.id} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Student Management (Manual addition / deletion)
+app.post('/api/students/add-manual', (req, res) => {
+  try {
+    const { usn, name, department, year, section, rollNumber, phone, email, attendanceRate } = req.body;
+    if (!usn || !name) {
+      return res.status(400).json({ error: 'USN and Name are required.' });
+    }
+    const student = {
+      usn: usn.trim().toUpperCase(),
+      name: name.trim(),
+      department: department || 'Computer Science (CSE)',
+      year: parseInt(year) || 3,
+      section: (section || 'A').toUpperCase(),
+      roll_number: rollNumber || usn.slice(-3),
+      phone: phone || '',
+      email: email || `${usn.toLowerCase()}@sjce.edu`,
+      attendanceRate: parseInt(attendanceRate) || 85,
+      onboarded_at: new Date().toISOString()
+    };
+    dao.upsertStudent(student);
+    dao.insertAuditLog('STUDENT_ADDED', student.usn, 'admin@sjce.edu', `Added student ${student.name} (${student.usn})`);
+    res.json({ success: true, student });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/students/:usn', (req, res) => {
+  try {
+    dao.deleteStudent(req.params.usn);
+    dao.insertAuditLog('STUDENT_DELETED', req.params.usn, 'admin@sjce.edu', `Deleted student ${req.params.usn}`);
+    res.json({ success: true, message: `Student ${req.params.usn} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 if (process.env.NODE_ENV !== 'test' && !process.env.TEST && !process.argv.some(a => a.includes('test'))) {

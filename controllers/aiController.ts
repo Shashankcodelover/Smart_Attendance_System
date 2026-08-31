@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, FunctionDeclaration } from '@google/genai';
-import db from '../db';
+import db, { dao } from '../db-sqlite';
 
 export async function handleAiChat(
   req: any,
@@ -19,7 +19,100 @@ export async function handleAiChat(
     let botResponseText = '';
     let actionCard: any = null;
 
-    if (text.includes('create') || text.includes('draft') || text.includes('section')) {
+    // 1. ADD TIMETABLE ENTRY
+    if (text.includes('timetable') && (text.includes('add') || text.includes('create') || text.includes('schedule'))) {
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const matchedDay = days.find(d => text.includes(d.toLowerCase())) || 'Monday';
+      
+      const timeMatch = text.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*-\s*\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i) || text.match(/at\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+      const timeSlot = timeMatch ? timeMatch[1] : '10:00 AM - 11:00 AM';
+
+      const codeMatch = text.match(/\b([A-Z]{2,4}\d{3})\b/i);
+      const subjectCode = codeMatch ? codeMatch[1].toUpperCase() : 'CS501';
+
+      const roomMatch = text.match(/\b(?:room|lab|hall)\s*([a-z0-9-]+)\b/i);
+      const room = roomMatch ? `Room ${roomMatch[1].toUpperCase()}` : 'Room 301';
+
+      let parsedYear = 3;
+      const yrMatch = text.match(/\b([1-4])(?:st|nd|rd|th)?\s*(?:year|yr)\b/);
+      if (yrMatch) parsedYear = parseInt(yrMatch[1]);
+
+      let parsedSection = 'A';
+      const secMatch = text.match(/\b(?:section|sec)\s*([a-d])\b/i);
+      if (secMatch) parsedSection = secMatch[1].toUpperCase();
+
+      let department = 'Computer Science (CSE)';
+      if (text.includes('ece') || text.includes('electronics')) department = 'Electronics & Communication (ECE)';
+      else if (text.includes('me') || text.includes('mechanical')) department = 'Mechanical Engineering (ME)';
+
+      const entry = {
+        day: matchedDay,
+        time_slot: timeSlot,
+        subject_code: subjectCode,
+        subject_name: subjectCode === 'CS501' ? 'Computer Networks' : subjectCode === 'CS502' ? 'Database Management Systems' : 'Advanced Engineering Elective',
+        lecturer_email: lecturerEmail,
+        lecturer_name: 'Faculty Incharge',
+        department,
+        course: 'B.E.',
+        year: parsedYear,
+        section: parsedSection,
+        room
+      };
+
+      dao.insertTimetableEntry(entry);
+
+      actionCard = {
+        type: 'timetable_added',
+        title: 'Timetable Slot Scheduled',
+        description: `Scheduled ${entry.subject_code} (${entry.day} ${entry.time_slot}) in ${entry.room} for ${entry.department} Year ${entry.year} Sec ${entry.section}.`,
+        data: entry
+      };
+      botResponseText = `I have successfully scheduled **${entry.subject_code}** on **${entry.day} (${entry.time_slot})** in **${entry.room}** for ${entry.department} Year ${entry.year} Section ${entry.section} into the database.`;
+    }
+    // 2. ADD STUDENT ENROLLMENT
+    else if (text.includes('add student') || text.includes('enroll student') || text.includes('register student')) {
+      const usnMatch = text.match(/\b(4[A-Z0-9]{9})\b/i) || text.match(/usn\s*([A-Z0-9]+)/i);
+      const studentUsn = usnMatch ? usnMatch[1].toUpperCase() : `4JC22CS${Math.floor(100 + Math.random() * 899)}`;
+
+      const nameMatch = text.match(/student\s+(?:named\s+|usn\s+\w+\s+)?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
+      const studentName = nameMatch ? nameMatch[1] : 'Enrolled Candidate';
+
+      let parsedYear = 3;
+      const yrMatch = text.match(/\b([1-4])(?:st|nd|rd|th)?\s*(?:year|yr)\b/);
+      if (yrMatch) parsedYear = parseInt(yrMatch[1]);
+
+      let parsedSection = 'A';
+      const secMatch = text.match(/\b(?:section|sec)\s*([a-d])\b/i);
+      if (secMatch) parsedSection = secMatch[1].toUpperCase();
+
+      let department = 'Computer Science (CSE)';
+      if (text.includes('ece') || text.includes('electronics')) department = 'Electronics & Communication (ECE)';
+
+      const student = {
+        usn: studentUsn,
+        name: studentName,
+        attendanceRate: 90,
+        courseCode: department.includes('CSE') ? 'CS' : 'EC',
+        section: parsedSection,
+        year: parsedYear,
+        department,
+        course: 'B.E.',
+        roll_number: studentUsn.slice(-3),
+        onboarded_at: new Date().toISOString()
+      };
+
+      dao.upsertStudent(student);
+
+      actionCard = {
+        type: 'student_enrolled',
+        title: 'Student Enrolled Successfully',
+        description: `Enrolled ${student.name} (${student.usn}) in ${student.department} Year ${student.year} Sec ${student.section}.`,
+        data: student
+      };
+      botResponseText = `Student **${student.name} (${student.usn})** has been enrolled into **${student.department} Year ${student.year} Section ${student.section}** and saved directly to the database.`;
+    }
+    // 3. CREATE / DRAFT SESSION
+    else if (text.includes('create') || text.includes('draft') || text.includes('section')) {
       let parsedYear = 3;
       let parsedSection = 'A';
       let parsedDept = 'Computer Science (CSE)';
@@ -28,22 +121,10 @@ export async function handleAiChat(
       let parsedSubjectName = 'Computer Architecture';
 
       const yearMatch = text.match(/\b([1-4])(?:st|nd|rd|th)?\s*(?:year|yr)\b/) || text.match(/\b(?:year|yr)\s*([1-4])\b/);
-      if (yearMatch) {
-        parsedYear = parseInt(yearMatch[1]);
-      } else if (text.includes('first year') || text.includes('1st year') || text.includes('1st yr')) {
-        parsedYear = 1;
-      } else if (text.includes('second year') || text.includes('2nd year') || text.includes('2nd yr')) {
-        parsedYear = 2;
-      } else if (text.includes('third year') || text.includes('3rd year') || text.includes('3rd yr')) {
-        parsedYear = 3;
-      } else if (text.includes('fourth year') || text.includes('4th year') || text.includes('4th yr')) {
-        parsedYear = 4;
-      }
+      if (yearMatch) parsedYear = parseInt(yearMatch[1]);
 
       const sectionMatch = text.match(/\b(?:section|sec|group)\s*([a-d])\b/i) || text.match(/\b([a-d])\s*(?:section|sec|group)\b/i) || text.match(/\b([a-d])\b/i);
-      if (sectionMatch) {
-        parsedSection = sectionMatch[1].toUpperCase();
-      }
+      if (sectionMatch) parsedSection = sectionMatch[1].toUpperCase();
 
       if (text.includes('ece') || text.includes('electronics')) {
         parsedDept = 'Electronics & Communication (ECE)';
@@ -60,53 +141,35 @@ export async function handleAiChat(
 
       const newSession = {
         id: `sess_${Math.random().toString(36).substr(2, 9)}`,
-        subjectCode: parsedSubjectCode,
-        subjectName: parsedSubjectName,
+        subject_code: parsedSubjectCode,
+        subject_name: parsedSubjectName,
         department: parsedDept,
         course: parsedCourse,
         year: parsedYear,
         section: parsedSection,
         otp: '',
         status: 'DRAFT',
-        createdAt: new Date().toISOString(),
-        expiresAt: '',
-        markedCount: 0,
-        expectedCount: 60 + Math.floor(Math.random() * 15),
-        verificationOption: '',
-        lecturerEmail: lecturerEmail,
+        created_at: new Date().toISOString(),
+        expires_at: '',
+        marked_count: 0,
+        expected_count: 60,
+        verification_option: '',
+        lecturer_email: lecturerEmail,
         timeline: '10:00 AM - 11:00 AM'
       };
 
-      db.prepare(`
-        INSERT INTO sessions (id, subject_code, subject_name, department, course, year, section, otp, status, created_at, expires_at, marked_count, expected_count, verification_option, lecturer_email, timeline)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        newSession.id,
-        newSession.subjectCode,
-        newSession.subjectName,
-        newSession.department,
-        newSession.course,
-        newSession.year,
-        newSession.section,
-        newSession.otp,
-        newSession.status,
-        newSession.createdAt,
-        newSession.expiresAt,
-        newSession.markedCount,
-        newSession.expectedCount,
-        newSession.verificationOption,
-        newSession.lecturerEmail,
-        newSession.timeline
-      );
+      dao.insertSession(newSession);
 
       actionCard = {
         type: 'section_created',
         title: 'Section Draft Initialized',
-        description: `Created draft section for ${newSession.subjectCode} ${newSession.subjectName} (B.E. Year ${newSession.year}, Sec ${newSession.section}).`,
+        description: `Created draft section for ${newSession.subject_code} ${newSession.subject_name} (B.E. Year ${newSession.year}, Sec ${newSession.section}).`,
         data: newSession
       };
-      botResponseText = `[Alpine Assistant Fallback] I have successfully initialized a new DRAFT section for ${newSession.subjectCode} (${newSession.subjectName}) Section ${newSession.section} in your class settings! OTP and QR keys remain empty and secure until you activate this slot.`;
-    } else if (text.includes('activate') || text.includes('start') || text.includes('open')) {
+      botResponseText = `I have initialized a new DRAFT session for **${newSession.subject_code} (${newSession.subject_name}) Section ${newSession.section}** in your lecturer dashboard.`;
+    }
+    // 4. ACTIVATE SESSION
+    else if (text.includes('activate') || text.includes('start') || text.includes('open')) {
       let found = db.prepare("SELECT * FROM sessions WHERE (status = 'DRAFT' OR status = 'READY') AND lecturer_email = ? LIMIT 1").get(lecturerEmail) as any;
       if (!found) {
         found = db.prepare("SELECT * FROM sessions WHERE lecturer_email = ? LIMIT 1").get(lecturerEmail) as any;
@@ -121,90 +184,79 @@ export async function handleAiChat(
             .run(freshOtp, freshOption, new Date().toISOString(), found.id);
         })();
 
-        found = db.prepare('SELECT * FROM sessions WHERE id = ?').get(found.id) as any;
-        const mapped = {
-          id: found.id,
-          subjectCode: found.subject_code,
-          subjectName: found.subject_name,
-          department: found.department,
-          course: found.course,
-          year: found.year,
-          section: found.section,
-          otp: found.otp,
-          status: found.status,
-          createdAt: found.created_at,
-          expiresAt: found.expires_at || undefined,
-          markedCount: found.marked_count,
-          expectedCount: found.expected_count,
-          verificationOption: found.verification_option || undefined
-        };
-
+        found = dao.getSessionById(found.id);
         actionCard = {
           type: 'session_activated',
           title: 'Verification Session Activated',
-          description: `Live scanning activated on OTP ${mapped.otp} for ${mapped.subjectCode}.`,
-          data: mapped
+          description: `Live scanning activated on OTP ${found.otp} for ${found.subject_code}.`,
+          data: found
         };
-        botResponseText = `[Alpine Assistant Fallback] Live session for **${mapped.subjectCode} (${mapped.subjectName})** has been activated successfully! Dynamic visual challenge shape **${mapped.verificationOption}** and OTP PIN **${mapped.otp}** have been generated on-demand and are now actively broadcasting to classroom students.`;
+        botResponseText = `Live session for **${found.subject_code} (${found.subject_name})** has been activated! Dynamic challenge **${found.verification_option}** and OTP **${found.otp}** are now active for student scanning.`;
       } else {
-        botResponseText = `[Alpine Assistant Fallback] No sessions found in your roster. Please create a section first!`;
+        botResponseText = `No sessions found in your roster. Please create a section first!`;
       }
-    } else if (text.includes('close') || text.includes('cancel') || text.includes('stop')) {
+    }
+    // 5. CLOSE SESSION
+    else if (text.includes('close') || text.includes('cancel') || text.includes('stop')) {
       let found = db.prepare("SELECT * FROM sessions WHERE status = 'ACTIVE' AND lecturer_email = ? LIMIT 1").get(lecturerEmail) as any;
       if (found) {
-        db.prepare("UPDATE sessions SET status = 'INACTIVE' WHERE id = ?").run(found.id);
-        found = db.prepare('SELECT * FROM sessions WHERE id = ?').get(found.id) as any;
-        const mapped = {
-          id: found.id,
-          subjectCode: found.subject_code,
-          subjectName: found.subject_name,
-          status: found.status,
-          markedCount: found.marked_count
-        };
-
+        dao.updateSessionStatus(found.id, 'INACTIVE');
         actionCard = {
           type: 'session_cancelled',
           title: 'Verification Terminal Closed',
           description: `Attendance gate sealed for ${found.subject_code}.`,
-          data: mapped
+          data: found
         };
-        botResponseText = `[Alpine Assistant Fallback] Sealed active check-in gates for section **${found.subject_code}**! Visual projector displays have been shut down.`;
+        botResponseText = `Sealed active check-in gates for section **${found.subject_code}**!`;
       } else {
-        botResponseText = `[Alpine Assistant Fallback] No active sessions found to close.`;
+        botResponseText = `No active sessions were found open.`;
       }
-    } else if (text.includes('shortage') || text.includes('below') || text.includes('under') || text.includes('attendance')) {
-      const threshold = 75;
-      const lowRoster = db.prepare("SELECT * FROM students WHERE attendance_rate < ? AND section = 'A'").all(threshold) as any[];
-
-      const mappedRoster = lowRoster.map((s: any) => ({
-        usn: s.usn,
-        name: s.name,
-        attendanceRate: s.attendance_rate,
-        section: s.section
-      }));
-
-      actionCard = {
-        type: 'query_result',
-        title: `Shortfall List (${threshold}% Threshold)`,
-        description: `Found ${mappedRoster.length} students below 75% in Section A.`,
-        data: mappedRoster
-      };
-      botResponseText = `[Alpine Assistant Fallback] Identified **${mappedRoster.length} students** displaying suboptimal metrics below ${threshold}% quota limit in Section A. Roster card has been populated.`;
-    } else if (text.includes('go to') || text.includes('open') || text.includes('view') || text.includes('navigate')) {
+    }
+    // 6. QUERY ATTENDANCE / SHORTAGE
+    else if (text.includes('shortage') || text.includes('below') || text.includes('under') || text.includes('attendance') || text.includes('risk')) {
+      const usnMatch = text.match(/\b(4[A-Z0-9]{9})\b/i);
+      if (usnMatch) {
+        const usn = usnMatch[1].toUpperCase();
+        const student: any = dao.getStudentByUsn(usn);
+        const stats = dao.getStudentAttendanceStats(usn);
+        actionCard = {
+          type: 'student_stats',
+          title: `Attendance Record: ${usn}`,
+          description: student ? `${student.name} — ${stats.length} courses tracked` : 'Student details',
+          data: { student, stats }
+        };
+        botResponseText = student
+          ? `Found records for **${student.name} (${student.usn})** in ${student.department} Section ${student.section}. Overall attendance status loaded.`
+          : `No student found with USN ${usn}.`;
+      } else {
+        const threshold = 75;
+        const lowRoster = dao.getStudentsBelowThreshold(threshold);
+        actionCard = {
+          type: 'query_result',
+          title: `Detention Risk List (< ${threshold}%)`,
+          description: `Found ${lowRoster.length} students below ${threshold}% across departments.`,
+          data: lowRoster
+        };
+        botResponseText = `Identified **${lowRoster.length} students** falling below the mandatory ${threshold}% attendance threshold.`;
+      }
+    }
+    // 7. NAVIGATION
+    else if (text.includes('go to') || text.includes('open') || text.includes('view') || text.includes('navigate')) {
       let pageName = 'dashboard';
-      if (text.includes('explorer') || text.includes('ai') || text.includes('stitch')) pageName = 'explorer';
+      if (text.includes('explorer') || text.includes('ai')) pageName = 'explorer';
       else if (text.includes('selection') || text.includes('class')) pageName = 'class-selection';
-      else if (text.includes('verification') || text.includes('live') || text.includes('gate')) pageName = 'verification';
+      else if (text.includes('verification') || text.includes('live')) pageName = 'verification';
+      else if (text.includes('resources') || text.includes('timetable') || text.includes('syllabus')) pageName = 'resources';
 
       actionCard = {
         type: 'redirect',
         title: `Redirecting`,
-        description: `Navigating view stage to: ${pageName}`,
+        description: `Navigating to: ${pageName}`,
         data: { pageName }
       };
-      botResponseText = `[Alpine Assistant Fallback] Directing your dashboard viewport stage to the **${pageName}** board!`;
+      botResponseText = `Navigating to **${pageName}**!`;
     } else {
-      botResponseText = `Hello! I am Alpine, operating in Local Offline Assistant Mode. You can command me to: "create draft session", "activate active sessions", "close active gate", "list attendance shortage", or "go to explorer page"!`;
+      botResponseText = `Hello! I am Alpine, your Smart Attendance AI Assistant. You can tell me in natural language:\n- "Schedule timetable slot for Monday 10 AM CS501 in Room 301"\n- "Add student 4JC22CS045 Sneha Rao to CSE 3rd Year Sec A"\n- "Start live attendance session for CS501"\n- "Check attendance for 4JC21CS001" or "Show students below 75%"\n- "Go to timetable resources page"`;
     }
 
     return res.json({ text: botResponseText, actionCard });
@@ -232,22 +284,6 @@ export async function handleAiChat(
       }
     };
 
-    const batchCreateSectionsTool: FunctionDeclaration = {
-      name: 'batchCreateSections',
-      description: 'Create multiple class section slots in bulk for years 1-4 and sections A-D.',
-      parameters: {
-        type: Type.OBJECT,
-        properties: {
-          course: { type: Type.STRING, description: 'Course name, e.g. B.E.' },
-          department: { type: Type.STRING, description: 'Department, e.g. Computer Science (CSE)' },
-          years: { type: Type.ARRAY, items: { type: Type.INTEGER }, description: 'List of years e.g. [1,2,3,4]' },
-          sections: { type: Type.ARRAY, items: { type: Type.STRING }, description: 'List of sections e.g. ["A","B","C","D"]' },
-          strength: { type: Type.INTEGER, description: 'Max strength per section, e.g. 70' }
-        },
-        required: ['course', 'department']
-      }
-    };
-
     const activateSessionTool: FunctionDeclaration = {
       name: 'activateSession',
       description: 'Activate a created draft or course session for live QR generation and check-ins',
@@ -272,13 +308,48 @@ export async function handleAiChat(
       }
     };
 
+    const addTimetableSlotTool: FunctionDeclaration = {
+      name: 'addTimetableSlot',
+      description: 'Add a new scheduled class slot to the university timetable database',
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          day: { type: Type.STRING, description: 'Day of week e.g. Monday' },
+          timeSlot: { type: Type.STRING, description: 'Time range e.g. 09:00 AM - 10:00 AM' },
+          subjectCode: { type: Type.STRING, description: 'Subject code e.g. CS501' },
+          subjectName: { type: Type.STRING, description: 'Subject title e.g. Computer Networks' },
+          department: { type: Type.STRING, description: 'Department' },
+          year: { type: Type.INTEGER, description: 'Year 1-4' },
+          section: { type: Type.STRING, description: 'Section A, B, C' },
+          room: { type: Type.STRING, description: 'Room or Lab number' }
+        },
+        required: ['day', 'timeSlot', 'subjectCode', 'subjectName']
+      }
+    };
+
+    const enrollStudentTool: FunctionDeclaration = {
+      name: 'enrollStudent',
+      description: 'Enroll and register a new student into the university attendance database',
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          usn: { type: Type.STRING, description: 'Student University Serial Number (USN)' },
+          name: { type: Type.STRING, description: 'Full student name' },
+          department: { type: Type.STRING, description: 'Department' },
+          year: { type: Type.INTEGER, description: 'Year 1-4' },
+          section: { type: Type.STRING, description: 'Section' }
+        },
+        required: ['usn', 'name']
+      }
+    };
+
     const queryRecordsTool: FunctionDeclaration = {
       name: 'queryRecords',
       description: 'Search or filter student attendance rosters based on constraints (e.g. attendance < 75%)',
       parameters: {
         type: Type.OBJECT,
         properties: {
-          filterType: { type: Type.STRING, description: 'The type of search, e.g. "low_attendance", "by_section", "abstained"' },
+          filterType: { type: Type.STRING, description: 'The type of search, e.g. "low_attendance", "by_section"' },
           section: { type: Type.STRING, description: 'Specific section, e.g. A' },
           percentageThreshold: { type: Type.INTEGER, description: 'Threshold percentage e.g. 75 or 80' }
         }
@@ -287,13 +358,13 @@ export async function handleAiChat(
 
     const redirectPageTool: FunctionDeclaration = {
       name: 'redirectPage',
-      description: 'Request the UI to navigate or redirect to a specified page/tab',
+      description: 'Request the UI to navigate to a specified page/tab',
       parameters: {
         type: Type.OBJECT,
         properties: {
           pageName: {
             type: Type.STRING,
-            description: 'Target page: dashboard, verification, explorer, student-dashboard, check-in, resources, class-selection'
+            description: 'Target page: dashboard, verification, explorer, resources, class-selection'
           }
         },
         required: ['pageName']
@@ -301,13 +372,9 @@ export async function handleAiChat(
     };
 
     const systemInstruction =
-      "You are Alpine, a highly intelligent administrative assistant for SJCE Smart Attendance System.\n" +
-      "You operate in physical classrooms that sometimes have poor Wi-Fi (offline mode triggers local buffers).\n" +
-      "You can create sessions, activate sessions, lock/cancel active entries, search student stats, or navigate the application for the user.\n" +
-      "When responding, maintain a very professional, friendly, and helpful tone as a reliable assistant.\n" +
-      "Avoid dry technical developer jargon.\n" +
-      "If the user asks you to perform an action supported by your tools (like creating a class, activating a code, searching list, or opening a page), call those tools immediately.\n" +
-      "IMPORTANT: Always present the results beautifully and acknowledge the execution.";
+      "You are Alpine, the AI Assistant for the Smart Attendance System.\n" +
+      "You have direct database execution capabilities to add timetable slots, enroll students, create and activate sessions, search attendance records, and navigate the UI.\n" +
+      "Always execute actions via tool calls when requested and present results clearly.";
 
     const contents: any[] = [];
     history.forEach((h: any) => {
@@ -322,12 +389,11 @@ export async function handleAiChat(
     });
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.5-flash',
+      model: 'gemini-2.5-flash',
       contents,
       config: {
         systemInstruction,
-        tools: [{ functionDeclarations: [createSectionTool, batchCreateSectionsTool, activateSessionTool, cancelSessionTool, queryRecordsTool, redirectPageTool] }],
-        toolConfig: { includeServerSideToolInvocations: true }
+        tools: [{ functionDeclarations: [createSectionTool, activateSessionTool, cancelSessionTool, addTimetableSlotTool, enrollStudentTool, queryRecordsTool, redirectPageTool] }]
       }
     });
 
@@ -338,284 +404,129 @@ export async function handleAiChat(
       const call = response.functionCalls[0];
       const args = call.args as any;
 
-      if (call.name === 'createSection') {
+      if (call.name === 'addTimetableSlot') {
+        const entry = {
+          day: args.day,
+          time_slot: args.timeSlot,
+          subject_code: args.subjectCode,
+          subject_name: args.subjectName,
+          lecturer_email: lecturerEmail,
+          lecturer_name: 'Faculty Incharge',
+          department: args.department || 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: args.year || 3,
+          section: args.section || 'A',
+          room: args.room || 'Room 301'
+        };
+        dao.insertTimetableEntry(entry);
+        actionCard = {
+          type: 'timetable_added',
+          title: 'Timetable Slot Scheduled',
+          description: `Scheduled ${entry.subject_code} (${entry.day} ${entry.time_slot}) in ${entry.room}.`,
+          data: entry
+        };
+        botResponseText = `Successfully scheduled **${entry.subject_code} (${entry.subject_name})** on **${entry.day} ${entry.time_slot}** in **${entry.room}** for ${entry.department} Section ${entry.section}.`;
+      } else if (call.name === 'enrollStudent') {
+        const student = {
+          usn: args.usn.toUpperCase(),
+          name: args.name,
+          department: args.department || 'Computer Science (CSE)',
+          year: args.year || 3,
+          section: args.section || 'A',
+          course: 'B.E.',
+          attendanceRate: 90,
+          roll_number: args.usn.slice(-3),
+          onboarded_at: new Date().toISOString()
+        };
+        dao.upsertStudent(student);
+        actionCard = {
+          type: 'student_enrolled',
+          title: 'Student Enrolled',
+          description: `Enrolled ${student.name} (${student.usn}) in Section ${student.section}.`,
+          data: student
+        };
+        botResponseText = `Enrolled **${student.name} (${student.usn})** into the university roster.`;
+      } else if (call.name === 'createSection') {
         const newSession = {
           id: `sess_${Math.random().toString(36).substr(2, 9)}`,
-          subjectCode: args.subjectCode || 'CS501',
-          subjectName: args.subjectName || 'Computer Architecture',
-          department: args.department,
-          course: args.course,
-          year: args.year,
-          section: args.section,
+          subject_code: args.subjectCode || 'CS501',
+          subject_name: args.subjectName || 'Computer Architecture',
+          department: args.department || 'Computer Science (CSE)',
+          course: args.course || 'B.E.',
+          year: args.year || 3,
+          section: args.section || 'A',
           otp: '',
           status: 'DRAFT',
-          createdAt: new Date().toISOString(),
-          expiresAt: '',
-          markedCount: 0,
-          expectedCount: 64,
-          verificationOption: '',
-          lecturerEmail: lecturerEmail,
+          created_at: new Date().toISOString(),
+          expires_at: '',
+          marked_count: 0,
+          expected_count: 60,
+          verification_option: '',
+          lecturer_email: lecturerEmail,
           timeline: args.timeline || '10:00 AM - 11:00 AM'
         };
-
-        db.prepare(`
-          INSERT INTO sessions (id, subject_code, subject_name, department, course, year, section, otp, status, created_at, expires_at, marked_count, expected_count, verification_option, lecturer_email, timeline)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `).run(
-          newSession.id,
-          newSession.subjectCode,
-          newSession.subjectName,
-          newSession.department,
-          newSession.course,
-          newSession.year,
-          newSession.section,
-          newSession.otp,
-          newSession.status,
-          newSession.createdAt,
-          newSession.expiresAt,
-          newSession.markedCount,
-          newSession.expectedCount,
-          newSession.verificationOption,
-          newSession.lecturerEmail,
-          newSession.timeline
-        );
-
+        dao.insertSession(newSession);
         actionCard = {
           type: 'section_created',
-          title: 'Section Draft Initialized',
-          description: `Created draft section for ${newSession.subjectCode} ${newSession.subjectName} (${newSession.course} ${newSession.year} Year, Sec ${newSession.section}).`,
+          title: 'Section Initialized',
+          description: `Draft section for ${newSession.subject_code} ${newSession.subject_name}.`,
           data: newSession
         };
-        botResponseText = `Understood. I have initialized the new session entry for you. I've created the draft section for ${newSession.subjectCode} (${newSession.subjectName}) under your Lecturer Dashboard. You can activate it anytime!`;
-      } else if (call.name === 'batchCreateSections') {
-        const cleanEmail = lecturerEmail || 'admin@sjce.edu';
-        const cleanCourse = args.course || 'B.E.';
-        const cleanDept = args.department || 'Computer Science (CSE)';
-        const cleanYears = args.years || [1, 2, 3, 4];
-        const cleanSections = args.sections || ['A', 'B', 'C', 'D'];
-        const cleanStrength = args.strength || 70;
-
-        db.transaction(() => {
-          cleanYears.forEach((yr: number) => {
-            cleanSections.forEach((sec: string) => {
-              const session = {
-                id: `sess_${Math.random().toString(36).substr(2, 9)}`,
-                subjectCode: `CS${yr}0${sec === 'A' ? '1' : sec === 'B' ? '2' : sec === 'C' ? '3' : '4'}`,
-                subjectName: `Computer Science ${yr}Yr Sec ${sec}`,
-                department: cleanDept,
-                course: cleanCourse,
-                year: yr,
-                section: sec,
-                otp: '',
-                status: 'READY',
-                createdAt: new Date().toISOString(),
-                expiresAt: '',
-                markedCount: 0,
-                expectedCount: cleanStrength,
-                verificationOption: '',
-                lecturerEmail: cleanEmail,
-                timeline: '10:00 AM - 11:00 AM'
-              };
-
-              db.prepare(`
-                INSERT INTO sessions (id, subject_code, subject_name, department, course, year, section, otp, status, created_at, expires_at, marked_count, expected_count, verification_option, lecturer_email, timeline)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-              `).run(
-                session.id,
-                session.subjectCode,
-                session.subjectName,
-                session.department,
-                session.course,
-                session.year,
-                session.section,
-                session.otp,
-                session.status,
-                session.createdAt,
-                session.expiresAt,
-                session.markedCount,
-                session.expectedCount,
-                session.verificationOption,
-                session.lecturerEmail,
-                session.timeline
-              );
-            });
-          });
-        })();
-
-        actionCard = {
-          type: 'section_created',
-          title: 'Batch Sections Created',
-          description: `Spawned bulk session folders for B.E. Years 1-4, Sections A-D.`,
-          data: {}
-        };
-        botResponseText = `Understood. I have initialized the B.E. attendance roster templates. Spawning 16 session slot folders (Years 1, 2, 3, 4 with Sections A, B, C, D) under your lecturer profile. Check your dashboard folders!`;
+        botResponseText = `Created draft session for **${newSession.subject_code} (${newSession.subject_name})**.`;
       } else if (call.name === 'activateSession') {
         const inputCode = (args.subjectCode || '').toUpperCase();
-
         let found = db.prepare('SELECT * FROM sessions WHERE (UPPER(subject_code) = ? OR id = ?) AND lecturer_email = ?').get(inputCode, args.subjectCode, lecturerEmail) as any;
+        if (!found) found = db.prepare('SELECT * FROM sessions WHERE lecturer_email = ? LIMIT 1').get(lecturerEmail) as any;
 
         if (found) {
-          db.transaction(() => {
-            db.prepare("UPDATE sessions SET status = 'INACTIVE' WHERE status = 'ACTIVE'").run();
-            const freshOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            const freshOption = getRandomVerificationOption();
-            db.prepare("UPDATE sessions SET status = 'ACTIVE', otp = ?, verification_option = ?, created_at = ?, marked_count = 0 WHERE id = ?")
-              .run(freshOtp, freshOption, new Date().toISOString(), found.id);
-          })();
-
-          found = db.prepare('SELECT * FROM sessions WHERE id = ?').get(found.id) as any;
-          const mapped = {
-            id: found.id,
-            subjectCode: found.subject_code,
-            subjectName: found.subject_name,
-            department: found.department,
-            course: found.course,
-            year: found.year,
-            section: found.section,
-            otp: found.otp,
-            status: found.status,
-            createdAt: found.created_at,
-            expiresAt: found.expires_at || undefined,
-            markedCount: found.marked_count,
-            expectedCount: found.expected_count,
-            verificationOption: found.verification_option || undefined,
-            lecturerEmail: found.lecturer_email,
-            timeline: found.timeline
-          };
-
+          const freshOtp = Math.floor(1000 + Math.random() * 9000).toString();
+          const freshOption = getRandomVerificationOption();
+          db.prepare("UPDATE sessions SET status = 'ACTIVE', otp = ?, verification_option = ?, created_at = ?, marked_count = 0 WHERE id = ?")
+            .run(freshOtp, freshOption, new Date().toISOString(), found.id);
+          found = dao.getSessionById(found.id);
           actionCard = {
             type: 'session_activated',
-            title: 'Verification Session Activated',
-            description: `Live scanning activated on OTP ${mapped.otp} for ${mapped.subjectCode}.`,
-            data: mapped
+            title: 'Session Live',
+            description: `Activated with OTP ${found.otp}.`,
+            data: found
           };
-          botResponseText = `Success! I have activated the verification session for ${mapped.subjectCode} ${mapped.subjectName}. The dynamic OTP generated is: **${mapped.otp}**; dynamic QR is now actively broadcasting on the main projector screen!`;
-        } else {
-          const newSession = {
-            id: `sess_${Math.random().toString(36).substr(2, 9)}`,
-            subjectCode: inputCode || 'CS501',
-            subjectName: 'Computer Architecture',
-            department: 'Computer Science (CSE)',
-            course: 'B.E.',
-            year: 3,
-            section: 'A',
-            otp: Math.floor(1000 + Math.random() * 9000).toString(),
-            status: 'ACTIVE',
-            createdAt: new Date().toISOString(),
-            expiresAt: '',
-            markedCount: 0,
-            expectedCount: 60,
-            verificationOption: getRandomVerificationOption(),
-            lecturerEmail: lecturerEmail,
-            timeline: '10:00 AM - 11:00 AM'
-          };
-
-          db.transaction(() => {
-            db.prepare("UPDATE sessions SET status = 'INACTIVE' WHERE status = 'ACTIVE'").run();
-            db.prepare(`
-              INSERT INTO sessions (id, subject_code, subject_name, department, course, year, section, otp, status, created_at, expires_at, marked_count, expected_count, verification_option, lecturer_email, timeline)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `).run(
-              newSession.id,
-              newSession.subjectCode,
-              newSession.subjectName,
-              newSession.department,
-              newSession.course,
-              newSession.year,
-              newSession.section,
-              newSession.otp,
-              newSession.status,
-              newSession.createdAt,
-              newSession.expiresAt,
-              newSession.markedCount,
-              newSession.expectedCount,
-              newSession.verificationOption,
-              newSession.lecturerEmail,
-              newSession.timeline
-            );
-          })();
-
-          actionCard = {
-            type: 'session_activated',
-            title: 'Verification Session Activated',
-            description: `Session actively provisioned and generated live QR-OTP handshake parameters.`,
-            data: newSession
-          };
-          botResponseText = `Draft not found, so I spawned a new session block for **${newSession.subjectCode} (Computer Architecture)**, set it to ACTIVE and randomized the physical double-factor PIN to **${newSession.otp}**. Let's check who connects!`;
+          botResponseText = `Activated session **${found.subject_code}** with OTP **${found.otp}** and shape **${found.verification_option}**.`;
         }
       } else if (call.name === 'cancelSession') {
         const inputCode = (args.subjectCode || '').toUpperCase();
         let found = db.prepare("SELECT * FROM sessions WHERE (status = 'ACTIVE' OR UPPER(subject_code) = ?) AND lecturer_email = ?").get(inputCode, lecturerEmail) as any;
         if (found) {
-          db.prepare("UPDATE sessions SET status = 'INACTIVE' WHERE id = ?").run(found.id);
-          found = db.prepare('SELECT * FROM sessions WHERE id = ?').get(found.id) as any;
-          const mapped = {
-            id: found.id,
-            subjectCode: found.subject_code,
-            subjectName: found.subject_name,
-            department: found.department,
-            course: found.course,
-            year: found.year,
-            section: found.section,
-            otp: found.otp,
-            status: found.status,
-            createdAt: found.created_at,
-            expiresAt: found.expires_at || undefined,
-            markedCount: found.marked_count,
-            expectedCount: found.expected_count,
-            verificationOption: found.verification_option || undefined
-          };
-
+          dao.updateSessionStatus(found.id, 'INACTIVE');
           actionCard = {
             type: 'session_cancelled',
-            title: 'Verification Terminal Closed',
-            description: `Attendance gate safely sealed. Records cached internally for network reconciliation.`,
-            data: mapped
+            title: 'Session Closed',
+            description: `Closed ${found.subject_code}.`,
+            data: found
           };
-          botResponseText = `Gate successfully closed for session **${mapped.subjectCode}**! Any student checks past this point will buffer physically in their local devices until the next session is activated.`;
-        } else {
-          botResponseText = `No active sessions were found open. Your roster and gates are kept offline-cached and fully sealed.`;
+          botResponseText = `Closed attendance session for **${found.subject_code}**.`;
         }
       } else if (call.name === 'queryRecords') {
-        const threshold = args.percentageThreshold || 80;
-        const targetSec = args.section || 'A';
-
-        const lowRoster = db.prepare('SELECT * FROM students WHERE attendance_rate < ? AND section = ? ORDER BY usn')
-          .all(threshold, targetSec) as any[];
-
-        const mappedRoster = lowRoster.map((s: any) => ({
-          usn: s.usn,
-          name: s.name,
-          attendanceRate: s.attendance_rate,
-          courseCode: s.course_code,
-          section: s.section,
-          year: s.year,
-          avatarUrl: s.avatar_url || undefined
-        }));
-
+        const threshold = args.percentageThreshold || 75;
+        const lowRoster = dao.getStudentsBelowThreshold(threshold);
         actionCard = {
           type: 'query_result',
-          title: `Shortfall List (${threshold}% Threshold)`,
-          description: `Identified ${mappedRoster.length} students displaying suboptimal metrics in Section ${targetSec}.`,
-          data: mappedRoster
+          title: `Students Below ${threshold}%`,
+          description: `Found ${lowRoster.length} students.`,
+          data: lowRoster
         };
-        botResponseText = `Found **${mappedRoster.length} students** in Section ${targetSec} currently reporting below ${threshold}% attendance health. I've populated the active explorer card with their names, USNs, and latest percentages below.`;
+        botResponseText = `Found ${lowRoster.length} students below ${threshold}% attendance.`;
       } else if (call.name === 'redirectPage') {
         actionCard = {
           type: 'redirect',
-          title: `Redirect requested`,
-          description: `Redirecting user interface viewport to standard page: ${args.pageName}`,
+          title: 'Navigate',
+          description: `Navigating to ${args.pageName}`,
           data: { pageName: args.pageName }
         };
-        botResponseText = `Certainly. Redirecting your explorer stage view directly to the **${args.pageName}** section module!`;
+        botResponseText = `Navigating to **${args.pageName}**!`;
       }
     }
 
-    if (!botResponseText && !actionCard) {
-      botResponseText = `Request processed. I'm keeping your administrative data buffered safely. Please let me know what syllabus review, roster query, or session gate you need to trigger!`;
-    }
-
-    res.json({ text: botResponseText, actionCard });
+    res.json({ text: botResponseText || 'Processed successfully.', actionCard });
   } catch (error: any) {
     console.error('Gemini error:', error);
     res.status(500).json({ error: error.message || 'Error processing request' });

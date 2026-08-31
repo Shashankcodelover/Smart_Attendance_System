@@ -99,19 +99,23 @@ export default function LecturerDashboardView({
   const [loadingAudits, setLoadingAudits] = useState(false);
 
   useEffect(() => {
-    if (activeFolderTab === 'audits') {
-      setLoadingAudits(true);
-      fetch('/api/override-audits')
-        .then(res => res.json())
-        .then(data => {
+    async function fetchAudits() {
+      if (activeFolderTab === 'audits') {
+        setLoadingAudits(true);
+        try {
+          const res = await fetch('/api/override-audits');
+          if (!res.ok) throw new Error('API failed');
+          const data = await res.json();
           setOverrideAudits(data);
-          setLoadingAudits(false);
-        })
-        .catch(err => {
+        } catch (err) {
           console.error('Failed to fetch override audits:', err);
+          setOverrideAudits([]);
+        } finally {
           setLoadingAudits(false);
-        });
+        }
+      }
     }
+    fetchAudits();
   }, [activeFolderTab]);
 
   // Identify duplicate device fingerprints

@@ -601,7 +601,7 @@ export default function ManualSpreadsheetView({
                                 </>
                               ) : isPresent ? (
                                 <>
-                                  <span className="material-symbols-outlined text-[12px]">check</span>
+                                  <span className="material-symbols-outlined text-[14px] font-black animate-[ping_0.5s_cubic-bezier(0,0,0.2,1)_1]">check_circle</span>
                                   Present
                                 </>
                               ) : (

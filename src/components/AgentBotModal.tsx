@@ -29,6 +29,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
   // Voice Synthesis & Recognition States
   const [isListening, setIsListening] = useState(false);
   const [ttsEnabled, setTtsEnabled] = useState(false);
+  const hasSpeechSupport = typeof window !== 'undefined' && !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -397,17 +398,20 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
 
             {/* Input Bar with Mic Dictation */}
             <div className="p-3.5 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
-              <button
-                onClick={toggleListening}
-                className={`p-2.5 rounded-xl transition-all ${
-                  isListening 
-                    ? 'bg-rose-600 text-white animate-pulse' 
-                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                }`}
-                title={isListening ? 'Listening...' : 'Voice Dictation'}
-              >
-                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-              </button>
+              {hasSpeechSupport && (
+                <button
+                  onClick={toggleListening}
+                  className={`p-2.5 rounded-xl transition-all ${
+                    isListening 
+                      ? 'bg-rose-600 text-white animate-pulse' 
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                  }`}
+                  title={isListening ? 'Listening...' : 'Voice Dictation'}
+                  aria-label={isListening ? 'Stop Listening' : 'Start Voice Dictation'}
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </button>
+              )}
 
               <input
                 type="text"
@@ -416,11 +420,13 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder={isListening ? 'Listening... Speak your command now' : 'Ask about attendance, safe bunks, or timetable scheduling...'}
                 className="flex-1 px-4 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                aria-label="Agent chat input"
               />
               <button
                 onClick={() => handleSendMessage()}
                 disabled={loading || !input.trim()}
-                className="px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white rounded-xl shadow disabled:opacity-40 transition-all"
+                className="px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white rounded-xl shadow disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center"
+                aria-label="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>

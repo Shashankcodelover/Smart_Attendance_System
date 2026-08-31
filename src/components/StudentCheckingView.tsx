@@ -158,20 +158,9 @@ export default function StudentCheckingView({
   // Active sessions is the list that can be checked in
   const activeSessions = sessions.filter(s => s.status === 'ACTIVE');
 
-  // Compute selected session details (with fallback for mock session)
+  // Compute selected session details
   const selectedSession = useMemo(() => {
-    if (selectedSessionId === 'sess_mock') {
-      return {
-        id: 'sess_mock',
-        subjectCode: 'CS501',
-        subjectName: 'Cognitive Psychology (Simulation)',
-        section: 'A',
-        year: 3,
-        status: 'ACTIVE',
-        timeline: '09:00 AM - 10:00 AM'
-      } as unknown as Session;
-    }
-    return sessions.find(s => s.id === selectedSessionId);
+    return sessions.find(s => s.id === selectedSessionId) || null;
   }, [sessions, selectedSessionId]);
 
   // Synchronize unlocked state and student inputs to localStorage

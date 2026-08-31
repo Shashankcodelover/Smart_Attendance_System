@@ -28,6 +28,7 @@ export default function TopAppBar({
           onClick={onBackToGateway}
           className="material-symbols-outlined text-[#6b38d4] p-2 bg-[#6b38d4]/5 hover:bg-[#6b38d4]/15 transition-all rounded-xl active:scale-95 duration-200 cursor-pointer"
           title="Return to Connective Gateway"
+          aria-label="Return to Connective Gateway"
         >
           home
         </button>
@@ -69,6 +70,7 @@ export default function TopAppBar({
             isOffline ? 'opacity-40 cursor-not-allowed' : ''
           }`}
           title="Force Synchronization Gate"
+          aria-label="Force Synchronization Gate"
         >
           sync
           {pendingOfflineCount > 0 && (

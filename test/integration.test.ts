@@ -107,7 +107,7 @@ test('Integration: /api/checkin Security Traps', async (t) => {
     
     const records = dao.getAttendanceRecords();
     assert.equal(records.length, 1);
-    assert.equal(records[0].student_usn, '4JC21CS001');
+    assert.equal((records[0] as any).student_usn, '4JC21CS001');
   });
 
   await t.test('Rejects duplicate check-in (SQLite Mutex)', async () => {

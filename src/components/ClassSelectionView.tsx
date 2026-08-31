@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ClassSelectionViewProps {
   onProceed: (data: {
@@ -14,21 +14,35 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
   const [course, setCourse] = useState('B.E.');
   const [year, setYear] = useState(3);
   const [section, setSection] = useState('A');
+  const [preview, setPreview] = useState<{ total: number; avg: number; subject: string }>({
+    total: 64,
+    avg: 82,
+    subject: 'Computer Architecture (CS501)'
+  });
+  const [loading, setLoading] = useState(false);
 
-  // Preview numbers based on criteria
-  const getPreview = () => {
-    if (dept.includes('Computer Science')) {
-      if (year === 3) return { total: 64, avg: 82, subject: 'Computer Architecture (CS501)' };
-      if (year === 4) return { total: 52, avg: 88, subject: 'Neural Networks (AI402)' };
-      return { total: 58, avg: 81, subject: 'Compiler Design (CS502)' };
+  // Fetch real-time live preview stats from backend SQLite database
+  useEffect(() => {
+    async function fetchLivePreview() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/classes/preview?department=${encodeURIComponent(dept)}&course=${encodeURIComponent(course)}&year=${year}&section=${encodeURIComponent(section)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setPreview({
+            total: data.total || 0,
+            avg: data.avg || 85,
+            subject: data.subject || 'Advanced Core Lecture'
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch real-time class metrics', err);
+      } finally {
+        setLoading(false);
+      }
     }
-    if (dept.includes('Electronics')) {
-      return { total: 55, avg: 79, subject: 'Digital Signals (EC403)' };
-    }
-    return { total: 45, avg: 75, subject: 'Fluid Dynamics (ME302)' };
-  };
-
-  const preview = getPreview();
+    fetchLivePreview();
+  }, [dept, course, year, section]);
 
   return (
     <div className="space-y-6">
@@ -38,7 +52,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
           Class Selection
         </h2>
         <p className="text-sm text-[#494454]">
-          Filter by department and course to create a new live attendance session.
+          Select department, batch year, and section to launch a live attendance terminal with real-time class data.
         </p>
       </section>
 
@@ -55,7 +69,8 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
             {[
               'Computer Science (CSE)',
               'Electronics (ECE)',
-              'Mechanical (ME)'
+              'Mechanical (ME)',
+              'Information Science (ISE)'
             ].map((d) => (
               <button
                 key={d}
@@ -116,7 +131,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
                     : 'border-[#cbc3d7]/30 text-[#494454] hover:bg-[#eceef0]/50'
                 }`}
               >
-                {y}
+                Year {y}
               </button>
             ))}
           </div>
@@ -129,7 +144,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
             SECTION
           </h3>
           <div className="flex gap-3 w-full">
-            {['A', 'B', 'C'].map((s) => (
+            {['A', 'B', 'C', 'D'].map((s) => (
               <button
                 key={s}
                 onClick={() => setSection(s)}
@@ -148,35 +163,28 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
         {/* Class Preview Card */}
         <div className="md:col-span-8 acrylic-card bg-[#8455ef]/90 text-white rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-[0_8px_32px_rgba(107,56,212,0.15)] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-          <div className="flex-shrink-0">
-            <img
-              alt="Class Group"
-              className="w-24 h-24 object-cover rounded-xl shadow-md border-2 border-white/20"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwuv4KBgaOAhAgX65JMyDBrQEV2dQFVu7-kz54OzkPB4P3XCyEa-Nj1LEXe-wUmQsD6ShBrV2Bb8XmHybS40Y-z2mHkQA-hgJLv7Cjp61oaokEeYZatZQdCwp2_Up7wxmQX3RrwMMIVOIDoOakQDg0DF9wBx0tkLze5jvzpoo_878kxmDxdN3sKuhcxSI4RFyKCzH_VH4-IT0uYb2XhxvvxGZkuz_ekkjtOngg8I0scq1wxpieWlpARLQKU965yM1vn0LLYmGEUZRK"
-            />
-          </div>
           <div className="flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
               <span className="material-symbols-outlined text-[18px]">groups</span>
               <h4 className="font-display text-lg font-bold">
-                {dept.split(' ')[0]} - {course} - Year {year} - Sec {section}
+                {dept.split(' ')[0]} &bull; {course} &bull; Year {year} &bull; Section {section}
               </h4>
             </div>
             <p className="text-xs text-white/80 mb-3 block italic">
-              Estimated Lecture: {preview.subject}
+              Upcoming Lecture: {preview.subject}
             </p>
             <div className="grid grid-cols-2 gap-4 mt-2">
               <div className="bg-white/10 px-4 py-2.5 rounded-xl text-center backdrop-blur-sm">
                 <p className="text-[10px] font-sans font-bold tracking-wider uppercase opacity-80">
-                  Total Students
+                  Enrolled Students
                 </p>
-                <p className="text-2xl font-display font-extrabold">{preview.total}</p>
+                <p className="text-2xl font-display font-extrabold">{loading ? '...' : preview.total}</p>
               </div>
               <div className="bg-white/10 px-4 py-2.5 rounded-xl text-center backdrop-blur-sm">
                 <p className="text-[10px] font-sans font-bold tracking-wider uppercase opacity-80">
-                  Avg Attendance
+                  Live Attendance Avg
                 </p>
-                <p className="text-2xl font-display font-extrabold">{preview.avg}%</p>
+                <p className="text-2xl font-display font-extrabold">{loading ? '...' : `${preview.avg}%`}</p>
               </div>
             </div>
           </div>
