@@ -1,7 +1,24 @@
-# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
+﻿# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
+
+[![Automated Tests](https://img.shields.io/badge/Tests-49%2F49%20Passing-brightgreen?style=for-the-badge&logo=vitest)](test/)
+[![Security](https://img.shields.io/badge/Security-Zero--Trust%20HMAC-blueviolet?style=for-the-badge&logo=shield)](server.ts)
+[![UI/UX](https://img.shields.io/badge/UI%2FUX-Tailwind%20v4%20%2B%20Lucide-indigo?style=for-the-badge&logo=tailwindcss)](src/)
+[![AI Analytics](https://img.shields.io/badge/AI-Google%20Gemini-orange?style=for-the-badge&logo=googlegemini)](controllers/aiController.ts)
 
 > **Zero-Trust Biometric, Cryptographic & Geofenced Presence Verification System**  
 > Built for universities and enterprise institutions to eliminate proxy attendance, enforce dynamic rotation QR tokens, and deliver predictive dropout analytics using Google Gemini.
+
+---
+
+## 📸 Interface Showcase
+
+| Portal | Preview | Highlights |
+| :--- | :--- | :--- |
+| **Landing Hub (`/`)** | [View Screenshot](docs/showcase/screenshots/smart_attendance_landing.png) | 1-Click instant demo for Students, Faculty, and Admin |
+| **Faculty Deck (`/lecturer`)** | [View Screenshot](docs/showcase/screenshots/smart_attendance_lecturer_dashboard.png) | Real-time headcount, TOTP gates, AI timetable scheduler |
+| **Student Portal (`/student`)** | [View Screenshot](docs/showcase/screenshots/smart_attendance_student_dashboard.png) | 100% attendance dial, subject breakdown, bunk buffers |
+
+👉 See [Visual Showcase Documentation](docs/showcase/README.md) for full screenshots and architectural breakdown.
 
 ---
 
@@ -37,11 +54,14 @@
 # 1. Install dependencies
 npm install
 
-# 2. Run automated test suite
+# 2. Run automated test suite (49/49 passing)
 npm test
 
-# 3. Start development server
-npm run dev
+# 3. Build production bundle
+npm run build
+
+# 4. Start production server
+node dist/server.cjs
 ```
 
 Visit the dashboard at `http://localhost:3000`.

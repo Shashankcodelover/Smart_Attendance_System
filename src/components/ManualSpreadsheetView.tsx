@@ -132,7 +132,8 @@ export default function ManualSpreadsheetView({
   // Map of present student USNs for the selected session
   const presentStudentsMap = useMemo(() => {
     const map = new Set<string>();
-    attendanceRecords.forEach(rec => {
+    const safeRecords = Array.isArray(attendanceRecords) ? attendanceRecords : [];
+    safeRecords.forEach(rec => {
       if (rec.sessionId === selectedSessionId) {
         map.add(rec.studentUsn.toUpperCase());
       }
@@ -212,8 +213,8 @@ export default function ManualSpreadsheetView({
       let presentCount = 0;
       
       const sessionStatuses = matchSessions.map(s => {
-        const isPresent = attendanceRecords.some(
-          r => r.sessionId === s.id && r.studentUsn.toUpperCase() === studentUsnUpper
+        const isPresent = Array.isArray(attendanceRecords) && attendanceRecords.some(
+          r => r.sessionId === s.id && r.studentUsn?.toUpperCase() === studentUsnUpper
         );
         if (isPresent) presentCount++;
         return isPresent ? 'P' : 'A';

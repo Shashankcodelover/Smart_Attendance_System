@@ -121,7 +121,8 @@ export default function LecturerDashboardView({
   // Identify duplicate device fingerprints
   const flaggedFingerprints = useMemo(() => {
     const fpGroups: Record<string, string[]> = {};
-    attendanceRecords.forEach((r: any) => {
+    const safeRecords = Array.isArray(attendanceRecords) ? attendanceRecords : [];
+    safeRecords.forEach((r: any) => {
       const fp = r.deviceFingerprint || r.device_fingerprint;
       const usn = r.studentUsn || r.student_usn;
       if (fp && fp !== 'lecturer_manual') {

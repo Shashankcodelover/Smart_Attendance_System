@@ -118,15 +118,15 @@ export default function LecturerApp() {
       const headers = token ? { 'Authorization': `Bearer ${token}` } : undefined;
       const sRes = await fetch(`/api/sessions?lecturer=${encodeURIComponent(email)}`, { headers });
       const sData = await sRes.json();
-      setSessions(sData);
+      setSessions(Array.isArray(sData) ? sData : []);
 
       const aRes = await fetch('/api/attendance/records', { headers });
       const aData = await aRes.json();
-      setAttendanceRecords(aData);
+      setAttendanceRecords(Array.isArray(aData) ? aData : []);
 
       const stdRes = await fetch('/api/students', { headers });
       const stdData = await stdRes.json();
-      setStudents(stdData);
+      setStudents(Array.isArray(stdData) ? stdData : []);
     } catch (e) {
       console.error('Server offline or database error:', e);
     }

@@ -309,6 +309,23 @@ app.post('/api/auth/signup', async (req, res) => {
   res.json({ success: true, token, user: { codeOrUsn: emailOrUsn, name, role } });
 });
 
+app.post('/api/auth/demo-login', (req: any, res: any) => {
+  const { role = 'student' } = req.body;
+  if (role === 'lecturer') {
+    const user = { email: 'dr.ramesh@sjce.edu', role: 'lecturer', name: 'Dr. Ramesh Kumar' };
+    const token = signJwt(user, 86400);
+    return res.json({ success: true, token, user: { codeOrUsn: user.email, name: user.name, role: user.role } });
+  } else if (role === 'admin') {
+    const user = { email: 'admin@sjce.edu', role: 'admin', name: 'Admin User' };
+    const token = signJwt(user, 86400);
+    return res.json({ success: true, token, user: { codeOrUsn: user.email, name: user.name, role: user.role } });
+  } else {
+    const user = { email: '4JC21CS001', role: 'student', name: 'Aarav Sharma' };
+    const token = signJwt(user, 86400);
+    return res.json({ success: true, token, user: { codeOrUsn: user.email, name: user.name, role: user.role } });
+  }
+});
+
 // --- CORE ATTENDANCE SESSIONS & CHECK-IN API ---
 
 app.get('/api/sessions', (req, res) => {
@@ -1405,6 +1422,18 @@ app.delete('/api/students/:usn', (req, res) => {
   }
 });
 
+
+// Static assets & Multi-portal SPA routing for production
+const distDir = path.join(process.cwd(), 'dist');
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.get('/lecturer', (req, res) => res.sendFile(path.join(distDir, 'lecturer.html')));
+  app.get('/student', (req, res) => res.sendFile(path.join(distDir, 'student.html')));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
 
 if (process.env.NODE_ENV !== 'test' && !process.env.TEST && !process.argv.some(a => a.includes('test'))) {
   app.listen(PORT, () => {

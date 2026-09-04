@@ -40,21 +40,33 @@ export default function LandingApp() {
     setShowModal(true);
   };
 
-  const handleQuickDemoLogin = (role: 'student' | 'lecturer' | 'admin') => {
-    let sessionData: any;
-    if (role === 'student') {
-      sessionData = { codeOrUsn: '4JC21CS001', name: 'Aarav Sharma', role: 'student' };
-      localStorage.setItem('sjce_auth_session_student', JSON.stringify(sessionData));
-      window.location.href = '/student';
-    } else if (role === 'lecturer') {
-      sessionData = { codeOrUsn: 'dr.ramesh@sjce.edu', name: 'Dr. Ramesh Kumar', role: 'lecturer' };
-      localStorage.setItem('sjce_auth_session_lecturer', JSON.stringify(sessionData));
-      window.location.href = '/lecturer';
-    } else {
-      sessionData = { codeOrUsn: 'admin@sjce.edu', name: 'Admin User', role: 'admin' };
-      localStorage.setItem('sjce_auth_session_admin', JSON.stringify(sessionData));
-      window.location.href = '/lecturer?role=admin';
+  const handleQuickDemoLogin = async (role: 'student' | 'lecturer' | 'admin') => {
+    try {
+      const res = await fetch('/api/auth/demo-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role })
+      });
+      const data = await res.json();
+      if (data.token) {
+        localStorage.setItem(`sjce_auth_token_${role}`, data.token);
+      }
+      localStorage.setItem(`sjce_auth_session_${role}`, JSON.stringify(data.user || {
+        codeOrUsn: role === 'student' ? '4JC21CS001' : role === 'lecturer' ? 'dr.ramesh@sjce.edu' : 'admin@sjce.edu',
+        name: role === 'student' ? 'Aarav Sharma' : role === 'lecturer' ? 'Dr. Ramesh Kumar' : 'Admin User',
+        role
+      }));
+    } catch {
+      const fallback = {
+        codeOrUsn: role === 'student' ? '4JC21CS001' : role === 'lecturer' ? 'dr.ramesh@sjce.edu' : 'admin@sjce.edu',
+        name: role === 'student' ? 'Aarav Sharma' : role === 'lecturer' ? 'Dr. Ramesh Kumar' : 'Admin User',
+        role
+      };
+      localStorage.setItem(`sjce_auth_session_${role}`, JSON.stringify(fallback));
     }
+    if (role === 'student') window.location.href = '/student';
+    else if (role === 'lecturer') window.location.href = '/lecturer';
+    else window.location.href = '/lecturer?role=admin';
   };
 
   const handleGoBack = () => {
