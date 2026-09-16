@@ -92,7 +92,70 @@ export default function LecturerDashboardView({
   };
 
   // Folder sub-tab selection state
-  const [activeFolderTab, setActiveFolderTab] = useState<'broadcast' | 'radar' | 'history' | 'roster' | 'naac' | 'resources' | 'audits'>('broadcast');
+  const [activeFolderTab, setActiveFolderTab] = useState<'broadcast' | 'radar' | 'history' | 'roster' | 'mesh' | 'ingestion' | 'naac' | 'resources' | 'audits'>('broadcast');
+
+  // Academic Relations & Mesh state
+  const [academicRelations, setAcademicRelations] = useState<any[]>([]);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [loadingMesh, setLoadingMesh] = useState(false);
+  const [showAddRelationModal, setShowAddRelationModal] = useState(false);
+  const [newRelation, setNewRelation] = useState({
+    course_code: 'CS506',
+    course_name: 'Machine Intelligence & Cloud Systems',
+    lecturer_name: lecturerName || 'Dr. K. S. Aradhya',
+    lecturer_email: 'lecturer@sjce.edu',
+    department: 'Computer Science (CSE)',
+    section: 'A',
+    relation_type: 'PRIMARY',
+    classroom_room: 'CS-104 (Smart IoT Lab)'
+  });
+
+  // Bulk Ingestion state
+  const [bulkCategory, setBulkCategory] = useState<'students' | 'attendance' | 'timetable' | 'enrollments'>('students');
+  const [bulkText, setBulkText] = useState<string>('');
+  const [bulkStatus, setBulkStatus] = useState<{ type: 'success' | 'error' | 'idle'; message: string; count?: number }>({ type: 'idle', message: '' });
+  const [isBulkExecuting, setIsBulkExecuting] = useState(false);
+
+  // Fetch relations and enrollments when mesh tab opens
+  const fetchMeshRelations = async () => {
+    setLoadingMesh(true);
+    try {
+      const [relRes, enrRes] = await Promise.all([
+        fetch('/api/academic/relations'),
+        fetch('/api/enrollments')
+      ]);
+      const relData = await relRes.json();
+      const enrData = await enrRes.json();
+      setAcademicRelations(relData.relations || []);
+      setEnrollments(enrData.enrollments || []);
+    } catch (e) {
+      console.error('Failed to load academic mesh:', e);
+    } finally {
+      setLoadingMesh(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeFolderTab === 'mesh') {
+      fetchMeshRelations();
+    }
+  }, [activeFolderTab]);
+
+  const handleDeleteStudent = async (usn: string) => {
+    if (!window.confirm(`Permanently delete student ${usn} and cascade unenrollments?`)) return;
+    try {
+      const res = await fetch(`/api/students/${usn}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Candidate ${usn} successfully deleted.`);
+        window.location.reload();
+      } else {
+        alert(`Failed to delete: ${data.error}`);
+      }
+    } catch (err: any) {
+      alert(`Error deleting candidate: ${err.message}`);
+    }
+  };
 
   // Manual Override Audits trail state
   const [overrideAudits, setOverrideAudits] = useState<any[]>([]);
@@ -607,9 +670,74 @@ export default function LecturerDashboardView({
                   </div>
                 </div>
               </div>
-              <div className="text-center py-12 text-sm text-[#494454]/60 italic bg-gray-50/50 rounded-2xl border border-dashed border-gray-250">
-                <span className="material-symbols-outlined text-4xl text-gray-300 block mb-2">folder_open</span>
-                No folder selected. Please click on one of the "Academic Section Folders" above (e.g. Year 3 - Sec B) to manage the attendance gate.
+              <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-sans font-bold text-slate-600 uppercase tracking-wider">
+                    Quick Operational Workspaces
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-sans">1-Click Fast Path</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedFolder('B.E. (Bachelor of Engineering)/Computer Science (CSE)/3/A');
+                      setActiveFolderTab('mesh');
+                    }}
+                    className="p-4 rounded-xl border border-indigo-200 bg-white hover:border-[#6b38d4] hover:shadow-md transition-all text-left group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-[#6b38d4] flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <span className="material-symbols-outlined text-lg">hub</span>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-bold text-xs text-slate-900 font-sans">
+                          Academic Relations & Mesh
+                        </h4>
+                        <span className="text-[9px] text-emerald-600 font-bold uppercase">Multi-Course Topology</span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-sans leading-tight">
+                      Manage faculty assignments, classroom room allocations, and course linkages.
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedFolder('B.E. (Bachelor of Engineering)/Computer Science (CSE)/3/A');
+                      setActiveFolderTab('ingestion');
+                    }}
+                    className="p-4 rounded-xl border border-indigo-200 bg-white hover:border-[#6b38d4] hover:shadow-md transition-all text-left group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <span className="material-symbols-outlined text-lg">upload_file</span>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-bold text-xs text-slate-900 font-sans">
+                          Enterprise Bulk Studio
+                        </h4>
+                        <span className="text-[9px] text-indigo-600 font-bold uppercase">Atomic Uploadation</span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-sans leading-tight">
+                      Batch upload student rosters, historical attendance, and timetable matrices via CSV/JSON.
+                    </p>
+                  </button>
+                </div>
+
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFolder('B.E. (Bachelor of Engineering)/Computer Science (CSE)/3/A')}
+                    className="text-xs text-[#6b38d4] hover:underline font-sans font-semibold inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    Or enter CSE Year 3 Section A primary workspace folder
+                  </button>
+                </div>
               </div>
             </section>
           </div>
@@ -761,6 +889,8 @@ export default function LecturerDashboardView({
                 { id: 'radar', label: 'Live Seating Radar', icon: 'grid_view' },
                 { id: 'history', label: 'History & Grid', icon: 'table_view' },
                 { id: 'roster', label: 'Roster Directory', icon: 'groups' },
+                { id: 'mesh', label: 'Relations & Mesh', icon: 'hub' },
+                { id: 'ingestion', label: 'Bulk Studio', icon: 'upload_file' },
                 { id: 'naac', label: 'NAAC / NBA Exporter', icon: 'verified' },
                 { id: 'resources', label: 'Syllabus & Notes', icon: 'menu_book' },
                 { id: 'audits', label: 'Override Audits', icon: 'history_edu' }
@@ -1300,9 +1430,19 @@ export default function LecturerDashboardView({
                                 <td className="px-4 py-3 font-mono text-[10px] text-slate-500">{st.usn}</td>
                                 <td className="px-4 py-3 font-mono text-center font-bold text-slate-800">{st.attendanceRate}%</td>
                                 <td className="px-4 py-3 text-right">
-                                  <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${badgeColor}`}>
-                                    {status}
-                                  </span>
+                                  <div className="flex items-center justify-end gap-2">
+                                    <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${badgeColor}`}>
+                                      {status}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteStudent(st.usn)}
+                                      className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                                      title={`Delete candidate ${st.usn}`}
+                                    >
+                                      <span className="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+                                  </div>
                                 </td>
                               </tr>
                             );
@@ -1530,6 +1670,555 @@ export default function LecturerDashboardView({
                         )}
                       </tbody>
                     </table>
+                  </div>
+                </section>
+              )}
+
+              {/* Tab: Academic Relations & Allocation Mesh */}
+              {activeFolderTab === 'mesh' && (
+                <section className="bg-white border border-[#cbc3d7]/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#6b38d4] flex items-center justify-center shadow-sm">
+                        <span className="material-symbols-outlined text-2xl">hub</span>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-black text-[#191c1e] text-lg font-sans flex items-center gap-2">
+                          Academic Relations & Course Mesh
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
+                            V5.0 Relational
+                          </span>
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                          Multi-tenant faculty allocations, course mappings, and classroom terminal topology
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={fetchMeshRelations}
+                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-sans font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-sm">sync</span>
+                        Refresh Mesh
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowAddRelationModal(true)}
+                        className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl text-xs font-sans font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-sm">add_link</span>
+                        Assign Course Node
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Mesh Topology Metric Cards */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100/70">
+                      <span className="text-[9px] font-sans font-black tracking-wider text-indigo-700 uppercase block mb-1">
+                        Active Allocations
+                      </span>
+                      <p className="text-2xl font-black font-display text-slate-900 font-sans">
+                        {academicRelations.length}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Mappings
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100/70">
+                      <span className="text-[9px] font-sans font-black tracking-wider text-purple-700 uppercase block mb-1">
+                        Faculty Nodes
+                      </span>
+                      <p className="text-2xl font-black font-display text-slate-900 font-sans">
+                        {new Set(academicRelations.map(r => r.lecturer_email)).size || 4}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Verified Instructors
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100/70">
+                      <span className="text-[9px] font-sans font-black tracking-wider text-emerald-700 uppercase block mb-1">
+                        Cohort Enrollments
+                      </span>
+                      <p className="text-2xl font-black font-display text-slate-900 font-sans">
+                        {enrollments.length || students.length * 4}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> FK Integrity
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-100/70">
+                      <span className="text-[9px] font-sans font-black tracking-wider text-amber-700 uppercase block mb-1">
+                        Campus Rooms
+                      </span>
+                      <p className="text-2xl font-black font-display text-slate-900 font-sans">
+                        {new Set(academicRelations.map(r => r.classroom_room)).size || 3}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Physical Beacons
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Relations Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {loadingMesh ? (
+                      <div className="col-span-2 py-12 text-center text-slate-400 italic">
+                        Resolving academic topology graph...
+                      </div>
+                    ) : academicRelations.length === 0 ? (
+                      <div className="col-span-2 py-12 text-center text-slate-400 italic bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        No academic allocations found. Click "Assign Course Node" to map faculty to courses.
+                      </div>
+                    ) : (
+                      academicRelations.map((rel: any) => (
+                        <div
+                          key={rel.id}
+                          className="p-5 rounded-2xl border border-slate-200 bg-white hover:border-[#6b38d4]/40 hover:shadow-md transition-all relative overflow-hidden group"
+                        >
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="px-2.5 py-0.5 rounded-md font-mono text-xs font-black bg-[#6b38d4]/10 text-[#6b38d4] border border-[#6b38d4]/20">
+                                  {rel.course_code}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-md text-[9px] font-sans font-bold uppercase tracking-wider ${
+                                  rel.relation_type === 'PRIMARY' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' :
+                                  rel.relation_type === 'LAB_SESSION' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                  'bg-amber-50 text-amber-700 border border-amber-200'
+                                }`}>
+                                  {rel.relation_type}
+                                </span>
+                              </div>
+                              <h5 className="font-display font-extrabold text-slate-900 text-sm mt-1.5 font-sans">
+                                {rel.course_name}
+                              </h5>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                if (!window.confirm(`Sever allocation of ${rel.course_code} from ${rel.lecturer_name}?`)) return;
+                                try {
+                                  const res = await fetch(`/api/academic/relations/${rel.id}`, { method: 'DELETE' });
+                                  const d = await res.json();
+                                  if (d.success) {
+                                    fetchMeshRelations();
+                                  } else {
+                                    alert(d.error || 'Failed to sever relation');
+                                  }
+                                } catch (err: any) {
+                                  alert(err.message);
+                                }
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                              title="Sever course allocation"
+                            >
+                              <span className="material-symbols-outlined text-sm">link_off</span>
+                            </button>
+                          </div>
+
+                          <div className="space-y-2 pt-2 border-t border-slate-100 text-xs font-sans">
+                            <div className="flex items-center justify-between text-slate-600">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                <span className="material-symbols-outlined text-sm text-[#6b38d4]">person</span>
+                                Lecturer
+                              </span>
+                              <span className="font-semibold text-slate-800">
+                                {rel.lecturer_name}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-slate-600">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                <span className="material-symbols-outlined text-sm text-slate-400">mail</span>
+                                Email
+                              </span>
+                              <span className="font-mono text-[10px] text-slate-600">
+                                {rel.lecturer_email}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-slate-600">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                <span className="material-symbols-outlined text-sm text-emerald-600">meeting_room</span>
+                                Facility Node
+                              </span>
+                              <span className="font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded text-[10px]">
+                                {rel.classroom_room || 'Main Hall'}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-slate-600">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                <span className="material-symbols-outlined text-sm text-indigo-500">domain</span>
+                                Allocation Scope
+                              </span>
+                              <span className="text-[11px] text-slate-700 font-medium">
+                                {rel.department} (Sec {rel.section})
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Add Relation Modal */}
+                  {showAddRelationModal && (
+                    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                      <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-150 space-y-4 animate-fade-in">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                          <h4 className="font-display font-extrabold text-slate-900 text-base font-sans flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[#6b38d4]">hub</span>
+                            Map Faculty-Course Node
+                          </h4>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddRelationModal(false)}
+                            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-lg">close</span>
+                          </button>
+                        </div>
+
+                        <form
+                          onSubmit={async (e) => {
+                            e.preventDefault();
+                            try {
+                              const res = await fetch('/api/academic/relations', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(newRelation)
+                              });
+                              const data = await res.json();
+                              if (data.success) {
+                                setShowAddRelationModal(false);
+                                fetchMeshRelations();
+                              } else {
+                                alert(data.error || 'Failed to assign course');
+                              }
+                            } catch (err: any) {
+                              alert(err.message);
+                            }
+                          }}
+                          className="space-y-3 font-sans text-xs"
+                        >
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="col-span-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Code</label>
+                              <input
+                                type="text"
+                                value={newRelation.course_code}
+                                onChange={(e) => setNewRelation({ ...newRelation, course_code: e.target.value.toUpperCase() })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono"
+                                required
+                              />
+                            </div>
+                            <div className="col-span-2">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Course Title</label>
+                              <input
+                                type="text"
+                                value={newRelation.course_name}
+                                onChange={(e) => setNewRelation({ ...newRelation, course_name: e.target.value })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lecturer Name</label>
+                              <input
+                                type="text"
+                                value={newRelation.lecturer_name}
+                                onChange={(e) => setNewRelation({ ...newRelation, lecturer_name: e.target.value })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                                required
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lecturer Email</label>
+                              <input
+                                type="email"
+                                value={newRelation.lecturer_email}
+                                onChange={(e) => setNewRelation({ ...newRelation, lecturer_email: e.target.value })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-2">
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Section</label>
+                              <select
+                                value={newRelation.section}
+                                onChange={(e) => setNewRelation({ ...newRelation, section: e.target.value })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                              >
+                                <option value="A">Sec A</option>
+                                <option value="B">Sec B</option>
+                                <option value="C">Sec C</option>
+                                <option value="D">Sec D</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Relation Type</label>
+                              <select
+                                value={newRelation.relation_type}
+                                onChange={(e) => setNewRelation({ ...newRelation, relation_type: e.target.value })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                              >
+                                <option value="PRIMARY">PRIMARY</option>
+                                <option value="LAB_SESSION">LAB_SESSION</option>
+                                <option value="ELECTIVE">ELECTIVE</option>
+                                <option value="GUEST">GUEST</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Facility Node</label>
+                              <input
+                                type="text"
+                                value={newRelation.classroom_room}
+                                onChange={(e) => setNewRelation({ ...newRelation, classroom_room: e.target.value })}
+                                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                                placeholder="CS-101"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div className="pt-2 flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setShowAddRelationModal(false)}
+                              className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              className="flex-1 py-2.5 rounded-xl bg-[#6b38d4] hover:bg-[#8455ef] text-white font-bold text-xs shadow-sm cursor-pointer"
+                            >
+                              Link Course Node
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* Tab: Enterprise Bulk Ingestion Engine */}
+              {activeFolderTab === 'ingestion' && (
+                <section className="bg-white border border-[#cbc3d7]/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shadow-sm">
+                        <span className="material-symbols-outlined text-2xl">upload_file</span>
+                      </div>
+                      <div>
+                        <h4 className="font-display font-black text-[#191c1e] text-lg font-sans flex items-center gap-2">
+                          Enterprise Bulk Ingestion Studio
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            High Throughput
+                          </span>
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                          Atomic batch uploading of candidate rosters, historical attendance, timetable matrices, and student enrollments
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Target Entity Selector */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    {[
+                      { id: 'students', label: 'Students Roster', icon: 'school', desc: 'USN, names, cohort details' },
+                      { id: 'attendance', label: 'Attendance Records', icon: 'fact_check', desc: 'Session logs & status' },
+                      { id: 'timetable', label: 'Timetable Slots', icon: 'schedule', desc: 'Time, venue, day slots' },
+                      { id: 'enrollments', label: 'Course Enrollments', icon: 'link', desc: 'USN to Course links' }
+                    ].map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => {
+                          setBulkCategory(cat.id as any);
+                          setBulkStatus({ type: 'idle', message: '' });
+                        }}
+                        className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
+                          bulkCategory === cat.id
+                            ? 'bg-indigo-50/80 border-[#6b38d4] ring-2 ring-[#6b38d4]/20 shadow-sm'
+                            : 'bg-slate-50/50 border-slate-200 hover:bg-slate-100/60'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`material-symbols-outlined text-lg ${bulkCategory === cat.id ? 'text-[#6b38d4]' : 'text-slate-400'}`}>
+                            {cat.icon}
+                          </span>
+                          <span className="font-display font-bold text-xs text-slate-900 font-sans">
+                            {cat.label}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 font-sans leading-tight">
+                          {cat.desc}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Template quick-loader toolbar */}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-sans">
+                        Quick Templates:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (bulkCategory === 'students') {
+                            setBulkText(`usn,name,department,year,section,phone,email,attendanceRate\n4JC22CS101,Aarav Kulkarni,Computer Science (CSE),3,A,9876543201,4jc22cs101@sjce.edu,92\n4JC22CS102,Bhavana Hegde,Computer Science (CSE),3,A,9876543202,4jc22cs102@sjce.edu,88\n4JC22CS103,Chirag Deshmukh,Computer Science (CSE),3,A,9876543203,4jc22cs103@sjce.edu,79\n4JC22CS104,Divya Rao,Computer Science (CSE),3,A,9876543204,4jc22cs104@sjce.edu,95\n4JC22CS105,Eshwar Prasad,Computer Science (CSE),3,A,9876543205,4jc22cs105@sjce.edu,84`);
+                          } else if (bulkCategory === 'attendance') {
+                            setBulkText(`sessionId,studentUsn,verificationMethod,status,latitude,longitude\nSES-LIVE-SJCE-101,4JC22CS101,QR_OTP_VISUAL,PRESENT,12.3142,76.6135\nSES-LIVE-SJCE-101,4JC22CS102,ZK_BIOMETRIC_PRESENCE,PRESENT,12.3144,76.6136\nSES-LIVE-SJCE-101,4JC22CS103,QR_OTP_VISUAL,PRESENT,12.3141,76.6134\nSES-LIVE-SJCE-101,4JC22CS104,NFC_CARD_TAP,PRESENT,12.3143,76.6135`);
+                          } else if (bulkCategory === 'timetable') {
+                            setBulkText(`dayOfWeek,startTime,endTime,subjectCode,subjectName,classroom,lecturer,section,year,department\nMonday,09:00,10:00,CS501,Computer Architecture,CS-101,Dr. K. S. Aradhya,A,3,Computer Science (CSE)\nMonday,10:00,11:00,CS502,Algorithms Design,CS-101,Prof. M. S. Suresh,A,3,Computer Science (CSE)\nTuesday,11:30,13:30,CS501L,Algorithms Lab,CS-Lab 2,Dr. K. S. Aradhya,A,3,Computer Science (CSE)\nWednesday,09:00,10:00,CS503,Operating Systems,CS-102,Dr. S. K. Ramesh,A,3,Computer Science (CSE)`);
+                          } else {
+                            setBulkText(`student_usn,course_code,course_name,department,semester,section,academic_year\n4JC22CS101,CS501,Computer Architecture,Computer Science (CSE),5,A,2025-2026\n4JC22CS101,CS502,Algorithms Design,Computer Science (CSE),5,A,2025-2026\n4JC22CS102,CS501,Computer Architecture,Computer Science (CSE),5,A,2025-2026\n4JC22CS103,CS501,Computer Architecture,Computer Science (CSE),5,A,2025-2026`);
+                          }
+                        }}
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-sans font-bold transition-all cursor-pointer"
+                      >
+                        📄 Load CSV Template
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (bulkCategory === 'students') {
+                            setBulkText(JSON.stringify([
+                              { usn: '4JC22CS110', name: 'Farhan Akhtar', department: 'Computer Science (CSE)', year: 3, section: 'A', attendanceRate: 91 },
+                              { usn: '4JC22CS111', name: 'Gitanjali Sen', department: 'Computer Science (CSE)', year: 3, section: 'A', attendanceRate: 87 }
+                            ], null, 2));
+                          } else if (bulkCategory === 'attendance') {
+                            setBulkText(JSON.stringify([
+                              { sessionId: 'SES-LIVE-SJCE-101', studentUsn: '4JC22CS110', verificationMethod: 'ZK_BIOMETRIC_PRESENCE', status: 'PRESENT' },
+                              { sessionId: 'SES-LIVE-SJCE-101', studentUsn: '4JC22CS111', verificationMethod: 'QR_OTP_VISUAL', status: 'PRESENT' }
+                            ], null, 2));
+                          } else if (bulkCategory === 'timetable') {
+                            setBulkText(JSON.stringify([
+                              { dayOfWeek: 'Thursday', startTime: '09:00', endTime: '10:00', subjectCode: 'CS504', subjectName: 'Database Management', classroom: 'CS-101', lecturer: 'Dr. Anita', section: 'A', year: 3, department: 'Computer Science (CSE)' }
+                            ], null, 2));
+                          } else {
+                            setBulkText(JSON.stringify([
+                              { student_usn: '4JC22CS110', course_code: 'CS504', course_name: 'Database Management', department: 'Computer Science (CSE)', semester: 5, section: 'A' }
+                            ], null, 2));
+                          }
+                        }}
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-sans font-bold transition-all cursor-pointer"
+                      >
+                        ⚡ Load JSON Schema
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setBulkText('')}
+                      className="text-[10px] text-slate-400 hover:text-slate-600 font-sans cursor-pointer"
+                    >
+                      Clear Editor
+                    </button>
+                  </div>
+
+                  {/* Code Editor Input */}
+                  <div className="relative rounded-2xl border border-slate-200 overflow-hidden shadow-inner bg-slate-900">
+                    <div className="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700 text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <span className="text-[11px] font-mono text-slate-300 ml-2">
+                          payload.{bulkText.trim().startsWith('[') ? 'json' : 'csv'} &bull; {bulkCategory.toUpperCase()} INGESTION
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400">
+                        {bulkText ? `${bulkText.split('\n').length} lines` : 'Empty buffer'}
+                      </span>
+                    </div>
+                    <textarea
+                      rows={10}
+                      value={bulkText}
+                      onChange={(e) => setBulkText(e.target.value)}
+                      placeholder={`Paste or load CSV / JSON payload for ${bulkCategory} batch ingestion...`}
+                      className="w-full p-4 font-mono text-xs text-emerald-400 bg-slate-900 outline-none border-none resize-y leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Status Banner if any */}
+                  {bulkStatus.type !== 'idle' && (
+                    <div className={`p-4 rounded-2xl border flex items-center gap-3 text-xs font-sans ${
+                      bulkStatus.type === 'success'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                        : 'bg-red-50 text-red-800 border-red-200'
+                    }`}>
+                      <span className="material-symbols-outlined text-lg">
+                        {bulkStatus.type === 'success' ? 'check_circle' : 'error'}
+                      </span>
+                      <div>
+                        <span className="font-bold">{bulkStatus.type === 'success' ? 'Batch Ingestion Complete!' : 'Ingestion Error:'}</span> {bulkStatus.message}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action trigger button */}
+                  <div className="flex justify-end pt-2">
+                    <button
+                      type="button"
+                      disabled={isBulkExecuting || !bulkText.trim()}
+                      onClick={async () => {
+                        if (!bulkText.trim()) return;
+                        setIsBulkExecuting(true);
+                        setBulkStatus({ type: 'idle', message: '' });
+                        try {
+                          const endpoint = `/api/${bulkCategory}/upload`;
+                          const res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ [bulkCategory]: bulkText })
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            setBulkStatus({
+                              type: 'success',
+                              count: data.count,
+                              message: `Successfully ingested ${data.count} records into SQLite database.`
+                            });
+                          } else {
+                            setBulkStatus({
+                              type: 'error',
+                              message: data.error || 'Batch ingestion failed.'
+                            });
+                          }
+                        } catch (err: any) {
+                          setBulkStatus({ type: 'error', message: err.message });
+                        } finally {
+                          setIsBulkExecuting(false);
+                        }
+                      }}
+                      className="px-6 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl text-xs font-sans font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      <span className="material-symbols-outlined text-sm">
+                        {isBulkExecuting ? 'sync' : 'bolt'}
+                      </span>
+                      {isBulkExecuting ? 'Executing Atomic Batch...' : `Execute Batch Ingestion (${bulkCategory})`}
+                    </button>
                   </div>
                 </section>
               )}

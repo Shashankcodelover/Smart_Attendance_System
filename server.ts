@@ -1459,6 +1459,194 @@ app.delete('/api/students/:usn', (req, res) => {
   }
 });
 
+// Delete Attendance Session and cascaded records
+app.delete('/api/sessions/:id', (req, res) => {
+  try {
+    dao.deleteSession(req.params.id);
+    dao.insertAuditLog('SESSION_DELETED', req.params.id, 'admin@sjce.edu', `Deleted session ${req.params.id}`);
+    res.json({ success: true, message: `Session ${req.params.id} and attendance records deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete individual Attendance record
+app.delete('/api/attendance/:id', (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    dao.deleteAttendanceRecord(id);
+    res.json({ success: true, message: `Attendance record ${id} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete student attendance in a session
+app.delete('/api/attendance/session/:sessionId/student/:usn', (req, res) => {
+  try {
+    dao.deleteAttendanceBySessionAndStudent(req.params.sessionId, req.params.usn);
+    res.json({ success: true, message: `Attendance for student ${req.params.usn} in session ${req.params.sessionId} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Academic Relations & Course Allocations
+app.get('/api/academic/relations', (req, res) => {
+  try {
+    const relations = dao.getAcademicRelations(req.query);
+    res.json({ success: true, count: relations.length, relations });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/academic/relations', (req, res) => {
+  try {
+    const relation = dao.insertAcademicRelation(req.body);
+    dao.insertAuditLog('ACADEMIC_RELATION_CREATED', relation.id, relation.lecturer_email || 'admin@sjce.edu', `Assigned ${relation.course_code} to ${relation.lecturer_name}`);
+    res.status(201).json({ success: true, relation });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/academic/relations/:id', (req, res) => {
+  try {
+    dao.deleteAcademicRelation(req.params.id);
+    dao.insertAuditLog('ACADEMIC_RELATION_DELETED', req.params.id, 'admin@sjce.edu', `Severed academic relation ${req.params.id}`);
+    res.json({ success: true, message: `Academic relation ${req.params.id} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Student Course Enrollments
+app.get('/api/enrollments', (req, res) => {
+  try {
+    const enrollments = dao.getEnrollments(req.query);
+    res.json({ success: true, count: enrollments.length, enrollments });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/enrollments', (req, res) => {
+  try {
+    const enrollment = dao.insertEnrollment(req.body);
+    dao.insertAuditLog('ENROLLMENT_CREATED', enrollment.id, 'admin@sjce.edu', `Enrolled ${enrollment.student_usn} in ${enrollment.course_code}`);
+    res.status(201).json({ success: true, enrollment });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/enrollments/:id', (req, res) => {
+  try {
+    dao.deleteEnrollment(req.params.id);
+    res.json({ success: true, message: `Enrollment ${req.params.id} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Timetable Entry Deletion
+app.delete('/api/timetable/:id', (req, res) => {
+  try {
+    dao.deleteTimetableEntry(req.params.id);
+    res.json({ success: true, message: `Timetable slot ${req.params.id} deleted.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ═════════════════════════════════════════════════════════════════
+// ENTERPRISE BULK INGESTION ("UPLOADATION") ENGINES
+// ═════════════════════════════════════════════════════════════════
+
+// Parse helper supporting JSON array or CSV payload
+function parseBulkData(raw: any, defaultKey: string): any[] {
+  let data = raw && raw[defaultKey] ? raw[defaultKey] : raw;
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data);
+    } catch {
+      // Parse CSV
+      const lines = data.trim().split(/\r?\n/);
+      if (lines.length > 1) {
+        const headers = lines[0].split(',').map((h: string) => h.trim().replace(/^["']|["']$/g, ''));
+        data = lines.slice(1).filter((l: string) => l.trim().length > 0).map((l: string) => {
+          const vals = l.split(',').map((v: string) => v.trim().replace(/^["']|["']$/g, ''));
+          const item: any = {};
+          headers.forEach((h: string, idx: number) => {
+            item[h] = vals[idx] !== undefined ? vals[idx] : '';
+          });
+          return item;
+        });
+      } else {
+        data = [];
+      }
+    }
+  }
+  return Array.isArray(data) ? data : [];
+}
+
+app.post('/api/students/upload', (req, res) => {
+  try {
+    const list = parseBulkData(req.body, 'students');
+    if (!list.length) {
+      return res.status(400).json({ error: 'No student records parsed. Provide JSON array or CSV text.' });
+    }
+    const count = dao.bulkUpsertStudents(list);
+    dao.insertAuditLog('STUDENTS_BULK_UPLOAD', `${count}_RECORDS`, 'admin@sjce.edu', `Batch ingested ${count} student records`);
+    res.json({ success: true, count, message: `Successfully ingested ${count} student records.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/attendance/upload', (req, res) => {
+  try {
+    const list = parseBulkData(req.body, 'attendance');
+    if (!list.length) {
+      return res.status(400).json({ error: 'No attendance records parsed. Provide JSON array or CSV text.' });
+    }
+    const count = dao.bulkInsertAttendance(list);
+    dao.insertAuditLog('ATTENDANCE_BULK_UPLOAD', `${count}_RECORDS`, 'admin@sjce.edu', `Batch ingested ${count} attendance logs`);
+    res.json({ success: true, count, message: `Successfully ingested ${count} attendance logs.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/timetable/upload', (req, res) => {
+  try {
+    const list = parseBulkData(req.body, 'timetable');
+    if (!list.length) {
+      return res.status(400).json({ error: 'No timetable slots parsed. Provide JSON array or CSV text.' });
+    }
+    const count = dao.bulkInsertTimetable(list);
+    dao.insertAuditLog('TIMETABLE_BULK_UPLOAD', `${count}_RECORDS`, 'admin@sjce.edu', `Batch ingested ${count} timetable slots`);
+    res.json({ success: true, count, message: `Successfully ingested ${count} timetable slots.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/enrollments/upload', (req, res) => {
+  try {
+    const list = parseBulkData(req.body, 'enrollments');
+    if (!list.length) {
+      return res.status(400).json({ error: 'No enrollment records parsed. Provide JSON array or CSV text.' });
+    }
+    const count = dao.bulkInsertEnrollments(list);
+    dao.insertAuditLog('ENROLLMENTS_BULK_UPLOAD', `${count}_RECORDS`, 'admin@sjce.edu', `Batch ingested ${count} student course enrollments`);
+    res.json({ success: true, count, message: `Successfully ingested ${count} student course enrollments.` });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // PROJECT ASTRA V5.0: BIOMETRIC LIVENESS & ZK PRESENCE PROTOCOL
 // ═════════════════════════════════════════════════════════════════

@@ -140,6 +140,32 @@ export function initializeSchema() {
       reviewed_at DATETIME
     );
 
+    CREATE TABLE IF NOT EXISTS enrollments (
+      id TEXT PRIMARY KEY,
+      student_usn TEXT NOT NULL,
+      course_code TEXT NOT NULL,
+      course_name TEXT NOT NULL,
+      department TEXT NOT NULL,
+      semester INTEGER NOT NULL,
+      section TEXT NOT NULL,
+      academic_year TEXT DEFAULT '2026-2027',
+      status TEXT DEFAULT 'ENROLLED',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS academic_relations (
+      id TEXT PRIMARY KEY,
+      lecturer_email TEXT NOT NULL,
+      lecturer_name TEXT NOT NULL,
+      course_code TEXT NOT NULL,
+      course_name TEXT NOT NULL,
+      department TEXT NOT NULL,
+      section TEXT NOT NULL,
+      relation_type TEXT NOT NULL,
+      classroom_room TEXT DEFAULT 'Hall-301',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
     -- Performance indexes
     CREATE INDEX IF NOT EXISTS idx_attendance_session ON attendance_records(session_id);
     CREATE INDEX IF NOT EXISTS idx_attendance_student ON attendance_records(student_usn);
@@ -150,7 +176,58 @@ export function initializeSchema() {
     CREATE INDEX IF NOT EXISTS idx_timetable_day ON timetable_entries(day, department, year, section);
     CREATE INDEX IF NOT EXISTS idx_resources_dept ON academic_resources(department, year);
     CREATE INDEX IF NOT EXISTS idx_leave_student ON leave_requests(student_usn);
+    CREATE INDEX IF NOT EXISTS idx_enrollments_usn ON enrollments(student_usn);
+    CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments(course_code);
+    CREATE INDEX IF NOT EXISTS idx_academic_relations_lecturer ON academic_relations(lecturer_email);
+    CREATE INDEX IF NOT EXISTS idx_academic_relations_course ON academic_relations(course_code);
   `);
+
+  // Ensure default academic relations exist
+  try {
+    const existingRelations = db.prepare('SELECT COUNT(*) as cnt FROM academic_relations').get() as any;
+    if (!existingRelations || existingRelations.cnt === 0) {
+      const defaultRelations = [
+        { id: 'rel_01', lecturer_email: 'dr.ramesh@sjce.edu', lecturer_name: 'Dr. Ramesh Kumar', course_code: 'CS501', course_name: 'Computer Networks', department: 'Computer Science (CSE)', section: 'A', relation_type: 'primary_instructor', classroom_room: 'CS-Lab-1' },
+        { id: 'rel_02', lecturer_email: 'dr.priya@sjce.edu', lecturer_name: 'Dr. Priya Sharma', course_code: 'CS502', course_name: 'Database Management Systems', department: 'Computer Science (CSE)', section: 'A', relation_type: 'primary_instructor', classroom_room: 'CS-301' },
+        { id: 'rel_03', lecturer_email: 'dr.ramesh@sjce.edu', lecturer_name: 'Dr. Ramesh Kumar', course_code: 'CS503', course_name: 'Operating Systems', department: 'Computer Science (CSE)', section: 'A', relation_type: 'primary_instructor', classroom_room: 'CS-301' },
+        { id: 'rel_04', lecturer_email: 'dr.priya@sjce.edu', lecturer_name: 'Dr. Priya Sharma', course_code: 'CS504', course_name: 'Software Engineering', department: 'Computer Science (CSE)', section: 'A', relation_type: 'course_coordinator', classroom_room: 'CS-301' },
+        { id: 'rel_05', lecturer_email: 'prof.suresh@sjce.edu', lecturer_name: 'Prof. Suresh N.', course_code: 'CS501L', course_name: 'Networks & Protocols Laboratory', department: 'Computer Science (CSE)', section: 'A', relation_type: 'lab_coordinator', classroom_room: 'Network-Lab-2' },
+        { id: 'rel_06', lecturer_email: 'dr.ramesh@sjce.edu', lecturer_name: 'Dr. Ramesh Kumar', course_code: 'CS505', course_name: 'Computer Architecture', department: 'Computer Science (CSE)', section: 'A', relation_type: 'elective_advisor', classroom_room: 'CS-302' },
+        { id: 'rel_07', lecturer_email: 'dr.ananya@sjce.edu', lecturer_name: 'Dr. Ananya Ray', course_code: 'EC301', course_name: 'Signals & Systems', department: 'Electronics & Communication (ECE)', section: 'A', relation_type: 'primary_instructor', classroom_room: 'EC-201' }
+      ];
+      const relStmt = db.prepare(`INSERT INTO academic_relations (id, lecturer_email, lecturer_name, course_code, course_name, department, section, relation_type, classroom_room) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+      for (const r of defaultRelations) {
+        relStmt.run(r.id, r.lecturer_email, r.lecturer_name, r.course_code, r.course_name, r.department, r.section, r.relation_type, r.classroom_room);
+      }
+    }
+  } catch (e) {
+    // Ignore if table not yet ready
+  }
+
+  // Ensure default enrollments exist
+  try {
+    const existingEnrollments = db.prepare('SELECT COUNT(*) as cnt FROM enrollments').get() as any;
+    if (!existingEnrollments || existingEnrollments.cnt === 0) {
+      const defaultCourses = [
+        { code: 'CS501', name: 'Computer Networks' },
+        { code: 'CS502', name: 'Database Management Systems' },
+        { code: 'CS503', name: 'Operating Systems' },
+        { code: 'CS504', name: 'Software Engineering' },
+        { code: 'CS505', name: 'Computer Architecture' }
+      ];
+      const studentsList = db.prepare('SELECT usn, name FROM students WHERE section = "A" LIMIT 15').all() as any[];
+      if (studentsList && studentsList.length > 0) {
+        const enrStmt = db.prepare(`INSERT OR IGNORE INTO enrollments (id, student_usn, course_code, course_name, department, semester, section, academic_year, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+        for (const st of studentsList) {
+          for (const c of defaultCourses) {
+            enrStmt.run(`enr_${crypto.randomUUID().slice(0, 8)}`, st.usn, c.code, c.name, 'Computer Science (CSE)', 5, 'A', '2026-2027', 'ENROLLED');
+          }
+        }
+      }
+    }
+  } catch (e) {
+    // Ignore
+  }
 }
 
 // Data Access Object
@@ -370,6 +447,205 @@ export const dao = {
     db.prepare('SELECT * FROM device_bindings WHERE usn = ? AND is_active = 1').get(usn),
   bindDevice: (usn: string, fingerprint: string) => {
     db.prepare('INSERT OR REPLACE INTO device_bindings (usn, device_fingerprint, is_active) VALUES (?, ?, 1)').run(usn, fingerprint);
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // ATTENDANCE DELETIONS & CUSTODY PURGE
+  // ═══════════════════════════════════════════════════════════
+  deleteAttendanceRecord: (id: string) => {
+    const rec = db.prepare('SELECT session_id FROM attendance_records WHERE id = ?').get(id) as any;
+    db.prepare('DELETE FROM attendance_records WHERE id = ?').run(id);
+    if (rec?.session_id) {
+      db.prepare('UPDATE sessions SET marked_count = MAX(marked_count - 1, 0) WHERE id = ?').run(rec.session_id);
+    }
+  },
+  deleteAttendanceBySessionAndStudent: (sessionId: string, studentUsn: string) => {
+    const res = db.prepare('DELETE FROM attendance_records WHERE session_id = ? AND student_usn = ? COLLATE NOCASE').run(sessionId, studentUsn);
+    if (res.changes > 0) {
+      db.prepare('UPDATE sessions SET marked_count = MAX(marked_count - 1, 0) WHERE id = ?').run(sessionId);
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // ENROLLMENTS RELATIONS OPERATIONS
+  // ═══════════════════════════════════════════════════════════
+  getEnrollments: (filters?: { studentUsn?: string; courseCode?: string; section?: string }) => {
+    let query = 'SELECT * FROM enrollments WHERE 1=1';
+    const params: any[] = [];
+    if (filters?.studentUsn) {
+      query += ' AND student_usn = ? COLLATE NOCASE';
+      params.push(filters.studentUsn);
+    }
+    if (filters?.courseCode) {
+      query += ' AND course_code = ? COLLATE NOCASE';
+      params.push(filters.courseCode);
+    }
+    if (filters?.section) {
+      query += ' AND section = ? COLLATE NOCASE';
+      params.push(filters.section);
+    }
+    query += ' ORDER BY created_at DESC';
+    return db.prepare(query).all(...params);
+  },
+  insertEnrollment: (e: any) => {
+    const id = e.id || `enr_${crypto.randomUUID().slice(0, 8)}`;
+    db.prepare(`
+      INSERT INTO enrollments (id, student_usn, course_code, course_name, department, semester, section, academic_year, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      id, e.student_usn || e.studentUsn, e.course_code || e.courseCode,
+      e.course_name || e.courseName || 'Core Course',
+      e.department || 'Computer Science (CSE)',
+      e.semester || 5, e.section || 'A',
+      e.academic_year || '2026-2027', e.status || 'ENROLLED'
+    );
+    return { id, ...e };
+  },
+  deleteEnrollment: (id: string) => {
+    db.prepare('DELETE FROM enrollments WHERE id = ?').run(id);
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // ACADEMIC RELATIONS & FACULTY ALLOCATION MESH
+  // ═══════════════════════════════════════════════════════════
+  getAcademicRelations: (filters?: { lecturerEmail?: string; courseCode?: string; department?: string }) => {
+    let query = 'SELECT * FROM academic_relations WHERE 1=1';
+    const params: any[] = [];
+    if (filters?.lecturerEmail) {
+      query += ' AND lecturer_email = ? COLLATE NOCASE';
+      params.push(filters.lecturerEmail);
+    }
+    if (filters?.courseCode) {
+      query += ' AND course_code = ? COLLATE NOCASE';
+      params.push(filters.courseCode);
+    }
+    if (filters?.department) {
+      query += ' AND department LIKE ?';
+      params.push(`%${filters.department}%`);
+    }
+    query += ' ORDER BY created_at DESC';
+    return db.prepare(query).all(...params);
+  },
+  insertAcademicRelation: (r: any) => {
+    const id = r.id || `rel_${crypto.randomUUID().slice(0, 8)}`;
+    db.prepare(`
+      INSERT INTO academic_relations (id, lecturer_email, lecturer_name, course_code, course_name, department, section, relation_type, classroom_room)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      id, r.lecturer_email || r.lecturerEmail, r.lecturer_name || r.lecturerName || 'Faculty',
+      r.course_code || r.courseCode, r.course_name || r.courseName,
+      r.department || 'Computer Science (CSE)', r.section || 'A',
+      r.relation_type || r.relationType || 'primary_instructor',
+      r.classroom_room || r.classroomRoom || 'Room 101'
+    );
+    return { id, ...r };
+  },
+  deleteAcademicRelation: (id: string) => {
+    db.prepare('DELETE FROM academic_relations WHERE id = ?').run(id);
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // BATCH BULK INGESTION ("UPLOADATION")
+  // ═══════════════════════════════════════════════════════════
+  bulkUpsertStudents: (studentsList: any[]) => {
+    const transaction = db.transaction((list: any[]) => {
+      let count = 0;
+      const stmt = db.prepare(`
+        INSERT INTO students (usn, name, attendanceRate, courseCode, section, year, department, course, phone, email, roll_number, avatarUrl, onboarded_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(usn) DO UPDATE SET
+          name = excluded.name,
+          section = COALESCE(excluded.section, students.section),
+          year = COALESCE(excluded.year, students.year),
+          department = COALESCE(excluded.department, students.department),
+          course = COALESCE(excluded.course, students.course),
+          phone = COALESCE(excluded.phone, students.phone),
+          email = COALESCE(excluded.email, students.email),
+          roll_number = COALESCE(excluded.roll_number, students.roll_number)
+      `);
+      for (const st of list) {
+        if (!st.usn || !st.name) continue;
+        stmt.run(
+          st.usn.trim().toUpperCase(), st.name.trim(), st.attendanceRate || 85,
+          st.courseCode || st.department || 'CSE', st.section || 'A', st.year || 3,
+          st.department || 'Computer Science (CSE)', st.course || 'B.E.',
+          st.phone || null, st.email || null, st.roll_number || null, st.avatarUrl || null,
+          new Date().toISOString()
+        );
+        count++;
+      }
+      return count;
+    });
+    return transaction(studentsList);
+  },
+
+  bulkInsertAttendance: (recordsList: any[]) => {
+    const transaction = db.transaction((list: any[]) => {
+      let count = 0;
+      const stmt = db.prepare(`
+        INSERT OR IGNORE INTO attendance_records (id, session_id, student_usn, student_name, submitted_at, is_online, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `);
+      for (const rec of list) {
+        if (!rec.sessionId || !rec.studentUsn) continue;
+        stmt.run(
+          rec.id || crypto.randomUUID(), rec.sessionId, rec.studentUsn.trim().toUpperCase(),
+          rec.studentName || 'Student', rec.submittedAt || new Date().toISOString(),
+          rec.isOnline !== undefined ? (rec.isOnline ? 1 : 0) : 1,
+          rec.status || 'VERIFIED'
+        );
+        db.prepare('UPDATE sessions SET marked_count = marked_count + 1 WHERE id = ?').run(rec.sessionId);
+        count++;
+      }
+      return count;
+    });
+    return transaction(recordsList);
+  },
+
+  bulkInsertTimetable: (entriesList: any[]) => {
+    const transaction = db.transaction((list: any[]) => {
+      let count = 0;
+      const stmt = db.prepare(`
+        INSERT INTO timetable_entries (day, time_slot, subject_code, subject_name, lecturer_email, lecturer_name, department, course, year, section, room)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      for (const e of list) {
+        if (!e.day || !e.subject_code) continue;
+        stmt.run(
+          e.day, e.time_slot || e.timeSlot || '10:00 - 11:00',
+          e.subject_code || e.subjectCode, e.subject_name || e.subjectName || 'Lecture',
+          e.lecturer_email || e.lecturerEmail || null, e.lecturer_name || e.lecturerName || null,
+          e.department || 'Computer Science (CSE)', e.course || 'B.E.',
+          e.year || 3, e.section || 'A', e.room || 'Room 101'
+        );
+        count++;
+      }
+      return count;
+    });
+    return transaction(entriesList);
+  },
+
+  bulkInsertEnrollments: (enrollmentsList: any[]) => {
+    const transaction = db.transaction((list: any[]) => {
+      let count = 0;
+      const stmt = db.prepare(`
+        INSERT OR IGNORE INTO enrollments (id, student_usn, course_code, course_name, department, semester, section, academic_year, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      for (const enr of list) {
+        if (!enr.studentUsn || !enr.courseCode) continue;
+        stmt.run(
+          enr.id || `enr_${crypto.randomUUID().slice(0, 8)}`,
+          enr.studentUsn.trim().toUpperCase(), enr.courseCode.trim().toUpperCase(),
+          enr.courseName || 'Core Subject', enr.department || 'Computer Science (CSE)',
+          enr.semester || 5, enr.section || 'A', enr.academicYear || '2026-2027',
+          enr.status || 'ENROLLED'
+        );
+        count++;
+      }
+      return count;
+    });
+    return transaction(enrollmentsList);
   },
 
   // ═══════════════════════════════════════════════════════════
