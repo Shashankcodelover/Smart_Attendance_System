@@ -1,5 +1,9 @@
 ﻿# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
 
+## 🌐 Live Demo
+
+https://smart-attendance-system.shashankj.tech
+
 [![Automated Tests](https://img.shields.io/badge/Tests-49%2F49%20Passing-brightgreen?style=for-the-badge&logo=vitest)](test/)
 [![Security](https://img.shields.io/badge/Security-Zero--Trust%20HMAC-blueviolet?style=for-the-badge&logo=shield)](server.ts)
 [![UI/UX](https://img.shields.io/badge/UI%2FUX-Tailwind%20v4%20%2B%20Lucide-indigo?style=for-the-badge&logo=tailwindcss)](src/)
