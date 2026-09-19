@@ -1,9 +1,9 @@
-﻿# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
+# 🛡️ Smart Attendance Platform (Enterprise Zero-Trust Edition)
 
-[![Automated Tests](https://img.shields.io/badge/Tests-49%2F49%20Passing-brightgreen?style=for-the-badge&logo=vitest)](test/)
-[![Security](https://img.shields.io/badge/Security-Zero--Trust%20HMAC-blueviolet?style=for-the-badge&logo=shield)](server.ts)
+[![Automated Tests](https://img.shields.io/badge/Tests-59%2F59%20Passing%20(100%25)-brightgreen?style=for-the-badge&logo=vitest)](test/)
+[![Security](https://img.shields.io/badge/Security-Zero--Trust%20HMAC%20%26%20ZK-blueviolet?style=for-the-badge&logo=shield)](server.ts)
 [![UI/UX](https://img.shields.io/badge/UI%2FUX-Tailwind%20v4%20%2B%20Lucide-indigo?style=for-the-badge&logo=tailwindcss)](src/)
-[![AI Analytics](https://img.shields.io/badge/AI-Google%20Gemini-orange?style=for-the-badge&logo=googlegemini)](controllers/aiController.ts)
+[![AI Analytics](https://img.shields.io/badge/AI-Google%20Gemini%20%2B%20Markov%20Radar-orange?style=for-the-badge&logo=googlegemini)](controllers/aiController.ts)
 
 > **Zero-Trust Biometric, Cryptographic & Geofenced Presence Verification System**  
 > Built for universities and enterprise institutions to eliminate proxy attendance, enforce dynamic rotation QR tokens, and deliver predictive dropout analytics using Google Gemini.

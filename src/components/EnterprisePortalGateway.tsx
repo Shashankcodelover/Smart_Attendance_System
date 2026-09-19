@@ -52,6 +52,28 @@ export default function EnterprisePortalGateway({
     setShowModal(true);
   };
 
+  const handleQuickDemo = async (role: 'lecturer' | 'student' | 'admin') => {
+    setDbState('connecting');
+    setErrorMsg(null);
+    try {
+      const email = role === 'lecturer' ? 'dr.ramesh@sjce.edu' : role === 'student' ? '4JC21CS001' : 'admin@sjce.edu';
+      const pass = '1234';
+      const user = await firebaseAuth.signIn(email, pass, role);
+      setDbState('connected');
+      localStorage.setItem(`sjce_tour_completed_${role}`, 'true');
+      setTimeout(() => {
+        onAuthorize(
+          role === 'student' ? 'student' : 'lecturer',
+          role,
+          { codeOrUsn: user.codeOrUsn, name: user.name }
+        );
+      }, 300);
+    } catch (err: any) {
+      setDbState('idle');
+      setErrorMsg(err.message || 'Quick demo login failed.');
+    }
+  };
+
   const handleGoBack = () => {
     setShowModal(false);
     setDbState('idle');
@@ -164,6 +186,43 @@ export default function EnterprisePortalGateway({
             Welcome to the digital administrative center for Sri Jayachamarajendra College of Engineering. 
             Select an authorized department terminal below to sign in.
           </p>
+        </div>
+
+        {/* Fast-Track Evaluator Demo Bar */}
+        <div className="max-w-2xl mx-auto w-full bg-white/95 backdrop-blur-md border border-indigo-100 rounded-2xl p-3 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2.5 w-2.5 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span className="text-xs font-sans font-bold text-slate-800">⚡ Live Evaluator Fast-Track:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => handleQuickDemo('lecturer')}
+              className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#6b38d4] border border-indigo-200 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs hover:scale-102 active:scale-98"
+            >
+              <span className="material-symbols-outlined text-sm">co_present</span>
+              Demo Faculty
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickDemo('student')}
+              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs hover:scale-102 active:scale-98"
+            >
+              <span className="material-symbols-outlined text-sm">school</span>
+              Demo Student
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickDemo('admin')}
+              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs hover:scale-102 active:scale-98"
+            >
+              <span className="material-symbols-outlined text-sm">shield</span>
+              Registrar
+            </button>
+          </div>
         </div>
 
         {/* 3 Pages Grid: Student, Lecturer, Admin */}
