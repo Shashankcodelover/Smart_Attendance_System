@@ -228,6 +228,78 @@ export function initializeSchema() {
   } catch (e) {
     // Ignore
   }
+
+  // Ensure default academic resources exist
+  try {
+    const existingResources = db.prepare('SELECT COUNT(*) as cnt FROM academic_resources').get() as any;
+    if (!existingResources || existingResources.cnt === 0) {
+      const defaultResources = [
+        {
+          id: 'res_cs501',
+          subject_code: 'CS501',
+          subject_name: 'Computer Networks',
+          credits: 4,
+          department: 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: 3,
+          syllabus_json: JSON.stringify([
+            { unit: 'Unit I', title: 'Network Layer & IP Architecture', topic: 'IPv4/IPv6 packet addressing, subnetting, CIDR, and routing protocols (OSPF, BGP).' },
+            { unit: 'Unit II', title: 'Transport Layer & Congestion Control', topic: 'TCP 3-way handshake, flow control, window management, UDP, and QUIC / HTTP/3.' },
+            { unit: 'Unit III', title: 'Data Link Layer & MAC Protocols', topic: 'Ethernet, CSMA/CD, framing, error detection/correction, and VLAN switching.' },
+            { unit: 'Unit IV', title: 'Network Security & Cryptography', topic: 'TLS 1.3 handshake, symmetric/asymmetric ciphers, SHA-256, and zero-trust perimeter.' }
+          ])
+        },
+        {
+          id: 'res_cs502',
+          subject_code: 'CS502',
+          subject_name: 'Database Management Systems',
+          credits: 4,
+          department: 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: 3,
+          syllabus_json: JSON.stringify([
+            { unit: 'Unit I', title: 'Relational Model & Relational Algebra', topic: 'ER diagrams, relational schema mapping, tuple calculus, and SQL DDL/DML.' },
+            { unit: 'Unit II', title: 'Schema Refinement & Normalization', topic: 'Functional dependencies, 1NF, 2NF, 3NF, BCNF, and lossless join decomposition.' },
+            { unit: 'Unit III', title: 'Transaction Processing & ACID Properties', topic: 'Serializability, 2PL lock manager, deadlocks, and write-ahead logging (WAL).' },
+            { unit: 'Unit IV', title: 'Indexing & Distributed DB Engines', topic: 'B+ trees, hash indexes, LSM trees, CAP theorem, and distributed replication.' }
+          ])
+        },
+        {
+          id: 'res_cs503',
+          subject_code: 'CS503',
+          subject_name: 'Operating Systems',
+          credits: 4,
+          department: 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: 3,
+          syllabus_json: JSON.stringify([
+            { unit: 'Unit I', title: 'Process Management & Multithreading', topic: 'PCB structures, context switching, CPU scheduling algorithms, and POSIX threads.' },
+            { unit: 'Unit II', title: 'Memory Virtualization & Paging', topic: 'Virtual address translation, TLBs, page fault handlers, and inverted page tables.' },
+            { unit: 'Unit III', title: 'File Systems & Storage I/O', topic: 'Inode allocation, journaled filesystems, disk arm scheduling, and buffer cache.' }
+          ])
+        },
+        {
+          id: 'res_ai402',
+          subject_code: 'AI402',
+          subject_name: 'Applied Machine Learning & Deep Networks',
+          credits: 4,
+          department: 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: 3,
+          syllabus_json: JSON.stringify([
+            { unit: 'Unit I', title: 'Supervised Learning & Regularization', topic: 'Gradient descent, cross-entropy loss, L1/L2 regularization, and feature spaces.' },
+            { unit: 'Unit II', title: 'Deep Neural Architectures', topic: 'Backpropagation, activation functions, CNNs for computer vision, and Transformer attention.' }
+          ])
+        }
+      ];
+      const resStmt = db.prepare(`INSERT OR IGNORE INTO academic_resources (id, subject_code, subject_name, credits, department, course, year, syllabus_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
+      for (const resItem of defaultResources) {
+        resStmt.run(resItem.id, resItem.subject_code, resItem.subject_name, resItem.credits, resItem.department, resItem.course, resItem.year, resItem.syllabus_json);
+      }
+    }
+  } catch (e) {
+    // Ignore
+  }
 }
 
 // Data Access Object
@@ -440,6 +512,27 @@ export const dao = {
     return transaction();
   },
 
+  recordAttendance: (
+    sessionId: string,
+    studentUsn: string,
+    verificationOption: string = 'PRESENT',
+    status: string = 'PRESENT',
+    lat?: number,
+    lng?: number,
+    cryptoAttestation?: string
+  ) => {
+    const student = db.prepare('SELECT name FROM students WHERE usn = ? COLLATE NOCASE').get(studentUsn) as any;
+    const stmt = db.prepare(`
+      INSERT INTO attendance_records (id, session_id, student_usn, student_name, scanned_at, submitted_at, is_online, verification_option, status, crypto_attestation)
+      VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+    `);
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
+    stmt.run(id, sessionId, studentUsn, student?.name || 'Student Candidate', now, now, verificationOption, status, cryptoAttestation || null);
+    db.prepare('UPDATE sessions SET marked_count = marked_count + 1 WHERE id = ?').run(sessionId);
+    return { id, sessionId, studentUsn, status };
+  },
+
   // ═══════════════════════════════════════════════════════════
   // DEVICE BINDINGS
   // ═══════════════════════════════════════════════════════════
@@ -452,7 +545,7 @@ export const dao = {
   // ═══════════════════════════════════════════════════════════
   // ATTENDANCE DELETIONS & CUSTODY PURGE
   // ═══════════════════════════════════════════════════════════
-  deleteAttendanceRecord: (id: string) => {
+  deleteAttendanceRecord: (id: string | number) => {
     const rec = db.prepare('SELECT session_id FROM attendance_records WHERE id = ?').get(id) as any;
     db.prepare('DELETE FROM attendance_records WHERE id = ?').run(id);
     if (rec?.session_id) {
@@ -685,11 +778,42 @@ export const dao = {
   getAcademicResources: (department?: string, year?: number) => {
     let rows: any[];
     if (department && year) {
-      rows = db.prepare('SELECT * FROM academic_resources WHERE department = ? AND year = ? ORDER BY subject_code').all(department, year);
+      rows = db.prepare('SELECT * FROM academic_resources WHERE department LIKE ? AND year = ? ORDER BY subject_code').all(`%${department.split(' ')[0]}%`, year);
     } else if (department) {
-      rows = db.prepare('SELECT * FROM academic_resources WHERE department = ? ORDER BY subject_code').all(department);
+      rows = db.prepare('SELECT * FROM academic_resources WHERE department LIKE ? ORDER BY subject_code').all(`%${department.split(' ')[0]}%`);
     } else {
       rows = db.prepare('SELECT * FROM academic_resources ORDER BY subject_code').all();
+    }
+    if (rows.length === 0) {
+      return [
+        {
+          id: 'res_cs501',
+          subjectCode: 'CS501',
+          subjectName: 'Computer Networks',
+          credits: 4,
+          department: department || 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: year || 3,
+          syllabus: [
+            { unit: 'Unit I', title: 'OSI Physical & Data Link Layers', topic: 'Framing, error detection, sliding window protocols.' },
+            { unit: 'Unit II', title: 'Network Layer & IP Addressing', topic: 'IPv4/IPv6, subnetting, Dijkstra and Bellman-Ford routing.' },
+            { unit: 'Unit III', title: 'Transport Layer & TCP Congestion', topic: 'TCP three-way handshake, flow control, sliding window.' }
+          ]
+        },
+        {
+          id: 'res_cs502',
+          subjectCode: 'CS502',
+          subjectName: 'Database Management Systems',
+          credits: 4,
+          department: department || 'Computer Science (CSE)',
+          course: 'B.E.',
+          year: year || 3,
+          syllabus: [
+            { unit: 'Unit I', title: 'Relational Model & Algebra', topic: 'ER modeling, relational calculus, SQL DDL/DML constraints.' },
+            { unit: 'Unit II', title: 'Normalization & Normal Forms', topic: '1NF, 2NF, 3NF, BCNF lossless decomposition.' }
+          ]
+        }
+      ];
     }
     return rows.map(r => ({
       id: r.id,

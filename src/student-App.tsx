@@ -432,6 +432,7 @@ export default function StudentApp() {
           {currentPage === 'student-dashboard' && (
             <StudentDashboardView
               onCheckInClick={() => setCurrentPage('check-in')}
+              onResourcesClick={() => setCurrentPage('resources')}
               currentUser={currentUser}
               students={students}
               sessions={sessions}

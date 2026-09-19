@@ -3,12 +3,13 @@ import { Student, Session } from '../types';
 
 interface StudentDashboardViewProps {
   onCheckInClick: () => void;
+  onResourcesClick?: () => void;
   currentUser?: { codeOrUsn: string; name: string } | null;
   students?: Student[];
   sessions?: Session[];
 }
 
-export default function StudentDashboardView({ onCheckInClick, currentUser, sessions = [] }: StudentDashboardViewProps) {
+export default function StudentDashboardView({ onCheckInClick, onResourcesClick, currentUser, sessions = [] }: StudentDashboardViewProps) {
   const [now, setNow] = useState(new Date());
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [bunkData, setBunkData] = useState<any>(null);
@@ -209,6 +210,15 @@ export default function StudentDashboardView({ onCheckInClick, currentUser, sess
               <span className="material-symbols-outlined text-sm">event_busy</span>
               Leave / OD Claim
             </button>
+            {onResourcesClick && (
+              <button
+                onClick={onResourcesClick}
+                className="px-4 py-2.5 bg-cyan-50 hover:bg-cyan-100 text-[#00687a] font-sans text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer transition-all border border-cyan-200/60"
+              >
+                <span className="material-symbols-outlined text-sm">menu_book</span>
+                Syllabus & Resources
+              </button>
+            )}
           </div>
 
           <div className="absolute -right-16 -bottom-16 w-48 h-48 bg-[#6b38d4]/5 rounded-full blur-3xl pointer-events-none group-hover:bg-[#6b38d4]/10 transition-colors" />

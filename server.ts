@@ -631,17 +631,19 @@ app.get('/api/attendance/records', authenticateLecturer, (req: any, res: any) =>
   res.json(dao.getAttendanceRecords() || []);
 });
 
-app.post('/api/sessions/activate', authenticateLecturer, (req: any, res: any) => {
-  const { sessionId } = req.body;
+app.post(['/api/sessions/activate', '/api/sessions/:id/activate'], authenticateLecturer, (req: any, res: any) => {
+  const sessionId = req.body?.sessionId || req.params?.id;
+  if (!sessionId) return res.status(400).json({ error: 'sessionId is required' });
   const session = dao.getSessionById(sessionId);
   if (!session) return res.status(404).json({ error: 'Session not found' });
   dao.updateSessionStatus(sessionId, 'ACTIVE', session.is_reopened);
   dao.insertAuditLog('ACTIVATE_SESSION', sessionId, req.user.email, 'Session activated manually');
-  res.json({ success: true });
+  res.json({ success: true, session: dao.getSessionById(sessionId) });
 });
 
-app.post('/api/sessions/cancel', authenticateLecturer, (req: any, res: any) => {
-  const { sessionId } = req.body;
+app.post(['/api/sessions/cancel', '/api/sessions/:id/cancel'], authenticateLecturer, (req: any, res: any) => {
+  const sessionId = req.body?.sessionId || req.params?.id;
+  if (!sessionId) return res.status(400).json({ error: 'sessionId is required' });
   const session = dao.getSessionById(sessionId);
   if (!session) return res.status(404).json({ error: 'Session not found' });
   dao.updateSessionStatus(sessionId, 'CANCELLED', session.is_reopened);
@@ -649,8 +651,9 @@ app.post('/api/sessions/cancel', authenticateLecturer, (req: any, res: any) => {
   res.json({ success: true });
 });
 
-app.post('/api/sessions/reopen', authenticateLecturer, (req: any, res: any) => {
-  const { sessionId } = req.body;
+app.post(['/api/sessions/reopen', '/api/sessions/:id/reopen'], authenticateLecturer, (req: any, res: any) => {
+  const sessionId = req.body?.sessionId || req.params?.id;
+  if (!sessionId) return res.status(400).json({ error: 'sessionId is required' });
   const session = dao.getSessionById(sessionId);
   if (!session) return res.status(404).json({ error: 'Session not found' });
   dao.updateSessionStatus(sessionId, 'REOPENED', 1);
@@ -1453,7 +1456,7 @@ app.get('/api/resources', (req, res) => {
   }
 });
 
-app.post('/api/resources/add', (req, res) => {
+app.post(['/api/resources', '/api/resources/add'], (req, res) => {
   try {
     const resource = dao.insertAcademicResource(req.body);
     res.json({ success: true, resource });
@@ -1522,7 +1525,7 @@ app.delete('/api/sessions/:id', (req, res) => {
 // Delete individual Attendance record
 app.delete('/api/attendance/:id', (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     dao.deleteAttendanceRecord(id);
     res.json({ success: true, message: `Attendance record ${id} deleted.` });
   } catch (err: any) {
