@@ -65,3 +65,11 @@ node dist/server.cjs
 ```
 
 Visit the dashboard at `http://localhost:3000`.
+
+
+## User Flow Verification
+
+![User Flow](docs/attendance_home_verified.png)
+![User Flow](docs/attendance_pulse_verified.png)
+![User Flow](docs/smart_attendance_biometric_verified.png)
+
