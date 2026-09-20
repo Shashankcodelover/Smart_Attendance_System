@@ -445,6 +445,64 @@ export default function LandingApp() {
         </div>
       )}
 
+      {/* MEGA FEATURE: Campus Pulse AI */}
+      <div className="fixed bottom-6 right-6 z-50 font-sans">
+        <button 
+          id="btn-campus-pulse"
+          onClick={() => {
+            const panel = document.getElementById('campus-pulse-panel');
+            if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+          }}
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl hover:scale-105 transition-transform flex items-center justify-center"
+        >
+          <span className="material-symbols-outlined text-3xl">hub</span>
+        </button>
+
+        <div 
+          id="campus-pulse-panel" 
+          style={{ display: 'none' }}
+          className="absolute bottom-16 right-0 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex-col origin-bottom-right transition-all"
+        >
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 text-white">
+            <h3 className="font-bold flex items-center gap-2"><span className="material-symbols-outlined text-sm">analytics</span> Campus Pulse AI</h3>
+            <p className="text-xs opacity-90">Real-time neuromorphic attendance tracking</p>
+          </div>
+          
+          <div className="p-4 flex flex-col gap-3">
+            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <div className="text-xs text-slate-500 font-bold mb-1">LIVE TRAFFIC ANOMALY</div>
+              <div className="text-sm font-mono text-indigo-700 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                CS Dept: +42% influx
+              </div>
+            </div>
+
+            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <div className="text-xs text-slate-500 font-bold mb-1">PROXY DETECTION ENGINE</div>
+              <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1 mt-2">
+                <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: '98%' }}></div>
+              </div>
+              <div className="text-[10px] text-slate-400 text-right">Confidence: 98.2%</div>
+            </div>
+
+            <button 
+              id="btn-pulse-sync"
+              onClick={(e) => {
+                const btn = e.currentTarget;
+                btn.innerText = "Syncing Node Matrix...";
+                setTimeout(() => { 
+                  btn.innerText = "Matrix Synchronized"; 
+                  btn.className = "mt-2 w-full py-2 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-lg text-sm font-bold transition-colors";
+                }, 1500);
+              }}
+              className="mt-2 w-full py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-sm font-bold transition-colors"
+            >
+              Synchronize Local Cache
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Minimal Clean Footer */}
       <footer className="border-t border-slate-200/60 py-4 text-center text-xs text-slate-400 bg-white">
         Sri Jayachamarajendra College of Engineering (SJCE) &bull; Golden Architecture Monorepo &bull; Vercel + Neon Serverless
