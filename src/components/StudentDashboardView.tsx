@@ -388,6 +388,15 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               </div>
             </div>
           </div>
+          {bunkData?.aiInsight && (
+            <div className="mt-4 p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 flex items-start gap-2">
+              <span className="material-symbols-outlined text-indigo-500 text-sm mt-0.5">smart_toy</span>
+              <p className="text-xs text-indigo-900 font-medium leading-relaxed">
+                <span className="font-bold text-indigo-700">AI Strategist: </span>
+                {bunkData.aiInsight}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

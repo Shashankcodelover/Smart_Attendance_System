@@ -992,21 +992,49 @@ app.post('/api/v2/antiproxy/verify-qr', (req, res) => {
 });
 
 // 5. Bunk & Attendance Deficit Trajectory Calculator
-app.post('/api/v2/bunk/calculate-trajectory', (req, res) => {
+app.post('/api/v2/bunk/calculate-trajectory', async (req, res) => {
   try {
     const report = bunkCalculator.calculateSubjectTrajectory(req.body);
-    res.json({ success: true, report });
+    let aiInsight = '';
+    const client = getGeminiClient();
+    if (client) {
+      try {
+        const prompt = `You are an AI attendance strategist. For subject ${report.subjectName}, the student's current attendance is ${report.currentPercentage}%. Target is ${report.targetPercentage}%. They can safely bunk ${report.safeBunksAvailable} times, but if below target, they need ${report.consecutiveRecoveryLecturesNeeded} consecutive attendances. Risk: ${report.riskCategory}. Provide 2 sentences of strategic advice.`;
+        const response = await client.models.generateContent({
+          model: 'gemini-1.5-flash',
+          contents: prompt
+        });
+        aiInsight = response.text || '';
+      } catch (err) {
+        console.warn('Gemini prediction error in calculate-trajectory:', err);
+      }
+    }
+    res.json({ success: true, report: { ...report, aiInsight } });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }
 });
 
 // 6. Full Semester Bunk Radar
-app.post('/api/v2/bunk/evaluate-semester', (req, res) => {
+app.post('/api/v2/bunk/evaluate-semester', async (req, res) => {
   try {
     const { subjects, targetThresholdPercentage } = req.body;
     const report = bunkCalculator.evaluateFullSemester(subjects || [], targetThresholdPercentage || 75);
-    res.json({ success: true, report });
+    let aiInsight = '';
+    const client = getGeminiClient();
+    if (client) {
+      try {
+        const prompt = `You are an AI university counselor. A student has an aggregate attendance of ${report.aggregatePercentage}% across ${report.totalSubjects} subjects. They are short in ${report.shortageSubjectsCount} subjects. Is all clear: ${report.isAllClearForHallTicket}. Provide a short 3-sentence action plan for the rest of the semester.`;
+        const response = await client.models.generateContent({
+          model: 'gemini-1.5-flash',
+          contents: prompt
+        });
+        aiInsight = response.text || '';
+      } catch (err) {
+        console.warn('Gemini prediction error in evaluate-semester:', err);
+      }
+    }
+    res.json({ success: true, report: { ...report, aiInsight } });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }
@@ -1216,11 +1244,27 @@ app.post('/api/v3/mesh/ingest-batch', (req, res) => {
 });
 
 // 3. AI Retention Radar Endpoint
-app.post('/api/v3/ai/retention-radar', (req, res) => {
+app.post('/api/v3/ai/retention-radar', async (req, res) => {
   try {
     const { usn, name, history, totalHeld, attended, remaining } = req.body;
     const report = aiRetentionRadar.forecastStudentRetention(usn || '4JC21CS001', name || 'Candidate', history || [], totalHeld || 30, attended || 20, remaining || 20);
-    res.json({ success: true, report });
+    
+    let aiInsight = '';
+    const client = getGeminiClient();
+    if (client) {
+      try {
+        const prompt = `You are an academic advisor AI. A student (${name}) has a current attendance of ${report.currentPercentage}%. Their projected attendance by semester end is ${report.projectedSemesterPercentage}%. Risk level is ${report.riskLevel}. Give a short 2-sentence actionable advice for the student.`;
+        const response = await client.models.generateContent({
+          model: 'gemini-1.5-flash',
+          contents: prompt
+        });
+        aiInsight = response.text || '';
+      } catch (err) {
+        console.warn('Gemini prediction error in retention radar:', err);
+      }
+    }
+    
+    res.json({ success: true, report: { ...report, aiInsight } });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }
