@@ -601,7 +601,7 @@ export default function LecturerDashboardView({
           {/* Left Column: Timetable & AI tools */}
           <div className="lg:col-span-8 space-y-6 text-left">
             {/* Timetable prompt draft helper banner */}
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-[10px] font-bold text-indigo-700 font-sans uppercase">
                   <span className="material-symbols-outlined text-xs">school</span> New Lecturer / Roster Setup
@@ -688,7 +688,7 @@ export default function LecturerDashboardView({
                     className="p-4 rounded-xl border border-indigo-200 bg-white hover:border-[#6b38d4] hover:shadow-md transition-all text-left group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 mb-1.5">
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-[#6b38d4] flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#6b38d4] flex items-center justify-center group-hover:scale-105 transition-transform">
                         <span className="material-symbols-outlined text-lg">hub</span>
                       </div>
                       <div>
@@ -1458,7 +1458,7 @@ export default function LecturerDashboardView({
                 <section className="bg-white border border-[#cbc3d7]/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
                         <span className="material-symbols-outlined text-xl">verified</span>
                       </div>
                       <div>
@@ -1479,7 +1479,7 @@ export default function LecturerDashboardView({
                         <h5 className="font-bold text-slate-900">Sri Jayachamarajendra College of Engineering (SJCE)</h5>
                         <p className="text-[10px] text-slate-500">Autonomous Institute &bull; JSS Science and Technology University</p>
                       </div>
-                      <span className="px-2.5 py-1 bg-purple-100 text-purple-800 rounded-lg text-[9px] font-bold uppercase">
+                      <span className="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-lg text-[9px] font-bold uppercase">
                         NAAC Metric 2.3.1
                       </span>
                     </div>
@@ -1679,7 +1679,7 @@ export default function LecturerDashboardView({
                 <section className="bg-white border border-[#cbc3d7]/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#6b38d4] flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#6b38d4] flex items-center justify-center shadow-sm">
                         <span className="material-symbols-outlined text-2xl">hub</span>
                       </div>
                       <div>
@@ -1729,8 +1729,8 @@ export default function LecturerDashboardView({
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100/70">
-                      <span className="text-[9px] font-sans font-black tracking-wider text-purple-700 uppercase block mb-1">
+                    <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/70">
+                      <span className="text-[9px] font-sans font-black tracking-wider text-blue-700 uppercase block mb-1">
                         Faculty Nodes
                       </span>
                       <p className="text-2xl font-black font-display text-slate-900 font-sans">

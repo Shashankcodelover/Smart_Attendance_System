@@ -82,7 +82,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
         
         {/* Decorative background glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -336,7 +336,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-bold text-xs tracking-wide uppercase rounded-xl shadow-lg hover:shadow-cyan-500/20 active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3 bg-gradient-to-r from-cyan-500 via-indigo-600 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs tracking-wide uppercase rounded-xl shadow-lg hover:shadow-cyan-500/20 active:scale-98 transition-all disabled:opacity-50"
             >
               {loading ? 'Registering on Blockchain/SQLite Mesh...' : 'Complete Onboarding & Enter Portal'}
             </button>

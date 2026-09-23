@@ -453,7 +453,7 @@ export default function LandingApp() {
             const panel = document.getElementById('campus-pulse-panel');
             if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
           }}
-          className="w-14 h-14 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl hover:scale-105 transition-transform flex items-center justify-center"
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-pink-500 text-white shadow-xl hover:scale-105 transition-transform flex items-center justify-center"
         >
           <span className="material-symbols-outlined text-3xl">hub</span>
         </button>
@@ -463,7 +463,7 @@ export default function LandingApp() {
           style={{ display: 'none' }}
           className="absolute bottom-16 right-0 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex-col origin-bottom-right transition-all"
         >
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 text-white">
+          <div className="bg-gradient-to-r from-indigo-500 to-blue-600 p-4 text-white">
             <h3 className="font-bold flex items-center gap-2"><span className="material-symbols-outlined text-sm">analytics</span> Campus Pulse AI</h3>
             <p className="text-xs opacity-90">Real-time neuromorphic attendance tracking</p>
           </div>

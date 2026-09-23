@@ -140,8 +140,8 @@ export default function EnterprisePortalGateway({
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-hidden flex flex-col justify-between">
       {/* Background ambient mesh */}
-      <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-indigo-100/40 via-purple-50/20 to-transparent pointer-events-none -z-10" />
-      <div className="absolute top-1/4 -right-40 w-[450px] h-[450px] bg-purple-200/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-indigo-100/40 via-blue-50/20 to-transparent pointer-events-none -z-10" />
+      <div className="absolute top-1/4 -right-40 w-[450px] h-[450px] bg-blue-200/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 -left-40 w-[400px] h-[400px] bg-teal-200/5 rounded-full blur-2xl pointer-events-none" />
 
       {/* Connectivity Status Bar */}

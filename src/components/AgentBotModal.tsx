@@ -201,7 +201,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
       {/* Floating Glowing Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 group"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-cyan-600 via-indigo-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 group"
         title="Open BUNKR Sovereign AI Agent Bot"
       >
         <div className="relative">
@@ -306,9 +306,9 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                   </button>
                   <button
                     onClick={() => handleSendMessage('What is the procedure for On-Duty (OD) medical leave condonation?')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-950/80 hover:bg-purple-900 text-purple-200 border border-purple-700/50 whitespace-nowrap transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-950/80 hover:bg-blue-900 text-blue-200 border border-blue-700/50 whitespace-nowrap transition-colors"
                   >
-                    <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                    <Cpu className="w-3.5 h-3.5 text-blue-400" />
                     Medical Condonation Guide
                   </button>
                 </>
@@ -337,7 +337,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                     <button
                       onClick={handleParseTimetable}
                       disabled={loading || !timetableText.trim()}
-                      className="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium text-xs rounded-xl shadow transition-all disabled:opacity-50"
+                      className="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-medium text-xs rounded-xl shadow transition-all disabled:opacity-50"
                     >
                       {loading ? 'AI Parsing & Organizing...' : 'Parse & Generate Sections Automatically'}
                     </button>
@@ -388,7 +388,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                   <div className="bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 rounded-bl-none flex items-center gap-2 text-xs text-slate-400">
                     <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" />
                     <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]" />
-                    <div className="w-2 h-2 rounded-full bg-purple-400 animate-bounce [animation-delay:0.4s]" />
+                    <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce [animation-delay:0.4s]" />
                     <span>Agent reasoning & executing database action...</span>
                   </div>
                 </div>

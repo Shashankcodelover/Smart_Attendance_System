@@ -179,7 +179,7 @@ export class StudentSuite {
         const heatmap = attendanceHistory.map(h => ({
             date: h.date,
             status: h.status,
-            colorIntensity: h.status === 'PRESENT' ? '#10b981' : (h.status === 'EXEMPTED' ? '#8b5cf6' : '#f43f5e'),
+            colorIntensity: h.status === 'PRESENT' ? '#10b981' : (h.status === 'EXEMPTED' ? '#3b82f6' : '#f43f5e'),
             weight: h.status === 'PRESENT' ? 1.0 : (h.status === 'EXEMPTED' ? 0.8 : 0.0),
         }));
 
