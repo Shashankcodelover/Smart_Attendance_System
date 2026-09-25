@@ -357,17 +357,17 @@ export default function VerificationSessionView({
 
           {/* Telemetry System Log Ticker */}
           <div className="acrylic-card p-4 rounded-2xl bg-slate-900 border border-slate-800 text-left space-y-2.5 font-mono text-[10.5px]">
-            <div className="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-1.5 font-sans">
+            <div className="flex items-center justify-between text-slate-600 border-b border-slate-800 pb-1.5 font-sans">
               <span className="flex items-center gap-1 font-bold text-[9px] uppercase tracking-wider text-teal-400">
                 <span className="h-1.5 w-1.5 bg-teal-400 rounded-full animate-ping"></span>
                 Secure Telemetry Logs
               </span>
-              <span className="text-[8.5px] font-bold text-slate-500">API LATENCY: {latencyTicker}ms</span>
+              <span className="text-[8.5px] font-bold text-slate-600">API LATENCY: {latencyTicker}ms</span>
             </div>
             <div className="space-y-1 max-h-[85px] overflow-y-auto text-slate-300">
-              <div><span className="text-slate-500">[{new Date().toLocaleTimeString()}]</span> <span className="text-indigo-400">[HMAC]</span> Handshake rotation matching active.</div>
+              <div><span className="text-slate-600">[{new Date().toLocaleTimeString()}]</span> <span className="text-indigo-400">[HMAC]</span> Handshake rotation matching active.</div>
               {currentRecords.slice(-2).map((r, idx) => (
-                <div key={idx}><span className="text-slate-500">[{new Date().toLocaleTimeString()}]</span> <span className="text-emerald-400">[VERIFY]</span> Decrypted secure check-in for USN {r.studentUsn}.</div>
+                <div key={idx}><span className="text-slate-600">[{new Date().toLocaleTimeString()}]</span> <span className="text-emerald-400">[VERIFY]</span> Decrypted secure check-in for USN {r.studentUsn}.</div>
               ))}
               <div className="text-slate-550">[{new Date().toLocaleTimeString()}] [SYSTEM] Geofencing match coordinates verified: SJCE campus bounds.</div>
             </div>
@@ -464,3 +464,4 @@ export default function VerificationSessionView({
     </div>
   );
 }
+

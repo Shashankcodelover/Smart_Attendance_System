@@ -355,7 +355,7 @@ export default function AcademicResourcesView() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={(e) => handleDeleteResource(subject.id, e)}
-                          className="text-slate-400 hover:text-red-600 p-1 transition-colors cursor-pointer"
+                          className="text-slate-600 hover:text-red-600 p-1 transition-colors cursor-pointer"
                           title="Delete course"
                         >
                           <span className="material-symbols-outlined text-base">delete</span>
@@ -391,11 +391,11 @@ export default function AcademicResourcesView() {
 
       {/* --- MODAL 1: ADD TIMETABLE SLOT --- */}
       {showAddSlotModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="font-display font-bold text-lg text-[#191c1e]">Add Timetable Slot</h3>
-              <button onClick={() => setShowAddSlotModal(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+              <button onClick={() => setShowAddSlotModal(false)} className="text-slate-600 hover:text-slate-700 cursor-pointer">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -516,11 +516,11 @@ export default function AcademicResourcesView() {
 
       {/* --- MODAL 2: ADD SYLLABUS UNIT --- */}
       {showAddResourceModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="font-display font-bold text-lg text-[#191c1e]">Register Course Syllabus</h3>
-              <button onClick={() => setShowAddResourceModal(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+              <button onClick={() => setShowAddResourceModal(false)} className="text-slate-600 hover:text-slate-700 cursor-pointer">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -632,3 +632,6 @@ export default function AcademicResourcesView() {
     </div>
   );
 }
+
+
+

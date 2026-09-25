@@ -135,17 +135,17 @@ export default function UserProfileView({
             </div>
 
             <h3 className="text-lg font-display font-bold text-slate-900 leading-snug">{name}</h3>
-            <p className="text-xs text-slate-500 font-mono mt-0.5">{emailOrUsn}</p>
+            <p className="text-xs text-slate-600 font-mono mt-0.5">{emailOrUsn}</p>
 
             <div className="w-full border-t border-slate-100 my-4 pt-4 flex justify-around gap-2 text-center">
               <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Role</span>
+                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider block">Role</span>
                 <span className="text-xs font-bold text-[#00687a] uppercase bg-cyan-50 px-2 py-0.5 rounded-md border border-cyan-150 inline-block mt-1">
                   {persona}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Dept</span>
+                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider block">Dept</span>
                 <span className="text-xs font-semibold text-slate-700 block mt-1.5">
                   {persona === 'student' ? 'Computer Science' : department.split(' ')[0]}
                 </span>
@@ -156,7 +156,7 @@ export default function UserProfileView({
             {persona === 'student' && studentDbRec && (
               <div className="w-full bg-slate-50 rounded-2xl p-4 border border-slate-150 flex items-center justify-between gap-4">
                 <div className="text-left">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Roster Quotient</span>
+                  <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider block">Roster Quotient</span>
                   <span className="text-sm font-display font-extrabold text-slate-800">Attendance Quotient</span>
                 </div>
                 <div className="relative flex items-center justify-center">
@@ -185,7 +185,7 @@ export default function UserProfileView({
             {/* Timetable / Classes Count for Lecturer */}
             {persona === 'lecturer' && (
               <div className="w-full bg-slate-50 rounded-2xl p-4 border border-slate-150 text-left space-y-1.5">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Administrative Deck</span>
+                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider block">Administrative Deck</span>
                 <p className="text-xs text-slate-650 leading-relaxed">
                   Lecturer is logged in under Department CSE. You are authorized to open verification gates on local classrooms.
                 </p>
@@ -196,7 +196,7 @@ export default function UserProfileView({
           {/* Tour reset panel */}
           <div className="bg-white border border-slate-200/60 rounded-3xl p-5 shadow-sm space-y-3">
             <h4 className="text-xs font-sans font-bold tracking-widest text-[#494454] uppercase">Guided Tour Manager</h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               New to this platform? Reset the guided interactive dashboard tour to walk through all check-in scanner and AI helper features again.
             </p>
             <button
@@ -218,7 +218,7 @@ export default function UserProfileView({
           <form onSubmit={handleSave} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                   Full Name / Descriptor
                 </label>
                 <input
@@ -231,14 +231,14 @@ export default function UserProfileView({
               </div>
 
               <div>
-                <label className="block text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                   {persona === 'student' ? 'USN (Locked)' : 'E-mail ID (Locked)'}
                 </label>
                 <input
                   type="text"
                   value={emailOrUsn}
                   disabled
-                  className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-mono text-xs text-slate-400 outline-none cursor-not-allowed"
+                  className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-mono text-xs text-slate-600 outline-none cursor-not-allowed"
                 />
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function UserProfileView({
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                       Roster Section
                     </label>
                     <select
@@ -263,7 +263,7 @@ export default function UserProfileView({
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                       Academic Year (1-4)
                     </label>
                     <input
@@ -280,7 +280,7 @@ export default function UserProfileView({
 
                 {/* Avatar presets grid */}
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider">
+                  <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider">
                     Select Avatar Preset
                   </label>
                   <div className="grid grid-cols-6 gap-2.5 pt-1">
@@ -311,7 +311,7 @@ export default function UserProfileView({
             {persona === 'lecturer' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                     Designation Title
                   </label>
                   <select
@@ -327,7 +327,7 @@ export default function UserProfileView({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                     Department Affiliation
                   </label>
                   <select
@@ -380,3 +380,4 @@ export default function UserProfileView({
     </div>
   );
 }
+

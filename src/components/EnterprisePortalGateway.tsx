@@ -156,7 +156,7 @@ export default function EnterprisePortalGateway({
               CONNECTIVE CORE: <span className="text-emerald-700 font-bold">ONLINE</span> &bull; HOST: <span className="underline">0.0.0.0:3000</span>
             </p>
           </div>
-          <div className="flex items-center gap-5 text-xs text-slate-500 font-medium">
+          <div className="flex items-center gap-5 text-xs text-slate-600 font-medium">
             <span className="flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[15px] text-indigo-500">database</span>SQLite Server Active
             </span>
@@ -240,7 +240,7 @@ export default function EnterprisePortalGateway({
               </div>
               <div className="space-y-1.5">
                 <h3 className="text-lg font-display font-extrabold text-[#191c1e]">Lecturer Staff Site</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Open dynamic classroom check-in gates, monitor real-time attendance logs on the projector screen, and access the Smart Spark AI assistant.
                 </p>
               </div>
@@ -287,7 +287,7 @@ export default function EnterprisePortalGateway({
               </div>
               <div className="space-y-1.5">
                 <h3 className="text-lg font-display font-extrabold text-[#191c1e]">Student Portal Site</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Verify attendance using secure QR scans. The credential interface auto-locks until scanning matching projector signals to prevent proxies.
                 </p>
               </div>
@@ -334,7 +334,7 @@ export default function EnterprisePortalGateway({
               </div>
               <div className="space-y-1.5">
                 <h3 className="text-lg font-display font-extrabold text-[#191c1e]">Admin Registrar Office</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Access student master lists, enroll newly registered USN identifiers, audit attendance percentages, and manage campus roster database tables.
                 </p>
               </div>
@@ -342,15 +342,15 @@ export default function EnterprisePortalGateway({
               <div className="py-2.5">
                 <ul className="space-y-2 text-[11px] text-slate-655">
                   <li className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-xs text-slate-500 font-bold">check_circle</span>
+                    <span className="material-symbols-outlined text-xs text-slate-600 font-bold">check_circle</span>
                     Enroll and remove student USN candidate
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-xs text-slate-500 font-bold">check_circle</span>
+                    <span className="material-symbols-outlined text-xs text-slate-600 font-bold">check_circle</span>
                     Review complete roster directories
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-xs text-slate-500 font-bold">check_circle</span>
+                    <span className="material-symbols-outlined text-xs text-slate-600 font-bold">check_circle</span>
                     Check general statistics & shortages
                   </li>
                 </ul>
@@ -370,9 +370,9 @@ export default function EnterprisePortalGateway({
         </div>
       </main>
 
-      {/* CENTERED POPUP AUTHENTICATION MODAL (Brought in front with z-50) */}
+      {/* CENTERED POPUP AUTHENTICATION MODAL (Brought in front with z-[150]) */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md">
           <div className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative border border-slate-200/50">
             
             {/* Modal Header */}
@@ -391,7 +391,7 @@ export default function EnterprisePortalGateway({
               <h3 className="text-xl font-display font-extrabold text-slate-900">
                 {activeTab === 'student' ? 'Student Sign-In' : activeTab === 'lecturer' ? 'Lecturer Staff Sign-In' : 'Registrar Secretariat'}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-600 mt-1">
                 {authMode === 'signin' ? 'Sign in to access your portal' : 'Register a new profile credential'}
               </p>
             </div>
@@ -405,7 +405,7 @@ export default function EnterprisePortalGateway({
                   className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
                     authMode === 'signin' 
                       ? 'bg-white text-slate-900 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-750'
+                      : 'text-slate-600 hover:text-slate-750'
                   }`}
                 >
                   Sign In
@@ -416,7 +416,7 @@ export default function EnterprisePortalGateway({
                   className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
                     authMode === 'signup' 
                       ? 'bg-white text-slate-900 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-750'
+                      : 'text-slate-600 hover:text-slate-750'
                   }`}
                 >
                   Sign Up (New User)
@@ -513,24 +513,24 @@ export default function EnterprisePortalGateway({
             {/* Quick Presets for Demo */}
             {authMode === 'signin' && (
               <div className="mt-5 pt-4 border-t border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
+                <span className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider block">
                   Quick Presets
                 </span>
                 <div className="flex justify-center gap-1.5 mt-2">
                   <button
                     type="button"
                     onClick={() => setActiveTab('student')}
-                    className={`px-2.5 py-1 text-[10px] font-bold rounded transition-colors ${activeTab === 'student' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-500'}`}
+                    className={`px-2.5 py-1 text-[10px] font-bold rounded transition-colors ${activeTab === 'student' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-600'}`}
                   >Student</button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('lecturer')}
-                    className={`px-2.5 py-1 text-[10px] font-bold rounded transition-colors ${activeTab === 'lecturer' ? 'bg-indigo-50 text-[#6b38d4] border border-indigo-200' : 'bg-slate-50 text-slate-500'}`}
+                    className={`px-2.5 py-1 text-[10px] font-bold rounded transition-colors ${activeTab === 'lecturer' ? 'bg-indigo-50 text-[#6b38d4] border border-indigo-200' : 'bg-slate-50 text-slate-600'}`}
                   >Staff</button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('admin')}
-                    className={`px-2.5 py-1 text-[10px] font-bold rounded transition-colors ${activeTab === 'admin' ? 'bg-slate-100 text-slate-700 border border-slate-350' : 'bg-slate-50 text-slate-500'}`}
+                    className={`px-2.5 py-1 text-[10px] font-bold rounded transition-colors ${activeTab === 'admin' ? 'bg-slate-100 text-slate-700 border border-slate-350' : 'bg-slate-50 text-slate-600'}`}
                   >Admin</button>
                 </div>
               </div>
@@ -542,10 +542,12 @@ export default function EnterprisePortalGateway({
 
       {/* Footer copyright */}
       <footer className="bg-white border-t border-slate-150 py-5 text-center mt-12">
-        <p className="text-[11px] text-slate-400 font-medium px-4">
+        <p className="text-[11px] text-slate-600 font-medium px-4">
           Designed for Sri Jayachamarajendra College of Engineering (SJCE), Mysore. Protected by cryptographic secure tokens. Used in JSS Science and Technology University.
         </p>
       </footer>
     </div>
   );
 }
+
+

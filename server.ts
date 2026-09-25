@@ -1862,7 +1862,7 @@ if (fs.existsSync(distDir)) {
   });
 }
 
-if (process.env.NODE_ENV !== 'test' && !process.env.TEST && !process.argv.some(a => a.includes('test'))) {
+if (process.env.NODE_ENV !== 'test' && !process.env.TEST && !process.env.VERCEL && !process.argv.some(a => a.includes('test'))) {
   app.listen(PORT, () => {
     console.log(`🚀 Smart Attendance Zero-Trust Engine running on http://localhost:${PORT}`);
   });

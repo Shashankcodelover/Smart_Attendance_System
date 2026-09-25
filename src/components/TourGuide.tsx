@@ -253,7 +253,7 @@ export default function TourGuide({ steps, tourKey, onComplete }: TourGuideProps
           </div>
           <button 
             onClick={handleSkip}
-            className="text-slate-400 hover:text-slate-650 transition-colors p-1 rounded-lg hover:bg-slate-50 cursor-pointer flex items-center"
+            className="text-slate-600 hover:text-slate-650 transition-colors p-1 rounded-lg hover:bg-slate-50 cursor-pointer flex items-center"
             title="Skip Tour"
           >
             <span className="material-symbols-outlined text-base">close</span>
@@ -267,7 +267,7 @@ export default function TourGuide({ steps, tourKey, onComplete }: TourGuideProps
         <div className="flex justify-between items-center pt-2 mt-auto border-t border-slate-100">
           <button
             onClick={handleSkip}
-            className="px-3 py-1.5 hover:bg-slate-50 text-slate-500 font-sans font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all cursor-pointer"
+            className="px-3 py-1.5 hover:bg-slate-50 text-slate-600 font-sans font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all cursor-pointer"
           >
             Skip
           </button>
@@ -284,3 +284,4 @@ export default function TourGuide({ steps, tourKey, onComplete }: TourGuideProps
     </>
   );
 }
+

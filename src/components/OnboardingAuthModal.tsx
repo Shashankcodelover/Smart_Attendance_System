@@ -77,7 +77,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
       <div className="w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
         
         {/* Decorative background glow */}
@@ -94,7 +94,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 {role === 'student' ? 'Student Verification Onboarding' : 'Faculty Access Portal'}
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-600">
                 {role === 'student'
                   ? 'Enter your University USN, credentials & section details'
                   : 'Register your department profile & timetable schedule'}
@@ -102,7 +102,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
             </div>
           </div>
           {onClose && (
-            <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded-lg">
+            <button onClick={onClose} className="text-slate-600 hover:text-white p-1 rounded-lg">
               <X className="w-5 h-5" />
             </button>
           )}
@@ -124,7 +124,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     University USN *
                   </label>
                   <div className="relative">
-                    <Hash className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                    <Hash className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
                     <input
                       type="text"
                       required
@@ -170,7 +170,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     Phone Number
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                    <Phone className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
                     <input
                       type="tel"
                       placeholder="e.g. +91 9876543210"
@@ -187,7 +187,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                   University Email *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
                   <input
                     type="email"
                     required
@@ -257,7 +257,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     Faculty ID *
                   </label>
                   <div className="relative">
-                    <Hash className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                    <Hash className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
                     <input
                       type="text"
                       required
@@ -289,7 +289,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                   Faculty Email *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                  <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
                   <input
                     type="email"
                     required
@@ -347,3 +347,5 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
     </div>
   );
 }
+
+

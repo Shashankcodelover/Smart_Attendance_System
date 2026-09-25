@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import TopAppBar from './components/TopAppBar';
 import ClassSelectionView from './components/ClassSelectionView';
 import LecturerDashboardView from './components/LecturerDashboardView';
@@ -751,7 +752,15 @@ export default function LecturerApp() {
 
       {/* Renders main panels */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-6 md:py-8">
-        <div className="space-y-4">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="space-y-4"
+          >
           {currentPage === 'dashboard' && (
             <LecturerDashboardView
               sessions={sessions}
@@ -969,7 +978,8 @@ export default function LecturerApp() {
               </div>
             </div>
           )}
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Alpine AI float triggers */}
@@ -1022,7 +1032,7 @@ export default function LecturerApp() {
                         <p className="font-display font-extrabold text-[#6b38d4] text-[11px] leading-tight uppercase">
                           {m.actionCard.title}
                         </p>
-                        <p className="text-[10px] text-slate-500 leading-normal">{m.actionCard.description}</p>
+                        <p className="text-[10px] text-slate-600 leading-normal">{m.actionCard.description}</p>
                         <div className="flex flex-col gap-1 pt-1.5">
                           <button
                             type="button"
@@ -1213,3 +1223,4 @@ export default function LecturerApp() {
     </div>
   );
 }
+

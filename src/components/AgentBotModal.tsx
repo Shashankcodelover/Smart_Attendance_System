@@ -201,7 +201,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
       {/* Floating Glowing Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-cyan-600 via-indigo-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 group"
+        className="fixed bottom-6 right-6 z-[150] flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-cyan-600 via-indigo-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 group"
         title="Open BUNKR Sovereign AI Agent Bot"
       >
         <div className="relative">
@@ -214,7 +214,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
 
       {/* Modal Popup Window */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+        <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
           <div className="w-full max-w-xl h-[88vh] sm:h-[680px] bg-slate-900 border border-slate-700/80 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
             
             {/* Header */}
@@ -230,7 +230,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                       Live v26
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-400">Autonomous Timetable, Live QR Gate & Anti-Proxy Engine</p>
+                  <p className="text-xs text-slate-600">Autonomous Timetable, Live QR Gate & Anti-Proxy Engine</p>
                 </div>
               </div>
               
@@ -239,7 +239,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                 <button
                   onClick={() => setTtsEnabled(!ttsEnabled)}
                   className={`p-2 rounded-xl transition-colors ${
-                    ttsEnabled ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ttsEnabled ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-600 hover:text-white hover:bg-slate-800'
                   }`}
                   title={ttsEnabled ? 'Mute AI Voice' : 'Enable AI Spoken Audio'}
                 >
@@ -248,7 +248,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-2 rounded-xl text-slate-600 hover:text-white hover:bg-slate-800 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -376,7 +376,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                       </div>
                     )}
 
-                    <div className={`text-[9px] mt-1 text-right ${m.sender === 'user' ? 'text-cyan-200' : 'text-slate-500'}`}>
+                    <div className={`text-[9px] mt-1 text-right ${m.sender === 'user' ? 'text-cyan-200' : 'text-slate-600'}`}>
                       {m.timestamp}
                     </div>
                   </div>
@@ -385,7 +385,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
               
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 rounded-bl-none flex items-center gap-2 text-xs text-slate-400">
+                  <div className="bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 rounded-bl-none flex items-center gap-2 text-xs text-slate-600">
                     <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" />
                     <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]" />
                     <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce [animation-delay:0.4s]" />
@@ -438,3 +438,5 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
     </>
   );
 }
+
+

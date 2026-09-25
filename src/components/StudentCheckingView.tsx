@@ -689,7 +689,7 @@ export default function StudentCheckingView({
             <h3 className="font-display font-extrabold text-slate-800 text-lg leading-none font-sans">
               Verify Attendance
             </h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+            <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
               To log your attendance for the active class, scan the live QR code displayed on the lecturer's projector screen.
             </p>
           </div>
@@ -791,7 +791,7 @@ export default function StudentCheckingView({
               <span className="text-[10px] bg-[#6b38d4] text-white px-2 py-0.5 rounded-full font-sans font-black uppercase inline-block animate-pulse">
                 {scanProgress === 'searching' ? '📷 SEARCHING FOR QR CODE...' : scanProgress === 'locked' ? '⚡ SECURING QR TOKEN...' : '✓ COMPLETE'}
               </span>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-600">
                 Align the rotating projector QR squarely within the viewfinder.
               </p>
             </div>
@@ -832,7 +832,7 @@ export default function StudentCheckingView({
                     <p className="text-xs font-bold text-violet-300 tracking-wider uppercase animate-pulse">
                       Starting Camera Stream...
                     </p>
-                    <p className="text-[9px] text-slate-400 max-w-[180px] mx-auto leading-relaxed font-sans">
+                    <p className="text-[9px] text-slate-600 max-w-[180px] mx-auto leading-relaxed font-sans">
                       Initializing video hardware and checking permissions.
                     </p>
                   </div>
@@ -921,7 +921,7 @@ export default function StudentCheckingView({
                   <h4 className="font-display font-bold text-slate-800 text-sm mt-1 font-sans">
                     {selectedSession ? `${selectedSession.subjectCode} — ${selectedSession.subjectName}` : 'Unknown Session'}
                   </h4>
-                  <p className="text-[10px] text-slate-500 font-sans">
+                  <p className="text-[10px] text-slate-600 font-sans">
                     {selectedSession ? `Section ${selectedSession.section} • Year ${selectedSession.year} • ${selectedSession.timeline}` : 'Verification Session'}
                   </p>
                 </div>
@@ -934,7 +934,7 @@ export default function StudentCheckingView({
               {/* Credentials */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                 <div>
-                  <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-2">
                     University USN Code
                   </label>
                   <input
@@ -948,7 +948,7 @@ export default function StudentCheckingView({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-2">
                     Student Full Name
                   </label>
                   <input
@@ -964,7 +964,7 @@ export default function StudentCheckingView({
 
               {/* OTP code */}
               <div className="text-left">
-                <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-2">
+                <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-2">
                   Verification OTP (Enter manually)
                 </label>
                 <input
@@ -980,7 +980,7 @@ export default function StudentCheckingView({
 
               {/* Challenge verification option */}
               <div className="text-left">
-                <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-2">
+                <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-2">
                   Projector Challenge Shape
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -1068,14 +1068,14 @@ export default function StudentCheckingView({
                 Your discrete cognitive attendance marks display shortage status. Complete 3 subsequent check-ins to restore optimal grading!
               </p>
               <div className="bg-white p-4 rounded-xl shadow-inner border border-red-100">
-                <span className="text-[8px] font-sans font-extrabold text-slate-400 uppercase tracking-wider block mb-1">
+                <span className="text-[8px] font-sans font-extrabold text-slate-600 uppercase tracking-wider block mb-1">
                   COGNITIVE PSYCHOLOGY
                 </span>
                 <div className="flex justify-between items-baseline">
                   <span className="text-2xl font-display font-black text-[#ba1a1a]">72%</span>
                   <span className="text-xl text-[#ba1a1a] material-symbols-outlined">trending_down</span>
                 </div>
-                <p className="text-[10px] text-slate-500 mt-2 italic">
+                <p className="text-[10px] text-slate-600 mt-2 italic">
                   Need 8 more lecture hours to bridge 75% grading threshold.
                 </p>
               </div>
@@ -1106,40 +1106,40 @@ export default function StudentCheckingView({
             <h3 className="font-display font-black text-slate-800 text-xl leading-none font-sans">
               Attendance Verified!
             </h3>
-            <p className="text-xs text-slate-400 mt-2 font-sans">
+            <p className="text-xs text-slate-600 mt-2 font-sans">
               Your secure classroom handshake has been logged successfully.
             </p>
           </div>
 
           <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100 text-left text-xs space-y-3 font-sans">
             <div className="flex justify-between border-b border-emerald-100/50 pb-2 gap-4">
-              <span className="text-slate-500 font-medium whitespace-nowrap">Course:</span>
+              <span className="text-slate-600 font-medium whitespace-nowrap">Course:</span>
               <span className="font-extrabold text-slate-800 text-right">{checkInReceipt.subjectCode} - {checkInReceipt.subjectName}</span>
             </div>
             <div className="flex justify-between border-b border-emerald-100/50 pb-2">
-              <span className="text-slate-500 font-medium">Timeline:</span>
+              <span className="text-slate-600 font-medium">Timeline:</span>
               <span className="font-semibold text-slate-800">{checkInReceipt.timeline}</span>
             </div>
             <div className="flex justify-between border-b border-emerald-100/50 pb-2">
-              <span className="text-slate-500 font-medium">Student USN:</span>
+              <span className="text-slate-600 font-medium">Student USN:</span>
               <span className="font-mono font-bold text-[#6b38d4]">{checkInReceipt.usn}</span>
             </div>
             <div className="flex justify-between border-b border-emerald-100/50 pb-2">
-              <span className="text-slate-500 font-medium">Student Name:</span>
+              <span className="text-slate-600 font-medium">Student Name:</span>
               <span className="font-bold text-slate-800">{checkInReceipt.name}</span>
             </div>
             <div className="flex justify-between border-b border-emerald-100/50 pb-2">
-              <span className="text-slate-500 font-medium">Verification Shape:</span>
+              <span className="text-slate-600 font-medium">Verification Shape:</span>
               <span className="font-bold text-slate-800">
                 {checkInReceipt.shape === 'BLUE_CIRCLE' ? '🔵 Blue Circle' : checkInReceipt.shape === 'RED_SQUARE' ? '🟥 Red Square' : checkInReceipt.shape === 'GREEN_TRIANGLE' ? '🔺 Green Triangle' : '⭐ Yellow Star'}
               </span>
             </div>
             <div className="flex justify-between border-b border-emerald-100/50 pb-2">
-              <span className="text-slate-500 font-medium">Timestamp:</span>
+              <span className="text-slate-600 font-medium">Timestamp:</span>
               <span className="font-semibold text-slate-800">{new Date(checkInReceipt.markedAt).toLocaleTimeString()} ({new Date(checkInReceipt.markedAt).toLocaleDateString()})</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Connectivity:</span>
+              <span className="text-slate-600 font-medium">Connectivity:</span>
               <span className={`font-bold uppercase tracking-wider text-[9px] px-2 py-0.5 rounded ${checkInReceipt.isOnline ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                 {checkInReceipt.isOnline ? 'Verified Online' : 'Buffered Offline'}
               </span>
@@ -1162,3 +1162,5 @@ export default function StudentCheckingView({
     </div>
   );
 }
+
+

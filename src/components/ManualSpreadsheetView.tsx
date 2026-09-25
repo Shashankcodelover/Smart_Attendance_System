@@ -422,7 +422,7 @@ export default function ManualSpreadsheetView({
 
             {/* Batch controls block */}
             <div className="bg-white border border-[#cbc3d7]/35 rounded-2xl p-4 flex flex-col justify-center gap-2">
-              <span className="text-[9px] font-sans font-black text-slate-500 tracking-wider uppercase block text-center mb-1">
+              <span className="text-[9px] font-sans font-black text-slate-600 tracking-wider uppercase block text-center mb-1">
                 Batch Commands Override
               </span>
               <div className="flex gap-2">
@@ -622,8 +622,8 @@ export default function ManualSpreadsheetView({
             </div>
 
             {/* Instruction Tip */}
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[10px] text-slate-500 flex items-start gap-2 leading-relaxed">
-              <span className="material-symbols-outlined text-slate-400 text-sm mt-0.5">info</span>
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[10px] text-slate-600 flex items-start gap-2 leading-relaxed">
+              <span className="material-symbols-outlined text-slate-600 text-sm mt-0.5">info</span>
               <p>
                 <strong>Lecturer Override:</strong> Checking the toggle switches a student record instantly between <em>Present</em> (using cryptographically verified credentials) and <em>Absent</em> (removing the entry). Toggling a student as Present will log them under manual verification matching the active session gate.
               </p>
@@ -643,3 +643,4 @@ export default function ManualSpreadsheetView({
     </div>
   );
 }
+

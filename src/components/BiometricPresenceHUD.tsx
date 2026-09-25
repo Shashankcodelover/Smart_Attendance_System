@@ -302,7 +302,7 @@ export function BiometricPresenceHUD({
           <h2 className="text-xl font-bold tracking-tight text-slate-100">
             3D Edge Liveness, Chromatic Anti-Spoofing & ZK Presence Protocol
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 mt-0.5">
             Student: <strong className="text-slate-200">{studentName} ({studentUsn})</strong> · Session: <span className="font-mono text-emerald-400">SES-LIVE-SJCE-101</span>
           </p>
         </div>
@@ -349,20 +349,20 @@ export function BiometricPresenceHUD({
                     ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
                     : isCurrent
                     ? 'bg-amber-500/15 border-amber-400 text-amber-200 ring-2 ring-amber-400/20 shadow-sm'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                    : 'bg-slate-900 border-slate-800 text-slate-600 hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Icon className={`w-4 h-4 ${isCompleted ? 'text-emerald-400' : isCurrent ? 'text-amber-400' : 'text-slate-500'}`} />
+                  <Icon className={`w-4 h-4 ${isCompleted ? 'text-emerald-400' : isCurrent ? 'text-amber-400' : 'text-slate-600'}`} />
                   <div>
-                    <div className="text-[10px] font-mono uppercase text-slate-400">Step {idx + 1}</div>
+                    <div className="text-[10px] font-mono uppercase text-slate-600">Step {idx + 1}</div>
                     <div className="text-[11px] font-bold truncate max-w-[120px]">{step.label.split(' ')[0]}</div>
                   </div>
                 </div>
                 {isCompleted ? (
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                 ) : (
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-600">
                     {isCurrent ? 'ACTIVE' : 'READY'}
                   </span>
                 )}
@@ -463,7 +463,7 @@ export function BiometricPresenceHUD({
               <div className="p-3 bg-slate-950/80 rounded-lg space-y-1 font-mono text-[11px] text-slate-300 border border-slate-800">
                 <div>Proof ID: <span className="text-emerald-400">{zkProof.proofId}</span></div>
                 <div className="truncate">Commitment Hash: <span className="text-amber-400">{zkProof.commitmentHash}</span></div>
-                <div className="truncate">Merkle Root: <span className="text-slate-400">{zkProof.merkleRoot}</span></div>
+                <div className="truncate">Merkle Root: <span className="text-slate-600">{zkProof.merkleRoot}</span></div>
                 <div className="flex justify-between pt-1 border-t border-slate-800 text-[10px]">
                   <span>Liveness: <strong className="text-emerald-400">{zkProof.livenessConfidencePercent}%</strong></span>
                   <span>PAD Verdict: <strong className="text-emerald-400">AUTHENTIC</strong></span>
@@ -504,7 +504,7 @@ export function BiometricPresenceHUD({
           )}
 
           {statusMessage && (
-            <div className="text-[11px] text-center font-mono text-slate-400 animate-fade-in">
+            <div className="text-[11px] text-center font-mono text-slate-600 animate-fade-in">
               {statusMessage}
             </div>
           )}
@@ -513,3 +513,4 @@ export function BiometricPresenceHUD({
     </div>
   );
 }
+

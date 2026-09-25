@@ -1,14 +1,40 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import crypto from 'crypto';
+import fs from 'fs';
 
-const DB_PATH = path.join(process.cwd(), 'attendance.sqlite');
+let DB_PATH = path.join(process.cwd(), 'attendance.sqlite');
+
+// On Vercel / serverless, process.cwd() is read-only. Copy sqlite db to /tmp if needed
+if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const tmpPath = path.join('/tmp', 'attendance.sqlite');
+  try {
+    if (!fs.existsSync(tmpPath) && fs.existsSync(DB_PATH)) {
+      fs.copyFileSync(DB_PATH, tmpPath);
+    }
+    if (fs.existsSync(tmpPath)) {
+      DB_PATH = tmpPath;
+    }
+  } catch (e) {
+    console.warn('[DB] Could not copy sqlite to /tmp:', e);
+  }
+}
 
 // Initialize DB with WAL mode
-const db = new Database(DB_PATH);
-db.pragma('journal_mode = WAL');
-db.pragma('synchronous = NORMAL');
-db.pragma('foreign_keys = ON');
+let db: any;
+try {
+  db = new Database(DB_PATH);
+  try {
+    db.pragma('journal_mode = WAL');
+    db.pragma('synchronous = NORMAL');
+    db.pragma('foreign_keys = ON');
+  } catch (e) {
+    console.warn('[DB] Pragma configuration warning:', e);
+  }
+} catch (err) {
+  console.error('[DB] SQLite connection error:', err);
+}
+
 
 // Run migrations / schema initialization
 export function initializeSchema() {

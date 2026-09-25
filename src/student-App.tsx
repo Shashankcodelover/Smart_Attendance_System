@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import TopAppBar from './components/TopAppBar';
 import StudentDashboardView from './components/StudentDashboardView';
 import StudentCheckingView from './components/StudentCheckingView';
@@ -428,57 +429,66 @@ export default function StudentApp() {
 
       {/* Screen Router */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-6 md:py-8">
-        <div className="space-y-4">
-          {currentPage === 'student-dashboard' && (
-            <StudentDashboardView
-              onCheckInClick={() => setCurrentPage('check-in')}
-              onResourcesClick={() => setCurrentPage('resources')}
-              currentUser={currentUser}
-              students={students}
-              sessions={sessions}
-            />
-          )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="space-y-4"
+          >
+            {currentPage === 'student-dashboard' && (
+              <StudentDashboardView
+                onCheckInClick={() => setCurrentPage('check-in')}
+                onResourcesClick={() => setCurrentPage('resources')}
+                currentUser={currentUser}
+                students={students}
+                sessions={sessions}
+              />
+            )}
 
-          {currentPage === 'check-in' && (
-            <StudentCheckingView
-              sessions={sessions}
-              isOffline={isOffline}
-              onAddPendingRecord={handleAddPendingOfflineRecord}
-              onSuccessCheckIn={() => setCurrentPage('student-dashboard')}
-            />
-          )}
+            {currentPage === 'check-in' && (
+              <StudentCheckingView
+                sessions={sessions}
+                isOffline={isOffline}
+                onAddPendingRecord={handleAddPendingOfflineRecord}
+                onSuccessCheckIn={() => setCurrentPage('student-dashboard')}
+              />
+            )}
 
-          {currentPage === 'biometric-presence' && (
-            <BiometricPresenceHUD
-              studentUsn={currentUser?.codeOrUsn || '4JC21CS001'}
-              studentName={currentUser?.name || 'Preetham J.'}
-              onSuccess={() => {
-                setToast({ text: 'Soulbound Attendance Token (SBT) Minted on SQLite Ledger!', type: 'success' });
-              }}
-            />
-          )}
+            {currentPage === 'biometric-presence' && (
+              <BiometricPresenceHUD
+                studentUsn={currentUser?.codeOrUsn || '4JC21CS001'}
+                studentName={currentUser?.name || 'Preetham J.'}
+                onSuccess={() => {
+                  setToast({ text: 'Soulbound Attendance Token (SBT) Minted on SQLite Ledger!', type: 'success' });
+                }}
+              />
+            )}
 
-          {currentPage === 'resources' && (
-            <AcademicResourcesView />
-          )}
+            {currentPage === 'resources' && (
+              <AcademicResourcesView />
+            )}
 
-          {currentPage === 'profile' && (
-            <UserProfileView
-              persona="student"
-              currentUser={currentUser}
-              onUpdateUser={(updatedCreds) => {
-                setCurrentUser(updatedCreds);
-                localStorage.setItem('sjce_auth_session_student', JSON.stringify(updatedCreds));
-              }}
-              students={students}
-              onRefreshRoster={refreshData}
-              onResetTour={() => {
-                localStorage.removeItem('sjce_tour_completed_student');
-                window.location.reload();
-              }}
-            />
-          )}
-        </div>
+            {currentPage === 'profile' && (
+              <UserProfileView
+                persona="student"
+                currentUser={currentUser}
+                onUpdateUser={(updatedCreds) => {
+                  setCurrentUser(updatedCreds);
+                  localStorage.setItem('sjce_auth_session_student', JSON.stringify(updatedCreds));
+                }}
+                students={students}
+                onRefreshRoster={refreshData}
+                onResetTour={() => {
+                  localStorage.removeItem('sjce_tour_completed_student');
+                  window.location.reload();
+                }}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Persistent Bottom Navigation Rail */}

@@ -456,7 +456,7 @@ export default function LecturerDashboardView({
                 className="flex items-center justify-between px-2 py-1.5 hover:bg-slate-50 rounded-lg cursor-pointer text-xs font-extrabold text-slate-800 select-none"
               >
                 <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-slate-400 text-sm">
+                  <span className="material-symbols-outlined text-slate-600 text-sm">
                     {isDegExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
                   </span>
                   <span className="material-symbols-outlined text-indigo-500 text-sm">school</span>
@@ -477,7 +477,7 @@ export default function LecturerDashboardView({
                           className="flex items-center justify-between px-2 py-1 hover:bg-slate-50 rounded-lg cursor-pointer text-xs font-bold text-slate-700 select-none"
                         >
                           <div className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-slate-400 text-xs">
+                            <span className="material-symbols-outlined text-slate-600 text-xs">
                               {isDeptExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
                             </span>
                             <span className="material-symbols-outlined text-teal-600 text-sm">account_tree</span>
@@ -498,7 +498,7 @@ export default function LecturerDashboardView({
                                     className="flex items-center justify-between px-2 py-0.5 hover:bg-slate-50 rounded-lg cursor-pointer text-xs font-semibold text-slate-600 select-none"
                                   >
                                     <div className="flex items-center gap-1">
-                                      <span className="material-symbols-outlined text-slate-400 text-[10px]">
+                                      <span className="material-symbols-outlined text-slate-600 text-[10px]">
                                         {isYrExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}
                                       </span>
                                       <span className="material-symbols-outlined text-amber-500 text-sm">calendar_today</span>
@@ -523,7 +523,7 @@ export default function LecturerDashboardView({
                                             className={`w-full text-left px-2 py-1 rounded-md text-[11px] font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
                                               isSelected
                                                 ? 'bg-[#6b38d4]/10 text-[#6b38d4] font-bold shadow-sm'
-                                                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                                                : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
                                             }`}
                                           >
                                             <span className={`material-symbols-outlined text-xs ${isSelected ? 'text-[#6b38d4]' : 'text-gray-400'}`}>
@@ -675,7 +675,7 @@ export default function LecturerDashboardView({
                   <span className="text-xs font-sans font-bold text-slate-600 uppercase tracking-wider">
                     Quick Operational Workspaces
                   </span>
-                  <span className="text-[10px] text-slate-400 font-sans">1-Click Fast Path</span>
+                  <span className="text-[10px] text-slate-600 font-sans">1-Click Fast Path</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -698,7 +698,7 @@ export default function LecturerDashboardView({
                         <span className="text-[9px] text-emerald-600 font-bold uppercase">Multi-Course Topology</span>
                       </div>
                     </div>
-                    <p className="text-[11px] text-slate-500 font-sans leading-tight">
+                    <p className="text-[11px] text-slate-600 font-sans leading-tight">
                       Manage faculty assignments, classroom room allocations, and course linkages.
                     </p>
                   </button>
@@ -722,7 +722,7 @@ export default function LecturerDashboardView({
                         <span className="text-[9px] text-indigo-600 font-bold uppercase">Atomic Uploadation</span>
                       </div>
                     </div>
-                    <p className="text-[11px] text-slate-500 font-sans leading-tight">
+                    <p className="text-[11px] text-slate-600 font-sans leading-tight">
                       Batch upload student rosters, historical attendance, and timetable matrices via CSV/JSON.
                     </p>
                   </button>
@@ -876,7 +876,7 @@ export default function LecturerDashboardView({
                 <h3 className="font-display font-black text-slate-800 text-lg sm:text-xl font-sans">
                   Computer Science (CSE) &bull; Year {folderInfo.year} &bull; Section {folderInfo.section}
                 </h3>
-                <p className="text-xs text-slate-500 font-sans mt-0.5">
+                <p className="text-xs text-slate-600 font-sans mt-0.5">
                   Academic cohort workspace folder &bull; Estimated: {currentStats.count} &bull; Class Avg: {currentStats.avg}
                 </p>
               </div>
@@ -901,7 +901,7 @@ export default function LecturerDashboardView({
                   className={`px-3.5 py-2 rounded-xl font-sans font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
                     activeFolderTab === t.id
                       ? 'bg-white text-[#6b38d4] shadow-sm'
-                      : 'text-slate-500 hover:text-slate-800'
+                      : 'text-slate-600 hover:text-slate-800'
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">{t.icon}</span>
@@ -938,7 +938,7 @@ export default function LecturerDashboardView({
                   {/* Slot selection controls */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-55 p-4 rounded-2xl border border-slate-150">
                     <div>
-                      <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                         Select Lecture Date
                       </label>
                       <input
@@ -950,7 +950,7 @@ export default function LecturerDashboardView({
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      <label className="block text-[10px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                         Select Timeline Slot
                       </label>
                       <select
@@ -978,7 +978,7 @@ export default function LecturerDashboardView({
                         <h5 className="font-display font-extrabold text-slate-800 text-sm font-sans pt-1">
                           No Session Spawned
                         </h5>
-                        <p className="text-xs text-slate-500 leading-normal max-w-md">
+                        <p className="text-xs text-slate-600 leading-normal max-w-md">
                           Attendance logging is locked for this time window. Create a session to pre-generate visual verification parameters.
                         </p>
                       </div>
@@ -990,7 +990,7 @@ export default function LecturerDashboardView({
                         </span>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="col-span-1">
-                            <label className="block text-[8px] font-sans font-bold text-slate-400 uppercase tracking-widest mb-1">
+                            <label className="block text-[8px] font-sans font-bold text-slate-600 uppercase tracking-widest mb-1">
                               Subject Code
                             </label>
                             <input
@@ -1003,7 +1003,7 @@ export default function LecturerDashboardView({
                             />
                           </div>
                           <div className="col-span-2">
-                            <label className="block text-[8px] font-sans font-bold text-slate-400 uppercase tracking-widest mb-1">
+                            <label className="block text-[8px] font-sans font-bold text-slate-600 uppercase tracking-widest mb-1">
                               Subject Name
                             </label>
                             <input
@@ -1043,7 +1043,7 @@ export default function LecturerDashboardView({
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50/50 p-4 rounded-xl border border-slate-150/50 text-left">
                         {/* Block 1: QR Code Preview */}
                         <div className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-center">
-                          <span className="text-[8px] font-sans font-bold text-slate-400 uppercase tracking-wider mb-1.5 font-semibold">
+                          <span className="text-[8px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-1.5 font-semibold">
                             Generated QR Code
                           </span>
                           <img
@@ -1060,7 +1060,7 @@ export default function LecturerDashboardView({
 
                         {/* Block 2: OTP Verification Code */}
                         <div className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-center">
-                          <span className="text-[8px] font-sans font-bold text-slate-400 uppercase tracking-wider mb-2 font-semibold">
+                          <span className="text-[8px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-2 font-semibold">
                             Verification OTP
                           </span>
                           <div className="flex gap-1 justify-center">
@@ -1077,14 +1077,14 @@ export default function LecturerDashboardView({
                               <span className="text-xs text-slate-450 italic">None</span>
                             )}
                           </div>
-                          <span className="text-[7.5px] font-sans text-slate-400 mt-2">
+                          <span className="text-[7.5px] font-sans text-slate-600 mt-2">
                             Auto-rotates in live session
                           </span>
                         </div>
 
                         {/* Block 3: Challenge shape */}
                         <div className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col items-center justify-center text-center">
-                          <span className="text-[8px] font-sans font-bold text-slate-400 uppercase tracking-wider mb-2 font-semibold">
+                          <span className="text-[8px] font-sans font-bold text-slate-600 uppercase tracking-wider mb-2 font-semibold">
                             Verification Shape
                           </span>
                           <div className="flex items-center gap-1.5 justify-center">
@@ -1112,7 +1112,7 @@ export default function LecturerDashboardView({
                               <span className="text-xs text-slate-450 italic">None</span>
                             )}
                           </div>
-                          <span className="text-[7.5px] font-sans text-slate-400 mt-2">
+                          <span className="text-[7.5px] font-sans text-slate-600 mt-2">
                             Anti-proxy visual challenge
                           </span>
                         </div>
@@ -1182,7 +1182,7 @@ export default function LecturerDashboardView({
                   {/* Summary Metric Counters */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-150 text-center">
-                      <span className="text-[9px] uppercase font-bold text-slate-400 block">Enrolled</span>
+                      <span className="text-[9px] uppercase font-bold text-slate-600 block">Enrolled</span>
                       <span className="text-xl font-display font-black text-slate-900">{sectionStudents.length || 60}</span>
                     </div>
                     <div className="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100 text-center">
@@ -1209,13 +1209,13 @@ export default function LecturerDashboardView({
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-bold text-slate-700">Classroom Desk Layout (Lecturer Podium Front)</span>
-                      <div className="flex items-center gap-3 text-[10px] text-slate-500 font-medium">
+                      <div className="flex items-center gap-3 text-[10px] text-slate-600 font-medium">
                         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-emerald-500 rounded-sm"></span> Present</span>
                         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-slate-200 rounded-sm"></span> Empty/Absent</span>
                       </div>
                     </div>
 
-                    <div className="w-full bg-slate-100 py-1.5 rounded-lg text-center font-mono text-[9px] font-bold text-slate-500 uppercase tracking-widest border border-slate-200">
+                    <div className="w-full bg-slate-100 py-1.5 rounded-lg text-center font-mono text-[9px] font-bold text-slate-600 uppercase tracking-widest border border-slate-200">
                       ── TEACHER PODIUM & PROJECTOR SCREEN ──
                     </div>
 
@@ -1233,7 +1233,7 @@ export default function LecturerDashboardView({
                             className={`p-2 rounded-xl text-center flex flex-col items-center justify-center transition-all cursor-pointer border select-none ${
                               isPresent
                                 ? 'bg-white border-emerald-300 text-emerald-900 shadow-xs hover:border-emerald-500 hover:scale-105'
-                                : 'bg-slate-100/80 border-slate-200 text-slate-400 hover:bg-slate-200/60'
+                                : 'bg-slate-100/80 border-slate-200 text-slate-600 hover:bg-slate-200/60'
                             }`}
                           >
                             <span className="material-symbols-outlined text-base">
@@ -1285,7 +1285,7 @@ export default function LecturerDashboardView({
 
                   <div className="space-y-3">
                     {folderSessionHistory.length === 0 ? (
-                      <div className="text-center py-8 text-xs text-slate-400 italic">
+                      <div className="text-center py-8 text-xs text-slate-600 italic">
                         No past attendance slots recorded in this folder yet.
                       </div>
                     ) : (
@@ -1295,7 +1295,7 @@ export default function LecturerDashboardView({
                             <span className="text-xs font-bold text-slate-800 block">
                               {s.subjectCode} - {s.subjectName}
                             </span>
-                            <span className="text-[10px] text-slate-500 font-sans block mt-0.5">
+                            <span className="text-[10px] text-slate-600 font-sans block mt-0.5">
                               {s.createdAt ? new Date(s.createdAt).toLocaleDateString() : 'Date'} &bull; {s.timeline}
                             </span>
                           </div>
@@ -1304,7 +1304,7 @@ export default function LecturerDashboardView({
                               <span className="text-xs font-bold text-[#6b38d4] block">
                                 {s.markedCount} / {s.expectedCount} Marked
                               </span>
-                              <span className="text-[8.5px] uppercase font-bold text-slate-400 block">
+                              <span className="text-[8.5px] uppercase font-bold text-slate-600 block">
                                 Capacity Quotient
                               </span>
                             </div>
@@ -1392,10 +1392,10 @@ export default function LecturerDashboardView({
                     <table className="w-full text-left font-sans text-xs">
                       <thead className="bg-slate-50 border-b border-slate-150">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px]">Student Candidate</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px]">USN Code</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-center">Attendance Quotient</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-right">Status</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px]">Student Candidate</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px]">USN Code</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-center">Attendance Quotient</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-right">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -1427,7 +1427,7 @@ export default function LecturerDashboardView({
                                     )}
                                   </div>
                                 </td>
-                                <td className="px-4 py-3 font-mono text-[10px] text-slate-500">{st.usn}</td>
+                                <td className="px-4 py-3 font-mono text-[10px] text-slate-600">{st.usn}</td>
                                 <td className="px-4 py-3 font-mono text-center font-bold text-slate-800">{st.attendanceRate}%</td>
                                 <td className="px-4 py-3 text-right">
                                   <div className="flex items-center justify-end gap-2">
@@ -1437,7 +1437,7 @@ export default function LecturerDashboardView({
                                     <button
                                       type="button"
                                       onClick={() => handleDeleteStudent(st.usn)}
-                                      className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                                      className="p-1 rounded text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                                       title={`Delete candidate ${st.usn}`}
                                     >
                                       <span className="material-symbols-outlined text-sm">delete</span>
@@ -1477,7 +1477,7 @@ export default function LecturerDashboardView({
                     <div className="flex justify-between items-start text-xs">
                       <div>
                         <h5 className="font-bold text-slate-900">Sri Jayachamarajendra College of Engineering (SJCE)</h5>
-                        <p className="text-[10px] text-slate-500">Autonomous Institute &bull; JSS Science and Technology University</p>
+                        <p className="text-[10px] text-slate-600">Autonomous Institute &bull; JSS Science and Technology University</p>
                       </div>
                       <span className="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-lg text-[9px] font-bold uppercase">
                         NAAC Metric 2.3.1
@@ -1486,19 +1486,19 @@ export default function LecturerDashboardView({
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200 text-xs">
                       <div>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">Department</span>
+                        <span className="text-[9px] font-bold text-slate-600 uppercase">Department</span>
                         <p className="font-semibold text-slate-800">{folderInfo?.department || 'CSE'}</p>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">Academic Year</span>
+                        <span className="text-[9px] font-bold text-slate-600 uppercase">Academic Year</span>
                         <p className="font-semibold text-slate-800">2025 - 2026</p>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">Total Sessions Held</span>
+                        <span className="text-[9px] font-bold text-slate-600 uppercase">Total Sessions Held</span>
                         <p className="font-semibold text-[#6b38d4]">40 Lectures</p>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">Overall Compliance</span>
+                        <span className="text-[9px] font-bold text-slate-600 uppercase">Overall Compliance</span>
                         <p className="font-semibold text-emerald-600">88.4% Average</p>
                       </div>
                     </div>
@@ -1577,7 +1577,7 @@ export default function LecturerDashboardView({
                       <h5 className="text-xs font-bold text-slate-800">
                         CSE {formSubjCode} - {formSubjName}
                       </h5>
-                      <p className="text-[11px] text-slate-500 leading-relaxed">
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
                         This course covers the fundamentals of processing architectures, memory management hierarchies, and device matrix protocols. Students will learn assembly registers, cache mapping constraints, and synchronous handshake logic.
                       </p>
                       <div className="grid grid-cols-2 gap-3 pt-2 text-[10px] text-slate-600 font-semibold">
@@ -1605,11 +1605,11 @@ export default function LecturerDashboardView({
                       ].map((doc, idx) => (
                         <div key={idx} className="flex justify-between items-center p-3 bg-white border border-slate-200 rounded-xl hover:border-[#6b38d4] transition-all">
                           <div className="flex items-center gap-2.5">
-                            <span className="material-symbols-outlined text-slate-400">description</span>
+                            <span className="material-symbols-outlined text-slate-600">description</span>
                             <span className="text-xs font-bold text-slate-700">{doc.title}</span>
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="text-[10px] text-slate-400 font-mono">{doc.size}</span>
+                            <span className="text-[10px] text-slate-600 font-mono">{doc.size}</span>
                             <span className="px-2 py-0.5 bg-indigo-55 text-indigo-700 font-bold text-[8.5px] rounded uppercase font-sans">
                               {doc.type}
                             </span>
@@ -1639,22 +1639,22 @@ export default function LecturerDashboardView({
                     <table className="w-full text-left font-sans text-xs">
                       <thead className="bg-slate-50 border-b border-slate-150">
                         <tr>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px]">Student USN</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px]">Overridden By</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px]">Timestamp</th>
-                          <th className="px-4 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-right">Reason</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px]">Student USN</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px]">Overridden By</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px]">Timestamp</th>
+                          <th className="px-4 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-right">Reason</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {loadingAudits ? (
                           <tr>
-                            <td colSpan={4} className="px-4 py-8 text-center text-slate-400 italic">
+                            <td colSpan={4} className="px-4 py-8 text-center text-slate-600 italic">
                               Loading audit trail logs...
                             </td>
                           </tr>
                         ) : filteredAudits.length === 0 ? (
                           <tr>
-                            <td colSpan={4} className="px-4 py-8 text-center text-slate-400 italic">
+                            <td colSpan={4} className="px-4 py-8 text-center text-slate-600 italic">
                               No manual overrides logged for this section.
                             </td>
                           </tr>
@@ -1663,7 +1663,7 @@ export default function LecturerDashboardView({
                             <tr key={a.id || index} className="hover:bg-slate-50/50">
                               <td className="px-4 py-3 font-mono font-bold text-[#6b38d4]">{a.studentUsn || a.student_usn}</td>
                               <td className="px-4 py-3 text-slate-700 font-medium">{a.overriddenBy || a.overridden_by}</td>
-                              <td className="px-4 py-3 text-slate-500 font-sans">{new Date(a.timestamp).toLocaleString()}</td>
+                              <td className="px-4 py-3 text-slate-600 font-sans">{new Date(a.timestamp).toLocaleString()}</td>
                               <td className="px-4 py-3 text-slate-800 text-right font-medium">{a.reason}</td>
                             </tr>
                           ))
@@ -1689,7 +1689,7 @@ export default function LecturerDashboardView({
                             V5.0 Relational
                           </span>
                         </h4>
-                        <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                        <p className="text-[11px] text-slate-600 font-sans mt-0.5">
                           Multi-tenant faculty allocations, course mappings, and classroom terminal topology
                         </p>
                       </div>
@@ -1724,7 +1724,7 @@ export default function LecturerDashboardView({
                       <p className="text-2xl font-black font-display text-slate-900 font-sans">
                         {academicRelations.length}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                      <p className="text-[10px] text-slate-600 mt-1 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Mappings
                       </p>
                     </div>
@@ -1736,7 +1736,7 @@ export default function LecturerDashboardView({
                       <p className="text-2xl font-black font-display text-slate-900 font-sans">
                         {new Set(academicRelations.map(r => r.lecturer_email)).size || 4}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                      <p className="text-[10px] text-slate-600 mt-1 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Verified Instructors
                       </p>
                     </div>
@@ -1748,7 +1748,7 @@ export default function LecturerDashboardView({
                       <p className="text-2xl font-black font-display text-slate-900 font-sans">
                         {enrollments.length || students.length * 4}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                      <p className="text-[10px] text-slate-600 mt-1 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> FK Integrity
                       </p>
                     </div>
@@ -1760,7 +1760,7 @@ export default function LecturerDashboardView({
                       <p className="text-2xl font-black font-display text-slate-900 font-sans">
                         {new Set(academicRelations.map(r => r.classroom_room)).size || 3}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                      <p className="text-[10px] text-slate-600 mt-1 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Physical Beacons
                       </p>
                     </div>
@@ -1769,11 +1769,11 @@ export default function LecturerDashboardView({
                   {/* Relations Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {loadingMesh ? (
-                      <div className="col-span-2 py-12 text-center text-slate-400 italic">
+                      <div className="col-span-2 py-12 text-center text-slate-600 italic">
                         Resolving academic topology graph...
                       </div>
                     ) : academicRelations.length === 0 ? (
-                      <div className="col-span-2 py-12 text-center text-slate-400 italic bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                      <div className="col-span-2 py-12 text-center text-slate-600 italic bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                         No academic allocations found. Click "Assign Course Node" to map faculty to courses.
                       </div>
                     ) : (
@@ -1817,7 +1817,7 @@ export default function LecturerDashboardView({
                                   alert(err.message);
                                 }
                               }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                               title="Sever course allocation"
                             >
                               <span className="material-symbols-outlined text-sm">link_off</span>
@@ -1826,7 +1826,7 @@ export default function LecturerDashboardView({
 
                           <div className="space-y-2 pt-2 border-t border-slate-100 text-xs font-sans">
                             <div className="flex items-center justify-between text-slate-600">
-                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-600">
                                 <span className="material-symbols-outlined text-sm text-[#6b38d4]">person</span>
                                 Lecturer
                               </span>
@@ -1836,8 +1836,8 @@ export default function LecturerDashboardView({
                             </div>
 
                             <div className="flex items-center justify-between text-slate-600">
-                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                                <span className="material-symbols-outlined text-sm text-slate-400">mail</span>
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-600">
+                                <span className="material-symbols-outlined text-sm text-slate-600">mail</span>
                                 Email
                               </span>
                               <span className="font-mono text-[10px] text-slate-600">
@@ -1846,7 +1846,7 @@ export default function LecturerDashboardView({
                             </div>
 
                             <div className="flex items-center justify-between text-slate-600">
-                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-600">
                                 <span className="material-symbols-outlined text-sm text-emerald-600">meeting_room</span>
                                 Facility Node
                               </span>
@@ -1856,7 +1856,7 @@ export default function LecturerDashboardView({
                             </div>
 
                             <div className="flex items-center justify-between text-slate-600">
-                              <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                              <span className="flex items-center gap-1.5 text-[11px] text-slate-600">
                                 <span className="material-symbols-outlined text-sm text-indigo-500">domain</span>
                                 Allocation Scope
                               </span>
@@ -1872,8 +1872,8 @@ export default function LecturerDashboardView({
 
                   {/* Add Relation Modal */}
                   {showAddRelationModal && (
-                    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-                      <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-150 space-y-4 animate-fade-in">
+                    <div className="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                      <div className="prism-glass-panel rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-150 space-y-4 animate-fade-in">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                           <h4 className="font-display font-extrabold text-slate-900 text-base font-sans flex items-center gap-2">
                             <span className="material-symbols-outlined text-[#6b38d4]">hub</span>
@@ -1882,7 +1882,7 @@ export default function LecturerDashboardView({
                           <button
                             type="button"
                             onClick={() => setShowAddRelationModal(false)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                            className="p-1 rounded-lg text-slate-600 hover:text-slate-700 cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-lg">close</span>
                           </button>
@@ -1912,7 +1912,7 @@ export default function LecturerDashboardView({
                         >
                           <div className="grid grid-cols-3 gap-2">
                             <div className="col-span-1">
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Code</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Code</label>
                               <input
                                 type="text"
                                 value={newRelation.course_code}
@@ -1922,7 +1922,7 @@ export default function LecturerDashboardView({
                               />
                             </div>
                             <div className="col-span-2">
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Course Title</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Course Title</label>
                               <input
                                 type="text"
                                 value={newRelation.course_name}
@@ -1935,7 +1935,7 @@ export default function LecturerDashboardView({
 
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lecturer Name</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Lecturer Name</label>
                               <input
                                 type="text"
                                 value={newRelation.lecturer_name}
@@ -1945,7 +1945,7 @@ export default function LecturerDashboardView({
                               />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lecturer Email</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Lecturer Email</label>
                               <input
                                 type="email"
                                 value={newRelation.lecturer_email}
@@ -1958,7 +1958,7 @@ export default function LecturerDashboardView({
 
                           <div className="grid grid-cols-3 gap-2">
                             <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Section</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Section</label>
                               <select
                                 value={newRelation.section}
                                 onChange={(e) => setNewRelation({ ...newRelation, section: e.target.value })}
@@ -1971,7 +1971,7 @@ export default function LecturerDashboardView({
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Relation Type</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Relation Type</label>
                               <select
                                 value={newRelation.relation_type}
                                 onChange={(e) => setNewRelation({ ...newRelation, relation_type: e.target.value })}
@@ -1984,7 +1984,7 @@ export default function LecturerDashboardView({
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Facility Node</label>
+                              <label className="block text-[10px] font-bold text-slate-600 uppercase mb-1">Facility Node</label>
                               <input
                                 type="text"
                                 value={newRelation.classroom_room}
@@ -2033,7 +2033,7 @@ export default function LecturerDashboardView({
                             High Throughput
                           </span>
                         </h4>
-                        <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                        <p className="text-[11px] text-slate-600 font-sans mt-0.5">
                           Atomic batch uploading of candidate rosters, historical attendance, timetable matrices, and student enrollments
                         </p>
                       </div>
@@ -2062,14 +2062,14 @@ export default function LecturerDashboardView({
                         }`}
                       >
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`material-symbols-outlined text-lg ${bulkCategory === cat.id ? 'text-[#6b38d4]' : 'text-slate-400'}`}>
+                          <span className={`material-symbols-outlined text-lg ${bulkCategory === cat.id ? 'text-[#6b38d4]' : 'text-slate-600'}`}>
                             {cat.icon}
                           </span>
                           <span className="font-display font-bold text-xs text-slate-900 font-sans">
                             {cat.label}
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-500 font-sans leading-tight">
+                        <p className="text-[10px] text-slate-600 font-sans leading-tight">
                           {cat.desc}
                         </p>
                       </button>
@@ -2079,7 +2079,7 @@ export default function LecturerDashboardView({
                   {/* Template quick-loader toolbar */}
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-sans">
+                      <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider font-sans">
                         Quick Templates:
                       </span>
                       <button
@@ -2131,7 +2131,7 @@ export default function LecturerDashboardView({
                     <button
                       type="button"
                       onClick={() => setBulkText('')}
-                      className="text-[10px] text-slate-400 hover:text-slate-600 font-sans cursor-pointer"
+                      className="text-[10px] text-slate-600 hover:text-slate-600 font-sans cursor-pointer"
                     >
                       Clear Editor
                     </button>
@@ -2148,7 +2148,7 @@ export default function LecturerDashboardView({
                           payload.{bulkText.trim().startsWith('[') ? 'json' : 'csv'} &bull; {bulkCategory.toUpperCase()} INGESTION
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400">
+                      <span className="text-[10px] font-mono text-slate-600">
                         {bulkText ? `${bulkText.split('\n').length} lines` : 'Empty buffer'}
                       </span>
                     </div>
@@ -2305,3 +2305,6 @@ export default function LecturerDashboardView({
     </div>
   );
 }
+
+
+

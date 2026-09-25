@@ -36,7 +36,7 @@ export default function TopAppBar({
   };
 
   return (
-    <header className="flex justify-between items-center w-full px-4 md:px-8 py-3.5 sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <header className="flex justify-between items-center w-full px-4 md:px-8 py-3.5 sticky top-0 z-[150] prism-glass border-b border-slate-200/60 shadow-xs">
       {/* Left Branding & Return to Hub */}
       <div className="flex items-center gap-3">
         <button 
@@ -142,17 +142,17 @@ export default function TopAppBar({
             </div>
             <div className="text-left hidden md:block leading-none">
               <span className="text-xs font-bold text-slate-800 block truncate max-w-[120px]">{displayName}</span>
-              <span className="text-[10px] font-mono text-slate-400">{userIdentifier}</span>
+              <span className="text-[10px] font-mono text-slate-600">{userIdentifier}</span>
             </div>
-            <span className="material-symbols-outlined text-sm text-slate-400">expand_more</span>
+            <span className="material-symbols-outlined text-sm text-slate-600">expand_more</span>
           </button>
 
           {/* Profile Dropdown */}
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-150 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 text-xs">
+            <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-150 p-2 z-[150] animate-in fade-in zoom-in-95 duration-150 text-xs">
               <div className="px-3 py-2 border-b border-slate-100 mb-1">
                 <p className="font-bold text-slate-900 truncate">{displayName}</p>
-                <p className="text-[10px] font-mono text-slate-400 truncate">{userIdentifier}</p>
+                <p className="text-[10px] font-mono text-slate-600 truncate">{userIdentifier}</p>
                 <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase bg-indigo-50 text-[#6b38d4]">
                   {persona}
                 </span>
@@ -162,7 +162,7 @@ export default function TopAppBar({
                 onClick={() => { setShowProfileMenu(false); onBackToGateway(); }}
                 className="w-full px-3 py-2 rounded-xl text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2 cursor-pointer font-medium"
               >
-                <span className="material-symbols-outlined text-sm text-slate-400">swap_horiz</span>
+                <span className="material-symbols-outlined text-sm text-slate-600">swap_horiz</span>
                 Switch Portal Role
               </button>
 
@@ -181,3 +181,6 @@ export default function TopAppBar({
     </header>
   );
 }
+
+
+

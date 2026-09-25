@@ -152,7 +152,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
   const currentTime = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
   if (loading) {
-    return <div className="p-12 text-center text-slate-500 animate-pulse font-sans text-sm">Loading your real-time academic profile...</div>;
+    return <div className="p-12 text-center text-slate-600 animate-pulse font-sans text-sm">Loading your real-time academic profile...</div>;
   }
   if (error) {
     return <div className="p-8 text-center text-red-500 font-sans text-sm">Error: {error}</div>;
@@ -165,7 +165,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
         {/* Welcome card */}
-        <div className="md:col-span-8 bg-white rounded-2xl p-6 flex flex-col justify-between border border-slate-200/80 shadow-xs relative overflow-hidden group">
+        <div className="md:col-span-8 prism-glass-panel rounded-2xl p-5 flex flex-col justify-between border border-slate-200/80 shadow-xs relative overflow-hidden group">
           <div className="relative z-10 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className={`text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-full inline-block ${statusTagColor}`}>
@@ -179,7 +179,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               Welcome back, {displayName}.
             </h1>
             {myUsn && (
-              <p className="text-xs font-mono text-slate-500">USN: {myUsn} &bull; Roll: {student?.roll_number || myUsn.slice(-3)}</p>
+              <p className="text-xs font-mono text-slate-600">USN: {myUsn} &bull; Roll: {student?.roll_number || myUsn.slice(-3)}</p>
             )}
             <p className="text-xs text-slate-600 max-w-lg leading-relaxed pt-1">
               {overallPct >= 75
@@ -225,7 +225,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
         </div>
 
         {/* Live session alert or time card */}
-        <div className="md:col-span-4 bg-white rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-slate-200/80 shadow-xs">
+        <div className="md:col-span-4 prism-glass-panel rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-slate-200/80 shadow-xs">
           {activeSessions.length > 0 ? (
             <>
               <span className="flex h-3 w-3 relative mb-2">
@@ -238,7 +238,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               <p className="font-display font-bold text-base text-slate-900">
                 {activeSessions[0].subjectCode}
               </p>
-              <p className="text-xs text-slate-500 font-sans mt-0.5">
+              <p className="text-xs text-slate-600 font-sans mt-0.5">
                 {activeSessions[0].subjectName}
               </p>
               <p className="text-[10px] text-emerald-700 font-bold mt-1 bg-emerald-50 px-2 py-0.5 rounded">
@@ -255,10 +255,10 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
             <>
               <span className="material-symbols-outlined text-3xl text-slate-300 mb-2">sensors_off</span>
               <p className="font-display font-bold text-sm text-slate-800">No Active Lecture Gate</p>
-              <p className="text-xs text-slate-500 font-sans mt-1 leading-relaxed max-w-[200px]">
+              <p className="text-xs text-slate-600 font-sans mt-1 leading-relaxed max-w-[200px]">
                 Your faculty will open a live presence gate when lecture commences.
               </p>
-              <p className="text-[10px] font-mono text-slate-400 mt-2">{currentTime}</p>
+              <p className="text-[10px] font-mono text-slate-600 mt-2">{currentTime}</p>
             </>
           )}
         </div>
@@ -268,7 +268,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
         {/* Circular Progress Gauge */}
-        <div className="md:col-span-4 bg-white rounded-2xl p-6 flex flex-col items-center justify-between border border-slate-200/80 shadow-xs">
+        <div className="md:col-span-4 prism-glass-panel rounded-2xl p-5 flex flex-col items-center justify-between border border-slate-200/80 shadow-xs">
           <h3 className="font-display font-bold self-start text-slate-900 text-base mb-2">
             Cumulative Presence
           </h3>
@@ -298,22 +298,22 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
 
           <div className="w-full grid grid-cols-3 gap-2 px-1 font-sans text-xs text-center border-t border-slate-100 pt-3">
             <div>
-              <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Threshold</p>
+              <p className="text-[9px] text-slate-600 uppercase font-bold tracking-wider mb-0.5">Threshold</p>
               <p className="font-bold text-slate-800 text-sm">75%</p>
             </div>
             <div>
-              <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Attended</p>
+              <p className="text-[9px] text-slate-600 uppercase font-bold tracking-wider mb-0.5">Attended</p>
               <p className="font-bold text-[#6b38d4] text-sm">{totalAttended}/{totalConducted}</p>
             </div>
             <div>
-              <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Status</p>
+              <p className="text-[9px] text-slate-600 uppercase font-bold tracking-wider mb-0.5">Status</p>
               <p className="font-bold text-sm" style={{ color: attendanceColor }}>{attendanceStatus}</p>
             </div>
           </div>
         </div>
 
         {/* Interactive "What-If" Bunk & Attendance Trajectory Simulator */}
-        <div className="md:col-span-8 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
+        <div className="md:col-span-8 prism-glass-panel rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-center mb-1">
               <div className="flex items-center gap-2">
@@ -326,7 +326,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
                 Predictive Math Engine
               </span>
             </div>
-            <p className="text-xs text-slate-500 mb-4">
+            <p className="text-xs text-slate-600 mb-4">
               Model hypothetical upcoming lectures to see exact projected attendance before making leave plans.
             </p>
 
@@ -369,9 +369,9 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 prism-glass-panel p-3.5 rounded-xl border border-slate-200/50">
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Projected Outcome</span>
+              <span className="text-[10px] uppercase font-bold text-slate-600 tracking-wider">Projected Outcome</span>
               <p className="text-xs font-sans text-slate-700 font-medium">
                 Attending <span className="font-bold text-slate-900">{simUpcomingClasses - simPlannedMisses}/{simUpcomingClasses}</span> future lectures
               </p>
@@ -401,30 +401,30 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       </div>
 
       {/* Live Subject-wise Breakdown Table */}
-      <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80">
+      <div className="prism-glass-panel rounded-2xl p-5 shadow-xs border border-slate-200/80">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#6b38d4] text-lg">view_list</span>
             <h3 className="font-display font-bold text-base text-slate-900">Subject-Wise Attendance Matrix</h3>
           </div>
-          <span className="text-[10px] uppercase font-sans tracking-wide text-slate-400 font-bold">Live Synchronized</span>
+          <span className="text-[10px] uppercase font-sans tracking-wide text-slate-600 font-bold">Live Synchronized</span>
         </div>
 
         <div className="overflow-x-auto rounded-xl border border-slate-150">
           <table className="w-full text-left font-sans text-xs">
             <thead className="bg-slate-50 border-b border-slate-150">
               <tr>
-                <th className="px-3.5 py-2.5 font-bold text-slate-500 uppercase text-[9px]">Course Code & Title</th>
-                <th className="px-3.5 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-center">Conducted</th>
-                <th className="px-3.5 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-center">Attended</th>
-                <th className="px-3.5 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-center">Percentage</th>
-                <th className="px-3.5 py-2.5 font-bold text-slate-500 uppercase text-[9px] text-right">Safe Bunks / Recovery</th>
+                <th className="px-3.5 py-2.5 font-bold text-slate-600 uppercase text-[9px]">Course Code & Title</th>
+                <th className="px-3.5 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-center">Conducted</th>
+                <th className="px-3.5 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-center">Attended</th>
+                <th className="px-3.5 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-center">Percentage</th>
+                <th className="px-3.5 py-2.5 font-bold text-slate-600 uppercase text-[9px] text-right">Safe Bunks / Recovery</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {stats.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-slate-400 text-xs">
+                  <td colSpan={5} className="px-3 py-6 text-center text-slate-600 text-xs">
                     No course records initialized yet. Check into live sessions to populate real statistics.
                   </td>
                 </tr>
@@ -438,7 +438,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
                     <tr key={idx} className="hover:bg-slate-50/50">
                       <td className="px-3.5 py-2.5">
                         <p className="font-bold text-slate-900">{st.subject_code}</p>
-                        <p className="text-[10px] text-slate-500">{st.subject_name}</p>
+                        <p className="text-[10px] text-slate-600">{st.subject_name}</p>
                       </td>
                       <td className="px-3.5 py-2.5 text-center font-semibold text-slate-700">{st.total_sessions}</td>
                       <td className="px-3.5 py-2.5 text-center font-bold text-[#6b38d4]">{st.attended_sessions}</td>
@@ -466,7 +466,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       </div>
 
       {/* Leave Application History Tracker */}
-      <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80">
+      <div className="prism-glass-panel rounded-2xl p-5 shadow-xs border border-slate-200/80">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#6b38d4] text-lg">history_edu</span>
@@ -481,16 +481,16 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
         </div>
 
         {leaveRequests.length === 0 ? (
-          <p className="text-xs text-slate-400 py-3">No leave claims submitted yet. Medical and on-duty exemptions will display here.</p>
+          <p className="text-xs text-slate-600 py-3">No leave claims submitted yet. Medical and on-duty exemptions will display here.</p>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-slate-150">
             <table className="w-full text-left font-sans text-xs">
               <thead className="bg-slate-50 border-b border-slate-150">
                 <tr>
-                  <th className="px-3 py-2 font-bold text-slate-500 uppercase text-[9px]">Type</th>
-                  <th className="px-3 py-2 font-bold text-slate-500 uppercase text-[9px]">Duration</th>
-                  <th className="px-3 py-2 font-bold text-slate-500 uppercase text-[9px]">Reason</th>
-                  <th className="px-3 py-2 font-bold text-slate-500 uppercase text-[9px] text-right">Status</th>
+                  <th className="px-3 py-2 font-bold text-slate-600 uppercase text-[9px]">Type</th>
+                  <th className="px-3 py-2 font-bold text-slate-600 uppercase text-[9px]">Duration</th>
+                  <th className="px-3 py-2 font-bold text-slate-600 uppercase text-[9px]">Reason</th>
+                  <th className="px-3 py-2 font-bold text-slate-600 uppercase text-[9px] text-right">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -516,8 +516,8 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
 
       {/* --- MODAL 1: DIGITAL EXAM HALL TICKET PASSPORT --- */}
       {showHallTicketModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl space-y-5 border border-slate-150 animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
+          <div className="prism-glass-panel rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl space-y-5 border border-slate-150 animate-in fade-in zoom-in duration-200">
             {/* Header */}
             <div className="flex justify-between items-start border-b border-slate-150 pb-4">
               <div>
@@ -527,9 +527,9 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
                 <h3 className="font-display font-extrabold text-xl text-slate-900 mt-0.5">
                   Exam Eligibility Hall Ticket
                 </h3>
-                <p className="text-xs text-slate-500">Sri Jayachamarajendra College of Engineering (SJCE)</p>
+                <p className="text-xs text-slate-600">Sri Jayachamarajendra College of Engineering (SJCE)</p>
               </div>
-              <button onClick={() => setShowHallTicketModal(false)} className="text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
+              <button onClick={() => setShowHallTicketModal(false)} className="text-slate-600 hover:text-slate-700 p-1 cursor-pointer">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -539,13 +539,13 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               <div className="space-y-1">
                 <p className="font-bold text-sm text-slate-900">{student?.name || displayName}</p>
                 <p className="font-mono text-slate-600">USN: <span className="font-bold text-slate-900">{myUsn}</span></p>
-                <p className="text-slate-500">Dept: {student?.department || 'Computer Science (CSE)'}</p>
+                <p className="text-slate-600">Dept: {student?.department || 'Computer Science (CSE)'}</p>
               </div>
               <div className="text-right">
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800">
                   {hallTicket?.isEligibleForAllExams ? '✓ All Cleared' : 'Provisional'}
                 </span>
-                <p className="text-[10px] font-mono text-slate-400 mt-1">Roll: {student?.roll_number || '001'}</p>
+                <p className="text-[10px] font-mono text-slate-600 mt-1">Roll: {student?.roll_number || '001'}</p>
               </div>
             </div>
 
@@ -554,7 +554,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Course Clearance Audit</h4>
               <div className="max-h-48 overflow-y-auto border border-slate-150 rounded-xl divide-y divide-slate-100 text-xs">
                 {stats.length === 0 ? (
-                  <p className="p-3 text-center text-slate-400">All registered semester subjects verified clear.</p>
+                  <p className="p-3 text-center text-slate-600">All registered semester subjects verified clear.</p>
                 ) : (
                   stats.map((c, i) => {
                     const pct = c.total_sessions > 0 ? Math.round((c.attended_sessions / c.total_sessions) * 100) : 100;
@@ -563,7 +563,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
                       <div key={i} className="p-2.5 flex items-center justify-between">
                         <div>
                           <p className="font-bold text-slate-800">{c.subject_code} - {c.subject_name}</p>
-                          <p className="text-[10px] text-slate-500">Attendance: {pct}%</p>
+                          <p className="text-[10px] text-slate-600">Attendance: {pct}%</p>
                         </div>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           cleared ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
@@ -612,11 +612,11 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
 
       {/* --- MODAL 2: LEAVE APPLICATION --- */}
       {showLeaveModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="font-display font-bold text-lg text-slate-900">Apply for Leave / OD Claim</h3>
-              <button onClick={() => setShowLeaveModal(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+              <button onClick={() => setShowLeaveModal(false)} className="text-slate-600 hover:text-slate-700 cursor-pointer">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -694,3 +694,6 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
     </div>
   );
 }
+
+
+

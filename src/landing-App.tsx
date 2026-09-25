@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { firebaseAuth } from './services/firebaseService';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function LandingApp() {
   const [loadingSplash, setLoadingSplash] = useState(true);
@@ -130,29 +131,43 @@ export default function LandingApp() {
   // Splash Screen Render
   if (loadingSplash) {
     return (
-      <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0d1117] transition-opacity duration-400 ease-out ${splashFade ? 'opacity-0' : 'opacity-100'}`}>
-        <div className="text-center space-y-4 max-w-sm px-6 flex flex-col items-center select-none">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6b38d4] to-[#8455ef] flex items-center justify-center shadow-lg shadow-[#6b38d4]/30 animate-pulse">
-            <span className="material-symbols-outlined text-white text-3xl">school</span>
-          </div>
-          <div className="space-y-1">
-            <h1 className="text-xl font-display font-extrabold text-white tracking-tight">
-              Smart Attendance System
-            </h1>
-            <p className="text-xs text-slate-400 font-sans">
-              Zero-Trust Dynamic Presence Engine
-            </p>
-          </div>
-        </div>
-      </div>
+      <AnimatePresence>
+        {!splashFade && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0d1117]"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-center space-y-4 max-w-sm px-6 flex flex-col items-center select-none"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6b38d4] to-[#8455ef] flex items-center justify-center shadow-lg shadow-[#6b38d4]/30 animate-pulse">
+                <span className="material-symbols-outlined text-white text-3xl">school</span>
+              </div>
+              <div className="space-y-1">
+                <h1 className="text-xl font-display font-extrabold text-white tracking-tight">
+                  Smart Attendance System
+                </h1>
+                <p className="text-xs text-slate-600 font-sans">
+                  Zero-Trust Dynamic Presence Engine
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden flex flex-col justify-between selection:bg-[#6b38d4] selection:text-white">
       
       {/* Top Navbar */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 py-3">
+      <header className="prism-glass border-b border-slate-200/60 sticky top-0 z-[100] px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#6b38d4] to-[#8455ef] flex items-center justify-center text-white shadow-xs">
@@ -160,7 +175,7 @@ export default function LandingApp() {
             </div>
             <div>
               <span className="font-display font-bold text-sm text-slate-900 leading-none block">Smart Attendance</span>
-              <span className="text-[10px] text-slate-500 font-mono">SJCE &bull; University Gateway</span>
+              <span className="text-[10px] text-slate-600 font-mono">SJCE &bull; University Gateway</span>
             </div>
           </div>
 
@@ -174,12 +189,17 @@ export default function LandingApp() {
       </header>
 
       {/* Main Content Area */}
-      <main className={`flex-1 max-w-6xl w-full mx-auto px-4 py-8 md:py-12 flex flex-col justify-center transition-all duration-300 ${
+      <main className={`flex-1 max-w-6xl w-full mx-auto px-4 py-4 md:py-8 flex flex-col justify-center transition-all duration-300 ${
         showModal ? 'opacity-30 blur-xs pointer-events-none scale-[0.99]' : 'opacity-100'
       }`}>
         
         {/* Clean Hero Title */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto mb-10">
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center space-y-2 max-w-2xl mx-auto mb-6"
+        >
           <span className="px-3 py-1 rounded-full bg-[#6b38d4]/10 text-[#6b38d4] text-xs font-bold font-sans uppercase tracking-wider inline-block">
             Presence Verification & Academic Portal
           </span>
@@ -189,20 +209,25 @@ export default function LandingApp() {
           <p className="text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
             Select your authorized portal to check in to live classes, schedule timetables, and monitor real-time attendance analytics.
           </p>
-        </div>
+        </motion.div>
 
         {/* 3 Clean Modern Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
+        <motion.div 
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full"
+        >
           
           {/* Card 1: Student Portal */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-[#6b38d4]/30 transition-all flex flex-col justify-between group">
+          <div className="prism-glass-panel rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-[#6b38d4]/50 transition-all flex flex-col justify-between group">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                 <span className="material-symbols-outlined text-2xl">qr_code_scanner</span>
               </div>
               <div className="space-y-1">
                 <h3 className="text-lg font-display font-bold text-slate-900">Student Portal</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Scan 5-second dynamic QR codes, track safe bunk buffer trajectories, and submit leave requests.
                 </p>
               </div>
@@ -241,14 +266,14 @@ export default function LandingApp() {
           </div>
 
           {/* Card 2: Lecturer Staff Deck */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-[#6b38d4]/30 transition-all flex flex-col justify-between group">
+          <div className="prism-glass-panel rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-[#6b38d4]/50 transition-all flex flex-col justify-between group">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-indigo-50 text-[#6b38d4] flex items-center justify-center border border-indigo-100">
                 <span className="material-symbols-outlined text-2xl">co_present</span>
               </div>
               <div className="space-y-1">
                 <h3 className="text-lg font-display font-bold text-slate-900">Faculty Deck</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Launch rotating HMAC presence gates, manage multi-year course timetables, and review rosters.
                 </p>
               </div>
@@ -287,14 +312,14 @@ export default function LandingApp() {
           </div>
 
           {/* Card 3: Admin & Secretariat */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-[#6b38d4]/30 transition-all flex flex-col justify-between group">
+          <div className="prism-glass-panel rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-[#6b38d4]/50 transition-all flex flex-col justify-between group">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200">
                 <span className="material-symbols-outlined text-2xl">admin_panel_settings</span>
               </div>
               <div className="space-y-1">
                 <h3 className="text-lg font-display font-bold text-slate-900">Admin Gateway</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Institutional attendance audits, NAAC reports, department-wide analytics, and roster management.
                 </p>
               </div>
@@ -332,20 +357,20 @@ export default function LandingApp() {
             </div>
           </div>
 
-        </div>
+        </motion.div>
       </main>
 
       {/* Pop-up Clean Auth Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl p-6 md:p-7 max-w-sm w-full shadow-2xl border border-slate-100 relative">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="prism-glass-panel rounded-2xl p-6 md:p-7 max-w-sm w-full shadow-2xl relative">
             
             {/* Header */}
             <div className="text-center mb-4">
               <h3 className="text-lg font-display font-bold text-slate-900">
                 {activeTab === 'student' ? 'Student Sign In' : activeTab === 'lecturer' ? 'Faculty Sign In' : 'Administrator Sign In'}
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-600 mt-0.5">
                 {authMode === 'signin' ? 'Enter your registered credentials' : 'Create your account profile'}
               </p>
             </div>
@@ -357,7 +382,7 @@ export default function LandingApp() {
                   type="button"
                   onClick={() => setAuthMode('signin')}
                   className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
-                    authMode === 'signin' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                    authMode === 'signin' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
                   }`}
                 >
                   Sign In
@@ -366,7 +391,7 @@ export default function LandingApp() {
                   type="button"
                   onClick={() => setAuthMode('signup')}
                   className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
-                    authMode === 'signup' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                    authMode === 'signup' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
                   }`}
                 >
                   Register
@@ -446,7 +471,7 @@ export default function LandingApp() {
       )}
 
       {/* MEGA FEATURE: Campus Pulse AI */}
-      <div className="fixed bottom-6 right-6 z-50 font-sans">
+      <div className="fixed bottom-6 right-6 z-[150] font-sans">
         <button 
           id="btn-campus-pulse"
           onClick={() => {
@@ -470,7 +495,7 @@ export default function LandingApp() {
           
           <div className="p-4 flex flex-col gap-3">
             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <div className="text-xs text-slate-500 font-bold mb-1">LIVE TRAFFIC ANOMALY</div>
+              <div className="text-xs text-slate-600 font-bold mb-1">LIVE TRAFFIC ANOMALY</div>
               <div className="text-sm font-mono text-indigo-700 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
                 CS Dept: +42% influx
@@ -478,11 +503,11 @@ export default function LandingApp() {
             </div>
 
             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <div className="text-xs text-slate-500 font-bold mb-1">PROXY DETECTION ENGINE</div>
+              <div className="text-xs text-slate-600 font-bold mb-1">PROXY DETECTION ENGINE</div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 mb-1 mt-2">
                 <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: '98%' }}></div>
               </div>
-              <div className="text-[10px] text-slate-400 text-right">Confidence: 98.2%</div>
+              <div className="text-[10px] text-slate-600 text-right">Confidence: 98.2%</div>
             </div>
 
             <button 
@@ -504,9 +529,12 @@ export default function LandingApp() {
       </div>
 
       {/* Minimal Clean Footer */}
-      <footer className="border-t border-slate-200/60 py-4 text-center text-xs text-slate-400 bg-white">
+      <footer className="border-t border-slate-200/60 py-4 text-center text-xs text-slate-600 bg-white">
         Sri Jayachamarajendra College of Engineering (SJCE) &bull; Golden Architecture Monorepo &bull; Vercel + Neon Serverless
       </footer>
     </div>
   );
 }
+
+
+
