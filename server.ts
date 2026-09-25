@@ -532,6 +532,7 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
       studentUsn,
       studentName,
       otpCode,
+      otp,
       qrToken,
       verificationOption,
       gpsLat,
@@ -540,6 +541,8 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
       deviceFingerprint,
       cryptoAttestation // WebAuthn / Passkeys signature
     } = req.body;
+
+    const finalOtp = (otpCode || otp || req.body?.otp || req.body?.otpCode || '').toString().trim();
 
     if (!sessionId || !studentUsn) {
       return res.status(400).json({ error: 'sessionId and studentUsn are required.' });
@@ -559,7 +562,7 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
       }
 
       // 1. Zero-Trust Subnet Geofencing Check
-      if (isOnline) {
+      if (isOnline && session.require_subnet_check) {
         const ipStr = getTrustedClientIp(req);
         const campusSubnets = ['192.168.', '10.', '172.16.', '127.0.0.1', '::1', 'localhost'];
         const isAuthorizedIp = campusSubnets.some(subnet => ipStr.includes(subnet));
@@ -570,12 +573,16 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
       }
 
       // 2. GPS Distance Check (Radius 150m)
-      if (isOnline && session.class_lat && session.class_lng) {
-        if (!gpsLat || !gpsLng) {
+      const latVal = gpsLat || req.body?.studentLat || req.body?.lat;
+      const lngVal = gpsLng || req.body?.studentLng || req.body?.lng;
+      if (isOnline && session.require_gps_check && session.class_lat && session.class_lng) {
+        if (!latVal || !lngVal) {
           return res.status(400).json({ error: 'Geofence Failure: GPS coordinates are required for check-in.' });
         }
+      }
+      if (latVal && lngVal && session.class_lat && session.class_lng) {
         const distanceMeters = calculateHaversineDistance(
-          parseFloat(gpsLat), parseFloat(gpsLng),
+          parseFloat(latVal), parseFloat(lngVal),
           parseFloat(session.class_lat), parseFloat(session.class_lng)
         );
         if (distanceMeters > 150) {
@@ -585,7 +592,7 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
 
       // 3. Cryptographic QR Token validation & Server-Anchored Time (120s window)
       if (isOnline && qrToken) {
-        if (!verifyHmacToken(session.id, otpCode, verificationOption, qrToken)) {
+        if (!verifyHmacToken(session.id, finalOtp, verificationOption, qrToken)) {
           return res.status(400).json({ error: 'Cryptographic validation failed: Invalid QR signature token.' });
         }
         
@@ -597,12 +604,12 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
       }
 
       // 4. Hardware Attestation Check
-      if (isOnline && (!deviceFingerprint || !cryptoAttestation)) {
+      if (isOnline && session.strict_enclave_required && (!deviceFingerprint || !cryptoAttestation)) {
          return res.status(403).json({ error: 'Hardware Attestation Failed: Secure Enclave cryptographic signature required.' });
       }
 
       // OTP Verification
-      if (isOnline && session.otp !== otpCode) {
+      if (isOnline && session.otp && session.otp !== finalOtp) {
         return res.status(400).json({ error: 'Invalid 4-digit verification code displayed on projector.' });
       }
 
@@ -625,7 +632,7 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
       res.json({
         success: true,
         message: 'Attendance verified securely via SQLite WAL.',
-        hmacProof: generateHmacToken(session.id, otpCode, verificationOption)
+        hmacProof: generateHmacToken(session.id, finalOtp, verificationOption)
       });
 
     } catch (dbError: any) {

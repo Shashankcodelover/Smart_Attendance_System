@@ -3506,6 +3506,7 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
       studentUsn,
       studentName,
       otpCode,
+      otp,
       qrToken,
       verificationOption,
       gpsLat,
@@ -3515,6 +3516,7 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
       cryptoAttestation
       // WebAuthn / Passkeys signature
     } = req.body;
+    const finalOtp = (otpCode || otp || req.body?.otp || req.body?.otpCode || "").toString().trim();
     if (!sessionId || !studentUsn) {
       return res.status(400).json({ error: "sessionId and studentUsn are required." });
     }
@@ -3527,7 +3529,7 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
       if (session.status !== "ACTIVE" && session.status !== "REOPENED") {
         return res.status(400).json({ error: "This attendance session is currently inactive or closed." });
       }
-      if (isOnline) {
+      if (isOnline && session.require_subnet_check) {
         const ipStr = getTrustedClientIp(req);
         const campusSubnets = ["192.168.", "10.", "172.16.", "127.0.0.1", "::1", "localhost"];
         const isAuthorizedIp = campusSubnets.some((subnet) => ipStr.includes(subnet));
@@ -3535,13 +3537,17 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
           return res.status(403).json({ error: `Geofence Defeat Prevented: Your verified IP (${ipStr}) is outside the authorized campus Wi-Fi network.` });
         }
       }
-      if (isOnline && session.class_lat && session.class_lng) {
-        if (!gpsLat || !gpsLng) {
+      const latVal = gpsLat || req.body?.studentLat || req.body?.lat;
+      const lngVal = gpsLng || req.body?.studentLng || req.body?.lng;
+      if (isOnline && session.require_gps_check && session.class_lat && session.class_lng) {
+        if (!latVal || !lngVal) {
           return res.status(400).json({ error: "Geofence Failure: GPS coordinates are required for check-in." });
         }
+      }
+      if (latVal && lngVal && session.class_lat && session.class_lng) {
         const distanceMeters = calculateHaversineDistance(
-          parseFloat(gpsLat),
-          parseFloat(gpsLng),
+          parseFloat(latVal),
+          parseFloat(lngVal),
           parseFloat(session.class_lat),
           parseFloat(session.class_lng)
         );
@@ -3550,7 +3556,7 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
         }
       }
       if (isOnline && qrToken) {
-        if (!verifyHmacToken(session.id, otpCode, verificationOption, qrToken)) {
+        if (!verifyHmacToken(session.id, finalOtp, verificationOption, qrToken)) {
           return res.status(400).json({ error: "Cryptographic validation failed: Invalid QR signature token." });
         }
         const tokenTime = parseInt(qrToken.split(".")[0]);
@@ -3558,10 +3564,10 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
           return res.status(400).json({ error: "Verification Session Expired! Submit within 120 seconds of scanning (Server-Anchored)." });
         }
       }
-      if (isOnline && (!deviceFingerprint || !cryptoAttestation)) {
+      if (isOnline && session.strict_enclave_required && (!deviceFingerprint || !cryptoAttestation)) {
         return res.status(403).json({ error: "Hardware Attestation Failed: Secure Enclave cryptographic signature required." });
       }
-      if (isOnline && session.otp !== otpCode) {
+      if (isOnline && session.otp && session.otp !== finalOtp) {
         return res.status(400).json({ error: "Invalid 4-digit verification code displayed on projector." });
       }
       const attendanceStatus = session.status === "REOPENED" || session.is_reopened === 1 ? "late" : "present";
@@ -3580,7 +3586,7 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
       res.json({
         success: true,
         message: "Attendance verified securely via SQLite WAL.",
-        hmacProof: generateHmacToken(session.id, otpCode, verificationOption)
+        hmacProof: generateHmacToken(session.id, finalOtp, verificationOption)
       });
     } catch (dbError) {
       if (dbError.message.includes("Proxy Blocked") || dbError.message.includes("Presence already verified")) {
