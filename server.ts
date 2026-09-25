@@ -911,6 +911,88 @@ app.get('/api/export/:filename', (req, res) => {
   res.download(filePath);
 });
 
+// Student Master Roster CSV Export
+app.get('/api/students/export-csv', (req, res) => {
+  try {
+    const { department, section } = req.query;
+    let students = dao.getStudents();
+    if (department) students = students.filter((s: any) => s.department === department);
+    if (section) students = students.filter((s: any) => s.section === section);
+
+    const header = 'USN,Name,Department,Course,Year,Section,AttendanceRate,RollNumber,Email\n';
+    const rows = students.map((s: any) => 
+      `"${s.usn}","${s.name}","${s.department || ''}","${s.course || 'B.E.'}",${s.year || 1},"${s.section || ''}",${s.attendanceRate || 100},"${s.roll_number || ''}","${s.email || ''}"`
+    ).join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="Students_Roster_${department || 'All'}_${section || 'All'}.csv"`);
+    res.status(200).send(header + rows);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Session-Specific / Department-Specific Attendance Ledger CSV Export
+app.get(['/api/sessions/:id/export-csv', '/api/attendance/export-csv'], (req, res) => {
+  try {
+    const sessionId = req.params.id || req.query.sessionId as string;
+    const session = sessionId ? dao.getSessionById(sessionId) : null;
+    let records = dao.getAttendanceRecords();
+    if (sessionId) {
+      records = records.filter((r: any) => r.session_id === sessionId);
+    }
+
+    const header = 'SessionID,SubjectCode,SubjectName,Department,Section,StudentUSN,StudentName,Status,VerificationMethod,Timestamp\n';
+    const rows = records.map((r: any) => 
+      `"${r.session_id}","${session?.subject_code || ''}","${session?.subject_name || ''}","${session?.department || ''}","${session?.section || ''}","${r.student_usn}","${r.student_name}","${r.status || 'PRESENT'}","${r.verification_option || 'OTP'}","${r.submitted_at || r.scanned_at || ''}"`
+    ).join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="Attendance_${session?.subject_code || 'Export'}_${session?.section || 'All'}.csv"`);
+    res.status(200).send(header + rows);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Manual Add-On / Emergency Override for Phone-less or Battery-Dead Students
+app.post('/api/attendance/manual-addon', authenticateLecturer, (req: any, res: any) => {
+  try {
+    const { sessionId, studentUsn, studentName, reason = 'No Phone / Battery Exhausted' } = req.body;
+    if (!sessionId || !studentUsn) {
+      return res.status(400).json({ error: 'sessionId and studentUsn are required.' });
+    }
+
+    const existing = dao.getAttendanceRecords().find((r: any) => r.session_id === sessionId && r.student_usn === studentUsn.trim().toUpperCase());
+    if (existing) {
+      return res.status(409).json({ error: 'Student is already marked present in this session.' });
+    }
+
+    const record = {
+      session_id: sessionId,
+      student_usn: studentUsn.trim().toUpperCase(),
+      student_name: studentName || 'Walk-in Student',
+      scanned_at: new Date().toISOString(),
+      submitted_at: new Date().toISOString(),
+      is_online: true,
+      verification_option: 'MANUAL_LECTURER_OVERRIDE',
+      status: 'MANUAL_VERIFIED',
+      device_fingerprint: `MANUAL_OVERRIDE_${req.user?.email || 'LECTURER'}`
+    };
+
+    dao.insertAttendanceRecord(record);
+    dao.insertAuditLog('MANUAL_ATTENDANCE_ADDON', sessionId, req.user?.email || 'lecturer@sjce.edu', `Manually added ${studentUsn} (${reason})`);
+
+    res.json({
+      success: true,
+      message: `Student ${studentUsn} manually accredited to attendance ledger.`,
+      record
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- ENTERPRISE V2 SOVEREIGN ENGINE IMPORTS & ENDPOINTS ---
 import { timetableImporter } from './src/services/timetableImporter.ts';
 import { antiProxyEngine } from './src/services/antiProxyEngine.ts';
