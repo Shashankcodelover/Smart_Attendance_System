@@ -195,10 +195,19 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
       {/* Action Button Container */}
       <div className="flex justify-end mt-4">
         <button
-          onClick={() => onProceed({ department: dept, course, year, section })}
+          onClick={() => onProceed({
+            department: dept,
+            course,
+            year,
+            section,
+            subjectCode: 'CS501',
+            subjectName: preview.subject || 'Computer Architecture',
+            timeline: '10:00 AM - 11:00 AM'
+          })}
           className="bg-[#6b38d4] hover:bg-[#8455ef] text-white px-8 py-3.5 rounded-full font-display text-base font-bold flex items-center gap-3 shadow-lg active:scale-95 transition-all duration-200 cursor-pointer"
         >
-          Proceed to Session Creation
+          <span className="material-symbols-outlined">qr_code_2</span>
+          Launch Live Attendance & QR Gate
           <span className="material-symbols-outlined">arrow_forward</span>
         </button>
       </div>

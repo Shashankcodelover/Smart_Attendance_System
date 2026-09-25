@@ -6,7 +6,8 @@ interface EnterprisePortalGatewayProps {
   onAuthorize: (
     persona: 'lecturer' | 'student',
     department: 'student' | 'lecturer' | 'admin',
-    credentials: { codeOrUsn: string; name: string }
+    credentials: { codeOrUsn: string; name: string },
+    token?: string
   ) => void;
   students: Student[];
 }
@@ -61,11 +62,13 @@ export default function EnterprisePortalGateway({
       const user = await firebaseAuth.signIn(email, pass, role);
       setDbState('connected');
       localStorage.setItem(`sjce_tour_completed_${role}`, 'true');
+      const token = localStorage.getItem(`sjce_auth_token_${role}`);
       setTimeout(() => {
         onAuthorize(
           role === 'student' ? 'student' : 'lecturer',
           role,
-          { codeOrUsn: user.codeOrUsn, name: user.name }
+          { codeOrUsn: user.codeOrUsn, name: user.name },
+          (user as any).token || token || undefined
         );
       }, 300);
     } catch (err: any) {
@@ -110,24 +113,28 @@ export default function EnterprisePortalGateway({
         
         // Reset tour completion so that the new user gets guided immediately
         localStorage.removeItem(`sjce_tour_completed_${activeTab}`);
+        const token = localStorage.getItem(`sjce_auth_token_${activeTab}`);
         
         setTimeout(() => {
           onAuthorize(
             activeTab === 'student' ? 'student' : 'lecturer',
             activeTab,
-            { codeOrUsn: user.codeOrUsn, name: user.name }
+            { codeOrUsn: user.codeOrUsn, name: user.name },
+            (user as any).token || token || undefined
           );
         }, 500);
       } else {
         // Sign In
         const user = await firebaseAuth.signIn(credentialInput.trim(), passcode, activeTab);
         setDbState('connected');
+        const token = localStorage.getItem(`sjce_auth_token_${activeTab}`);
         
         setTimeout(() => {
           onAuthorize(
             activeTab === 'student' ? 'student' : 'lecturer',
             activeTab,
-            { codeOrUsn: user.codeOrUsn, name: user.name }
+            { codeOrUsn: user.codeOrUsn, name: user.name },
+            (user as any).token || token || undefined
           );
         }, 500);
       }

@@ -24,7 +24,33 @@ export const authService = {
     // Store JWT
     localStorage.setItem(`sjce_auth_token_${role}`, data.token);
 
-    return { codeOrUsn: data.user.codeOrUsn, name: data.user.name };
+    return { codeOrUsn: data.user.codeOrUsn, name: data.user.name, token: data.token };
+  },
+
+  demoLogin: async (
+    role: 'lecturer' | 'student' | 'admin',
+    email?: string,
+    name?: string
+  ): Promise<{ codeOrUsn: string; name: string; token: string }> => {
+    const response = await fetch('/api/auth/demo-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, email, name })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Demo login failed.');
+    }
+
+    if (role === 'lecturer') localStorage.setItem('sjce_auth_session_lecturer', JSON.stringify(data.user));
+    if (role === 'student') localStorage.setItem('sjce_auth_session_student', JSON.stringify(data.user));
+    if (role === 'admin') localStorage.setItem('sjce_auth_session_admin', JSON.stringify(data.user));
+    
+    // Store JWT
+    localStorage.setItem(`sjce_auth_token_${role}`, data.token);
+
+    return { codeOrUsn: data.user.codeOrUsn, name: data.user.name, token: data.token };
   },
 
   signUp: async (

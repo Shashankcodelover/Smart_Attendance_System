@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
 import { Session, AttendanceRecord } from '../types';
 
 interface VerificationSessionViewProps {
@@ -23,6 +24,7 @@ export default function VerificationSessionView({
   const [syncSuccess, setSyncSuccess] = useState(false);
   const [currentOtp, setCurrentOtp] = useState(session?.otp || '1234');
   const [currentChallenge, setCurrentChallenge] = useState(session?.verificationOption || 'BLUE_CIRCLE');
+  const [localQrUrl, setLocalQrUrl] = useState<string>('');
 
   // Live telemetry status tickers
   const [telemetryScanRate, setTelemetryScanRate] = useState(2.8);
@@ -88,9 +90,13 @@ export default function VerificationSessionView({
           setCurrentChallenge(nextChallenge);
 
           // PUSH rotation update to Express server so student checks match exactly
+          const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = `Bearer ${token}`;
+
           fetch('/api/sessions/update-rotation', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({
               sessionId: session.id,
               otp: nextOtp,
@@ -142,6 +148,24 @@ export default function VerificationSessionView({
   // Generate dynamic live API QR code url referencing the rotating OTP & challenge shape parameters
   const qrConnectText = `${window.location.origin}/student-dashboard?check-in=true&sessionId=${session.id}&otp=${currentOtp}&option=${currentChallenge}`;
   const dynamicQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&color=6b38d4&margin=12&data=${encodeURIComponent(qrConnectText)}`;
+
+  // Generate offline-ready local QR code
+  useEffect(() => {
+    if (!session) return;
+    const connectUrl = `${window.location.origin}/student-dashboard?check-in=true&sessionId=${session.id}&otp=${currentOtp}&option=${currentChallenge}`;
+    QRCode.toDataURL(connectUrl, {
+      width: 350,
+      margin: 2,
+      color: {
+        dark: '#6b38d4',
+        light: '#ffffff'
+      }
+    })
+      .then(url => setLocalQrUrl(url))
+      .catch(() => {
+        setLocalQrUrl(dynamicQrUrl);
+      });
+  }, [session.id, currentOtp, currentChallenge]);
 
   // OTP split digits
   const pinDigits = currentOtp.split('');
@@ -213,7 +237,7 @@ export default function VerificationSessionView({
               <img
                 alt="Session QR Code with Embedded OTP Handshake Key"
                 className="w-56 h-56 sm:w-64 sm:h-64 object-cover"
-                src={dynamicQrUrl}
+                src={localQrUrl || dynamicQrUrl}
               />
             </div>
           </div>

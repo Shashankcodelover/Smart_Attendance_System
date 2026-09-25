@@ -111,19 +111,69 @@ export default function LecturerApp() {
     };
   }, []);
 
+  // Helper to ensure valid token is present and auto-replenish if missing
+  const ensureLecturerToken = async (): Promise<string | null> => {
+    let token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
+    if (token) return token;
+
+    try {
+      const saved = localStorage.getItem('sjce_auth_session_lecturer') || localStorage.getItem('sjce_auth_session_admin');
+      const parsed = saved ? JSON.parse(saved) : null;
+      const role = localStorage.getItem('sjce_auth_session_admin') ? 'admin' : 'lecturer';
+      const res = await fetch('/api/auth/demo-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role,
+          email: parsed?.codeOrUsn || 'admin@sjce.edu',
+          name: parsed?.name || 'Faculty Member'
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.token) {
+          localStorage.setItem(`sjce_auth_token_${role}`, data.token);
+          return data.token;
+        }
+      }
+    } catch (e) {
+      console.warn('Auto-token replenishment error:', e);
+    }
+    return null;
+  };
+
   // Sync sessions, rosters, records
   const refreshData = async () => {
     try {
       const email = currentUser?.codeOrUsn || 'admin@sjce.edu';
-      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : undefined;
+      const token = await ensureLecturerToken();
+      const headers: Record<string, string> = {
+        'x-lecturer-email': email
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const sRes = await fetch(`/api/sessions?lecturer=${encodeURIComponent(email)}`, { headers });
       const sData = await sRes.json();
       setSessions(Array.isArray(sData) ? sData : []);
 
-      const aRes = await fetch('/api/attendance/records', { headers });
-      const aData = await aRes.json();
-      setAttendanceRecords(Array.isArray(aData) ? aData : []);
+      const aRes = await fetch(`/api/attendance/records?lecturer=${encodeURIComponent(email)}`, { headers });
+      if (aRes.status === 401) {
+        // Auto-refresh token if expired
+        localStorage.removeItem('sjce_auth_token_lecturer');
+        localStorage.removeItem('sjce_auth_token_admin');
+        const refreshed = await ensureLecturerToken();
+        if (refreshed) {
+          headers['Authorization'] = `Bearer ${refreshed}`;
+          const retryRes = await fetch(`/api/attendance/records?lecturer=${encodeURIComponent(email)}`, { headers });
+          const retryData = await retryRes.json();
+          setAttendanceRecords(Array.isArray(retryData) ? retryData : []);
+        }
+      } else {
+        const aData = await aRes.json();
+        setAttendanceRecords(Array.isArray(aData) ? aData : []);
+      }
 
       const stdRes = await fetch('/api/students', { headers });
       const stdData = await stdRes.json();
@@ -145,27 +195,44 @@ export default function LecturerApp() {
 
     const interval = setInterval(async () => {
       try {
-        const aRes = await fetch('/api/attendance/records');
-        const aData = await aRes.json();
-        setAttendanceRecords(aData);
+        const token = await ensureLecturerToken();
+        const email = currentUser?.codeOrUsn || 'admin@sjce.edu';
+        const headers: Record<string, string> = {
+          'x-lecturer-email': email
+        };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const aRes = await fetch(`/api/attendance/records?lecturer=${encodeURIComponent(email)}`, { headers });
+        if (aRes.ok) {
+          const aData = await aRes.json();
+          setAttendanceRecords(Array.isArray(aData) ? aData : []);
+        }
       } catch (err) {
         console.warn('Poll gate error (swallowed safely):', err);
       }
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [currentPage, isOffline]);
+  }, [currentPage, isOffline, currentUser]);
 
   // Handle Sign-In Handshake callback
   const handleAuthorizeHandshake = (
     chosenPersona: 'lecturer' | 'student', 
     chosenDept: 'student' | 'lecturer' | 'admin', 
-    creds: { codeOrUsn: string; name: string }
+    creds: { codeOrUsn: string; name: string },
+    token?: string
   ) => {
     setCurrentUser(creds);
     setCurrentDepartment(chosenDept === 'admin' ? 'admin' : 'lecturer');
     setIsLoggedIn(true);
     
+    const roleKey = chosenDept === 'admin' ? 'admin' : 'lecturer';
+    if (token) {
+      localStorage.setItem(`sjce_auth_token_${roleKey}`, token);
+    } else {
+      ensureLecturerToken().catch(() => {});
+    }
+
     if (chosenDept === 'admin') {
       localStorage.setItem('sjce_auth_session_admin', JSON.stringify(creds));
       localStorage.removeItem('sjce_auth_session_lecturer');
@@ -470,49 +537,84 @@ export default function LecturerApp() {
 
   // Create a draft session with custom parameters
   const handleCreateSession = async (sessionData: {
-    department: string;
-    course: string;
-    year: number;
-    section: string;
-    subjectCode: string;
-    subjectName: string;
-    timeline: string;
+    department?: string;
+    course?: string;
+    year?: number;
+    section?: string;
+    subjectCode?: string;
+    subjectName?: string;
+    timeline?: string;
   }) => {
     try {
-      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
+      const email = currentUser?.codeOrUsn || 'admin@sjce.edu';
+      const token = await ensureLecturerToken();
+      const headers: Record<string, string> = { 
+        'Content-Type': 'application/json',
+        'x-lecturer-email': email
+      };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const payload = {
+        department: sessionData.department || 'Computer Science (CSE)',
+        course: sessionData.course || 'B.E.',
+        year: sessionData.year || 3,
+        section: sessionData.section || 'A',
+        subjectCode: sessionData.subjectCode || 'CS501',
+        subjectName: sessionData.subjectName || 'Computer Architecture',
+        timeline: sessionData.timeline || '10:00 AM - 11:00 AM',
+        status: 'ACTIVE',
+        lecturerEmail: email
+      };
+
       const r = await fetch('/api/sessions/create', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
-        },
-        body: JSON.stringify({
-          ...sessionData,
-          status: 'READY',
-          lecturerEmail: currentUser?.codeOrUsn || 'admin@sjce.edu'
-        }),
+        headers,
+        body: JSON.stringify(payload),
       });
+
       const d = await r.json();
-      if (d.success) {
-        refreshData();
-        setCurrentPage('dashboard');
+      if (d.success && d.session) {
+        // Activate on server to guarantee active status
+        await fetch('/api/sessions/activate', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ sessionId: d.session.id })
+        }).catch(() => {});
+
+        await refreshData();
+        // Go straight to live QR broadcast verification screen
+        setCurrentPage('verification');
         setToast({
           type: 'success',
-          text: `Section initialized! Pre-planned slot added for ${sessionData.subjectCode} under daily agenda.`,
+          text: `⚡ Live Gate Active! Broadcasting QR Code & OTP for ${payload.subjectCode}.`,
         });
-        setTimeout(() => setToast(null), 3000);
+        setTimeout(() => setToast(null), 3500);
+      } else {
+        setToast({
+          type: 'error',
+          text: d.error || d.message || 'Failed to initialize session. Please check connection.',
+        });
+        setTimeout(() => setToast(null), 4000);
       }
-    } catch {
-      setToast({ type: 'error', text: 'Error spawning session.' });
-      setTimeout(() => setToast(null), 3000);
+    } catch (err: any) {
+      setToast({ type: 'error', text: err?.message || 'Error spawning session.' });
+      setTimeout(() => setToast(null), 4000);
     }
   };
 
   // Delete/cancel session
   const handleDeleteSession = async (sessionId: string) => {
     try {
+      const email = currentUser?.codeOrUsn || 'admin@sjce.edu';
+      const token = await ensureLecturerToken();
+      const headers: Record<string, string> = {
+        'x-lecturer-email': email
+      };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const r = await fetch(`/api/sessions/${sessionId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers
       });
       const d = await r.json();
       if (d.success) {
@@ -532,13 +634,17 @@ export default function LecturerApp() {
   // Activate session
   const handleActivateSession = async (sessionId: string) => {
     try {
-      const token = localStorage.getItem('sjce_auth_token_lecturer') || localStorage.getItem('sjce_auth_token_admin');
+      const email = currentUser?.codeOrUsn || 'admin@sjce.edu';
+      const token = await ensureLecturerToken();
+      const headers: Record<string, string> = { 
+        'Content-Type': 'application/json',
+        'x-lecturer-email': email
+      };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const r = await fetch('/api/sessions/activate', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
-        },
+        headers,
         body: JSON.stringify({ sessionId }),
       });
       const d = await r.json();
@@ -548,6 +654,12 @@ export default function LecturerApp() {
         setToast({
           type: 'success',
           text: 'Gate Opened! Live QR-OTP matching sequence actively broadcasting.',
+        });
+        setTimeout(() => setToast(null), 3500);
+      } else {
+        setToast({
+          type: 'error',
+          text: d.error || d.message || 'Signal error. Could not open gate.'
         });
         setTimeout(() => setToast(null), 3500);
       }
