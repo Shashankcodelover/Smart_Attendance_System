@@ -373,11 +373,44 @@ export default function StudentCheckingView({
     setScanProgress('idle');
   };
 
-  const handleManualQrPaste = (text: string) => {
+  const handleManualQrPaste = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed) return;
 
     try {
+      // 6-Digit PIN fallback logic
+      if (/^\d{6}$/.test(trimmed)) {
+        setStatusMsg({ type: 'info', text: '🔄 Verifying PIN with active classroom sessions...' });
+        const res = await fetch('/api/sessions/verify-pin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: trimmed })
+        });
+        const data = await res.json();
+        
+        if (data.success && data.sessionId) {
+          setSelectedSessionId(data.sessionId);
+          setOtpCode(trimmed);
+          setStudentVerifyOption('OTP');
+          setQrToken(`sig_valid_${Date.now()}`); // Mock token for PIN entry
+          
+          const expires = Date.now() + 120 * 1000;
+          localStorage.setItem('sjce_unlocked_expires', String(expires));
+          
+          setIsUnlocked(true);
+          setTimeLeft(120);
+          setScannedAt(new Date().toISOString());
+          setStatusMsg({
+            type: 'success',
+            text: '✓ PIN Verified! Roster check-in form is unlocked.'
+          });
+          setManualQrText('');
+        } else {
+          setStatusMsg({ type: 'error', text: '❌ Invalid PIN or no active session found.' });
+        }
+        return;
+      }
+
       let sessionId = '';
       let otp = '';
       let option = '';
@@ -434,7 +467,7 @@ export default function StudentCheckingView({
     } catch (e) {
       setStatusMsg({
         type: 'error',
-        text: '❌ Error parsing QR handshake contents. Try copying again.'
+        text: '❌ Error parsing input or connecting to server. Try again.'
       });
     }
   };
@@ -700,7 +733,7 @@ export default function StudentCheckingView({
               data-tour="scan-trigger"
               type="button"
               onClick={() => startCamera(null)}
-              className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#6b38d4] to-[#8455ef] text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer pulse-glowing"
+              className="w-24 h-24 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer pulse-glowing"
             >
               <span className="material-symbols-outlined text-[40px]">qr_code_scanner</span>
             </button>
@@ -731,7 +764,7 @@ export default function StudentCheckingView({
                 type="text"
                 value={manualQrText}
                 onChange={(e) => setManualQrText(e.target.value)}
-                placeholder="Paste URL e.g. http://.../student?sessionId=...&otp=...&option=..."
+                placeholder="Paste URL or 6-digit PIN"
                 className="flex-1 bg-transparent border-none outline-none text-xs px-2.5 py-1.5 placeholder:text-gray-400 text-gray-800 font-sans"
               />
               <button
@@ -1033,7 +1066,7 @@ export default function StudentCheckingView({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`flex-[2] py-3.5 bg-gradient-to-r from-[#6b38d4] to-[#8455ef] text-white rounded-xl font-sans font-extrabold text-sm shadow-md shadow-[#6b38d4]/10 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`flex-[2] py-3.5 bg-indigo-600 text-white rounded-xl font-sans font-extrabold text-sm shadow-md shadow-[#6b38d4]/10 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     submitting ? 'opacity-40 cursor-not-allowed' : ''
                   }`}
                 >
@@ -1153,7 +1186,7 @@ export default function StudentCheckingView({
               setIsUnlocked(false);
               onSuccessCheckIn();
             }}
-            className="w-full py-3.5 bg-gradient-to-r from-[#6b38d4] to-[#8455ef] hover:from-[#8455ef] hover:to-[#6b38d4] text-white rounded-xl font-sans font-extrabold text-sm shadow-md transition-all cursor-pointer"
+            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-sans font-extrabold text-sm shadow-md transition-all cursor-pointer"
           >
             Done & Back to Dashboard
           </button>

@@ -165,7 +165,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
         {/* Welcome card */}
-        <div className="md:col-span-8 prism-glass-panel rounded-2xl p-5 flex flex-col justify-between border border-slate-200/80 shadow-xs relative overflow-hidden group">
+        <div className="md:col-span-8 bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col justify-between border border-slate-200/80 shadow-xs relative overflow-hidden group">
           <div className="relative z-10 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <span className={`text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-full inline-block ${statusTagColor}`}>
@@ -191,7 +191,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
           <div className="mt-6 flex flex-wrap gap-2.5 relative z-10">
             <button
               onClick={onCheckInClick}
-              className="px-5 py-2.5 bg-gradient-to-r from-[#6b38d4] to-[#8455ef] hover:from-[#8455ef] hover:to-[#6b38d4] text-white font-sans text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
               Check-in with QR / OTP
@@ -225,7 +225,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
         </div>
 
         {/* Live session alert or time card */}
-        <div className="md:col-span-4 prism-glass-panel rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-slate-200/80 shadow-xs">
+        <div className="md:col-span-4 bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-slate-200/80 shadow-xs">
           {activeSessions.length > 0 ? (
             <>
               <span className="flex h-3 w-3 relative mb-2">
@@ -268,7 +268,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
         {/* Circular Progress Gauge */}
-        <div className="md:col-span-4 prism-glass-panel rounded-2xl p-5 flex flex-col items-center justify-between border border-slate-200/80 shadow-xs">
+        <div className="md:col-span-4 bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col items-center justify-between border border-slate-200/80 shadow-xs">
           <h3 className="font-display font-bold self-start text-slate-900 text-base mb-2">
             Cumulative Presence
           </h3>
@@ -313,7 +313,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
         </div>
 
         {/* Interactive "What-If" Bunk & Attendance Trajectory Simulator */}
-        <div className="md:col-span-8 prism-glass-panel rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col justify-between">
+        <div className="md:col-span-8 bg-white border border-slate-200 shadow-sm rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-center mb-1">
               <div className="flex items-center gap-2">
@@ -369,7 +369,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 prism-glass-panel p-3.5 rounded-xl border border-slate-200/50">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white border border-slate-200 shadow-sm p-3.5 rounded-xl border border-slate-200/50">
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-600 tracking-wider">Projected Outcome</span>
               <p className="text-xs font-sans text-slate-700 font-medium">
@@ -401,7 +401,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       </div>
 
       {/* Live Subject-wise Breakdown Table */}
-      <div className="prism-glass-panel rounded-2xl p-5 shadow-xs border border-slate-200/80">
+      <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 shadow-xs border border-slate-200/80">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#6b38d4] text-lg">view_list</span>
@@ -466,7 +466,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       </div>
 
       {/* Leave Application History Tracker */}
-      <div className="prism-glass-panel rounded-2xl p-5 shadow-xs border border-slate-200/80">
+      <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 shadow-xs border border-slate-200/80">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#6b38d4] text-lg">history_edu</span>
@@ -517,7 +517,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
       {/* --- MODAL 1: DIGITAL EXAM HALL TICKET PASSPORT --- */}
       {showHallTicketModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
-          <div className="prism-glass-panel rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl space-y-5 border border-slate-150 animate-in fade-in zoom-in duration-200">
+          <div className="bg-white border border-slate-200 shadow-sm rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl space-y-5 border border-slate-150 animate-in fade-in zoom-in duration-200">
             {/* Header */}
             <div className="flex justify-between items-start border-b border-slate-150 pb-4">
               <div>

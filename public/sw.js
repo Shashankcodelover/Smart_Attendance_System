@@ -2,7 +2,8 @@ const CACHE_NAME = 'smart-attendance-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/offline.html'
 ];
 
 self.addEventListener('install', (event) => {
@@ -51,7 +52,7 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         // Fallback for offline if HTML is requested
         if (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html')) {
-          return caches.match('/');
+          return caches.match('/offline.html');
         }
       })
   );

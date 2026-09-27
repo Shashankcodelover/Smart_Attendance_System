@@ -45,7 +45,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
   }, [dept, course, year, section]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 py-3">
       {/* Welcome Header */}
       <section className="space-y-1">
         <h2 className="text-2xl md:text-3xl font-display font-semibold text-[#191c1e] tracking-tight">

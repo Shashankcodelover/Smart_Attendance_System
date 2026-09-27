@@ -36,7 +36,7 @@ export default function TopAppBar({
   };
 
   return (
-    <header className="flex justify-between items-center w-full px-4 md:px-8 py-3.5 sticky top-0 z-[150] prism-glass border-b border-slate-200/60 shadow-xs">
+    <header className="flex justify-between items-center w-full px-4 md:px-8 py-3.5 sticky top-0 z-[150] bg-white border-b border-slate-200 border-b border-slate-200/60 shadow-xs">
       {/* Left Branding & Return to Hub */}
       <div className="flex items-center gap-3">
         <button 
@@ -49,7 +49,7 @@ export default function TopAppBar({
         </button>
 
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#6b38d4] to-[#8455ef] flex items-center justify-center text-white shadow-xs">
+          <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
             <span className="material-symbols-outlined text-lg">school</span>
           </div>
           <div>

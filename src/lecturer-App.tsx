@@ -863,7 +863,7 @@ export default function LecturerApp() {
       )}
 
       {/* Renders main panels */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-6 md:py-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-6 md:py-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}

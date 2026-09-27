@@ -1873,7 +1873,7 @@ export default function LecturerDashboardView({
                   {/* Add Relation Modal */}
                   {showAddRelationModal && (
                     <div className="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-                      <div className="prism-glass-panel rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-150 space-y-4 animate-fade-in">
+                      <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-150 space-y-4 animate-fade-in">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                           <h4 className="font-display font-extrabold text-slate-900 text-base font-sans flex items-center gap-2">
                             <span className="material-symbols-outlined text-[#6b38d4]">hub</span>

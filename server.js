@@ -3393,6 +3393,21 @@ app.post("/api/auth/demo-login", (req, res) => {
     return res.json({ success: true, token, user: { codeOrUsn: user.email, name: user.name, role: user.role } });
   }
 });
+app.post("/api/sessions/verify-pin", (req, res) => {
+  try {
+    const { pin } = req.body;
+    if (!pin) return res.status(400).json({ error: "PIN is required" });
+    const sessionsList = dao.getSessions() || [];
+    const activeSession = sessionsList.find((s) => s.status === "ACTIVE" && String(s.otp) === String(pin));
+    if (activeSession) {
+      return res.json({ success: true, sessionId: activeSession.id });
+    } else {
+      return res.status(404).json({ error: "No active session found with this PIN" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.get("/api/sessions", (req, res) => {
   try {
     let isLecturerOrAdmin = false;

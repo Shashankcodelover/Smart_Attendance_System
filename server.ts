@@ -408,6 +408,24 @@ app.post('/api/auth/demo-login', (req: any, res: any) => {
 
 // --- CORE ATTENDANCE SESSIONS & CHECK-IN API ---
 
+app.post('/api/sessions/verify-pin', (req: any, res: any) => {
+  try {
+    const { pin } = req.body;
+    if (!pin) return res.status(400).json({ error: 'PIN is required' });
+    
+    const sessionsList = dao.getSessions() || [];
+    const activeSession = sessionsList.find((s: any) => s.status === 'ACTIVE' && String(s.otp) === String(pin));
+    
+    if (activeSession) {
+      return res.json({ success: true, sessionId: activeSession.id });
+    } else {
+      return res.status(404).json({ error: 'No active session found with this PIN' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/sessions', (req, res) => {
   try {
     let isLecturerOrAdmin = false;

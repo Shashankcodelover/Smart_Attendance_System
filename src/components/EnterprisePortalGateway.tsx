@@ -17,6 +17,12 @@ export default function EnterprisePortalGateway({
   students,
 }: EnterprisePortalGatewayProps) {
   const [showModal, setShowModal] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('role=admin')) {
+      setActiveTab('admin');
+      setShowModal(true);
+    }
+  }, []);
   const [activeTab, setActiveTab] = useState<'lecturer' | 'student' | 'admin'>('lecturer');
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   
@@ -47,6 +53,13 @@ export default function EnterprisePortalGateway({
     }
   }, [activeTab, authMode]);
 
+  useEffect(() => {
+    if (window.location.search.includes('role=admin')) {
+      handleRoleClick('admin');
+    }
+  }, []);
+
+
   const handleRoleClick = (role: 'student' | 'lecturer' | 'admin') => {
     setActiveTab(role);
     setAuthMode('signin');
@@ -58,8 +71,12 @@ export default function EnterprisePortalGateway({
     setErrorMsg(null);
     try {
       const email = role === 'lecturer' ? 'dr.ramesh@sjce.edu' : role === 'student' ? '4JC21CS001' : 'admin@sjce.edu';
-      const pass = '1234';
-      const user = await firebaseAuth.signIn(email, pass, role);
+      let user: any;
+      try {
+        user = await firebaseAuth.demoLogin(role, email);
+      } catch {
+        user = await firebaseAuth.signIn(email, '1234', role);
+      }
       setDbState('connected');
       localStorage.setItem(`sjce_tour_completed_${role}`, 'true');
       const token = localStorage.getItem(`sjce_auth_token_${role}`);
@@ -68,7 +85,7 @@ export default function EnterprisePortalGateway({
           role === 'student' ? 'student' : 'lecturer',
           role,
           { codeOrUsn: user.codeOrUsn, name: user.name },
-          (user as any).token || token || undefined
+          user.token || token || undefined
         );
       }, 300);
     } catch (err: any) {
@@ -111,8 +128,6 @@ export default function EnterprisePortalGateway({
         
         setDbState('connected');
         
-        // Reset tour completion so that the new user gets guided immediately
-        localStorage.removeItem(`sjce_tour_completed_${activeTab}`);
         const token = localStorage.getItem(`sjce_auth_token_${activeTab}`);
         
         setTimeout(() => {
@@ -147,7 +162,7 @@ export default function EnterprisePortalGateway({
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-hidden flex flex-col justify-between">
       {/* Background ambient mesh */}
-      <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-indigo-100/40 via-blue-50/20 to-transparent pointer-events-none -z-10" />
+      <div className="absolute top-0 left-0 right-0 h-[500px] bg-indigo-50/40 pointer-events-none -z-10" />
       <div className="absolute top-1/4 -right-40 w-[450px] h-[450px] bg-blue-200/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 -left-40 w-[400px] h-[400px] bg-teal-200/5 rounded-full blur-2xl pointer-events-none" />
 
@@ -187,7 +202,7 @@ export default function EnterprisePortalGateway({
             Cryptographic Roster System
           </div>
           <h1 className="text-3xl md:text-5xl font-display font-black tracking-tight text-slate-900 leading-none">
-            SJCE Smart Attendance <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6b38d4] to-[#8455ef]">Gateway Hub</span>
+            SJCE Smart Attendance <span className="text-transparent bg-clip-text bg-indigo-600">Gateway Hub</span>
           </h1>
           <p className="text-sm md:text-base text-slate-650 max-w-xl mx-auto">
             Welcome to the digital administrative center for Sri Jayachamarajendra College of Engineering. 
@@ -273,7 +288,7 @@ export default function EnterprisePortalGateway({
             <div className="pt-4">
               <button
                 onClick={() => handleRoleClick('lecturer')}
-                className="w-full py-3.5 bg-gradient-to-r from-[#6b38d4] to-indigo-700 hover:from-indigo-700 hover:to-[#6b38d4] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
               >
                 Enter Lecturer Site
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -320,7 +335,7 @@ export default function EnterprisePortalGateway({
             <div className="pt-4">
               <button
                 onClick={() => handleRoleClick('student')}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-600 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
               >
                 Enter Student Site
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -367,7 +382,7 @@ export default function EnterprisePortalGateway({
             <div className="pt-4">
               <button
                 onClick={() => handleRoleClick('admin')}
-                className="w-full py-3.5 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
               >
                 Enter Admin Portal
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -498,8 +513,8 @@ export default function EnterprisePortalGateway({
                   disabled={dbState === 'connecting'}
                   className={`flex-1 py-3 font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer text-white flex items-center justify-center gap-1.5 disabled:opacity-60 ${
                     activeTab === 'student'
-                      ? 'bg-gradient-to-r from-emerald-600 to-teal-700'
-                      : 'bg-gradient-to-r from-[#6b38d4] to-indigo-700'
+                      ? 'bg-emerald-600'
+                      : 'bg-indigo-600'
                   }`}
                 >
                   {dbState === 'connecting' ? (
@@ -550,7 +565,7 @@ export default function EnterprisePortalGateway({
       {/* Footer copyright */}
       <footer className="bg-white border-t border-slate-150 py-5 text-center mt-12">
         <p className="text-[11px] text-slate-600 font-medium px-4">
-          Designed for Sri Jayachamarajendra College of Engineering (SJCE), Mysore. Protected by cryptographic secure tokens. Used in JSS Science and Technology University.
+          Designed for Sri Jayachamarajendra College of Engineering (SJCE), Mysore. Protected by cryptographic secure tokens. <a href="/privacy" className="hover:underline">Privacy</a> | <a href="/terms" className="hover:underline">Terms</a>
         </p>
       </footer>
     </div>
