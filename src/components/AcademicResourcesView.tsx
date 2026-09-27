@@ -221,14 +221,14 @@ export default function AcademicResourcesView() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowAddSlotModal(true)}
-            className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-white text-xs font-bold font-sans rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer transition-all"
+            className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 text-xs font-bold font-sans rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer transition-all"
           >
             <span className="material-symbols-outlined text-base">add_circle</span>
             Add Timetable Slot
           </button>
           <button
             onClick={() => setShowAddResourceModal(true)}
-            className="px-4 py-2 bg-[#00687a] hover:bg-[#005260] text-white text-xs font-bold font-sans rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer transition-all"
+            className="px-4 py-2 bg-[#00687a] hover:bg-[#005260] text-slate-900 text-xs font-bold font-sans rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer transition-all"
           >
             <span className="material-symbols-outlined text-base">menu_book</span>
             Add Syllabus Unit
@@ -256,7 +256,7 @@ export default function AcademicResourcesView() {
                 onClick={() => setSelectedDay(d)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold font-sans whitespace-nowrap cursor-pointer transition-all ${
                   selectedDay === d
-                    ? 'bg-[#6b38d4] text-white shadow-sm'
+                    ? 'bg-[#6b38d4] text-slate-900 shadow-sm'
                     : 'bg-slate-100 text-[#494454] hover:bg-slate-200'
                 }`}
               >
@@ -391,7 +391,7 @@ export default function AcademicResourcesView() {
 
       {/* --- MODAL 1: ADD TIMETABLE SLOT --- */}
       {showAddSlotModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="font-display font-bold text-lg text-[#191c1e]">Add Timetable Slot</h3>
@@ -504,7 +504,7 @@ export default function AcademicResourcesView() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#6b38d4] text-white rounded-lg hover:bg-[#8455ef] font-bold shadow-sm"
+                  className="px-5 py-2 bg-[#6b38d4] text-slate-900 rounded-lg hover:bg-[#8455ef] font-bold shadow-sm"
                 >
                   Save Timetable Slot
                 </button>
@@ -516,7 +516,7 @@ export default function AcademicResourcesView() {
 
       {/* --- MODAL 2: ADD SYLLABUS UNIT --- */}
       {showAddResourceModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="font-display font-bold text-lg text-[#191c1e]">Register Course Syllabus</h3>
@@ -619,7 +619,7 @@ export default function AcademicResourcesView() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#00687a] text-white rounded-lg hover:bg-[#005260] font-bold shadow-sm"
+                  className="px-5 py-2 bg-[#00687a] text-slate-900 rounded-lg hover:bg-[#005260] font-bold shadow-sm"
                 >
                   Save Syllabus
                 </button>

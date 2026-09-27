@@ -291,7 +291,7 @@ export function BiometricPresenceHUD({
   };
 
   return (
-    <div className="bg-slate-900 text-white rounded-2xl p-6 border border-slate-700 shadow-2xl space-y-6 max-w-5xl mx-auto">
+    <div className="bg-slate-50 text-slate-900 rounded-2xl p-6 border border-slate-700 shadow-2xl space-y-6 max-w-5xl mx-auto">
       {/* Top Protocol Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
         <div>
@@ -349,7 +349,7 @@ export function BiometricPresenceHUD({
                     ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
                     : isCurrent
                     ? 'bg-amber-500/15 border-amber-400 text-amber-200 ring-2 ring-amber-400/20 shadow-sm'
-                    : 'bg-slate-900 border-slate-800 text-slate-600 hover:border-slate-700'
+                    : 'bg-slate-50 border-slate-800 text-slate-600 hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -383,12 +383,12 @@ export function BiometricPresenceHUD({
               height={330}
               className="w-full h-auto block"
             />
-            <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+            <div className="absolute top-3 left-3 bg-white/70 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               <span>468-PT MESH · CHROMATIC FLASH ACTIVE</span>
             </div>
 
-            <div className="absolute bottom-3 right-3 bg-black/75 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-mono text-slate-300 border border-white/10">
+            <div className="absolute bottom-3 right-3 bg-white/75 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-mono text-slate-300 border border-white/10">
               Skin Specular Ratio: <strong className="text-emerald-400">1.42x</strong>
             </div>
           </div>
@@ -396,7 +396,7 @@ export function BiometricPresenceHUD({
           <div className="flex gap-2">
             <button
               onClick={() => handlePerformStep(activeStepIndex)}
-              className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all"
+              className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-slate-900 text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all"
             >
               <Zap className="w-4 h-4" />
               <span>Perform Challenge Action ({challengeSteps[activeStepIndex]?.label.split(' ')[0]})</span>
@@ -486,7 +486,7 @@ export function BiometricPresenceHUD({
               <button
                 onClick={handleZkCheckin}
                 disabled={isVerifying}
-                className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl text-xs tracking-wide shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-slate-900 font-bold rounded-xl text-xs tracking-wide shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"
               >
                 {isVerifying ? (
                   <>

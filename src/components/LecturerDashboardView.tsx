@@ -615,7 +615,7 @@ export default function LecturerDashboardView({
               </div>
               <button
                 onClick={triggerFileInput}
-                className="px-5 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl text-xs font-sans font-bold shadow-md transition-all shrink-0 cursor-pointer flex items-center justify-center gap-2"
+                className="px-5 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-xl text-xs font-sans font-bold shadow-md transition-all shrink-0 cursor-pointer flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-sm">upload_file</span> Initialize via Timetable
               </button>
@@ -1019,7 +1019,7 @@ export default function LecturerDashboardView({
 
                         <button
                           type="submit"
-                          className="w-full py-2.5 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-lg font-sans font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          className="w-full py-2.5 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-lg font-sans font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5"
                         >
                           <span className="material-symbols-outlined text-sm">add_circle</span>
                           Create Session
@@ -1124,7 +1124,7 @@ export default function LecturerDashboardView({
                           <button
                             type="button"
                             onClick={onStartSession}
-                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-sans font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-slate-900 rounded-xl font-sans font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-sm">tap_and_play</span>
                             View Active Broadcast Canvas
@@ -1133,7 +1133,7 @@ export default function LecturerDashboardView({
                           <button
                             type="button"
                             onClick={() => onActivate(slotSession.id)}
-                            className="flex-1 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl font-sans font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            className="flex-1 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-xl font-sans font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-sm">play_circle</span>
                             Activate Broadcasting
@@ -1276,7 +1276,7 @@ export default function LecturerDashboardView({
                         year: folderInfo?.year,
                         section: folderInfo?.section
                       })}
-                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-sans font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-slate-900 rounded-xl text-xs font-sans font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-xs">table_view</span>
                       Open Excel Override Grid
@@ -1312,7 +1312,7 @@ export default function LecturerDashboardView({
                               <button
                                 type="button"
                                 onClick={() => onReopen(s.id)}
-                                className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-sans font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                                className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg text-[10px] font-sans font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0"
                               >
                                 <span className="material-symbols-outlined text-xs">replay</span>
                                 Reopen Gate
@@ -1707,7 +1707,7 @@ export default function LecturerDashboardView({
                       <button
                         type="button"
                         onClick={() => setShowAddRelationModal(true)}
-                        className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl text-xs font-sans font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-xl text-xs font-sans font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-sm">add_link</span>
                         Assign Course Node
@@ -1872,7 +1872,7 @@ export default function LecturerDashboardView({
 
                   {/* Add Relation Modal */}
                   {showAddRelationModal && (
-                    <div className="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[150] bg-white/50 backdrop-blur-sm flex items-center justify-center p-4">
                       <div className="bg-white border border-slate-200 shadow-sm rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-150 space-y-4 animate-fade-in">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                           <h4 className="font-display font-extrabold text-slate-900 text-base font-sans flex items-center gap-2">
@@ -2006,7 +2006,7 @@ export default function LecturerDashboardView({
                             </button>
                             <button
                               type="submit"
-                              className="flex-1 py-2.5 rounded-xl bg-[#6b38d4] hover:bg-[#8455ef] text-white font-bold text-xs shadow-sm cursor-pointer"
+                              className="flex-1 py-2.5 rounded-xl bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 font-bold text-xs shadow-sm cursor-pointer"
                             >
                               Link Course Node
                             </button>
@@ -2138,7 +2138,7 @@ export default function LecturerDashboardView({
                   </div>
 
                   {/* Code Editor Input */}
-                  <div className="relative rounded-2xl border border-slate-200 overflow-hidden shadow-inner bg-slate-900">
+                  <div className="relative rounded-2xl border border-slate-200 overflow-hidden shadow-inner bg-slate-50">
                     <div className="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700 text-xs">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
@@ -2157,7 +2157,7 @@ export default function LecturerDashboardView({
                       value={bulkText}
                       onChange={(e) => setBulkText(e.target.value)}
                       placeholder={`Paste or load CSV / JSON payload for ${bulkCategory} batch ingestion...`}
-                      className="w-full p-4 font-mono text-xs text-emerald-400 bg-slate-900 outline-none border-none resize-y leading-relaxed"
+                      className="w-full p-4 font-mono text-xs text-emerald-400 bg-slate-50 outline-none border-none resize-y leading-relaxed"
                     />
                   </div>
 
@@ -2212,7 +2212,7 @@ export default function LecturerDashboardView({
                           setIsBulkExecuting(false);
                         }
                       }}
-                      className="px-6 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl text-xs font-sans font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="px-6 py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-xl text-xs font-sans font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       <span className="material-symbols-outlined text-sm">
                         {isBulkExecuting ? 'sync' : 'bolt'}
@@ -2275,7 +2275,7 @@ export default function LecturerDashboardView({
                   onClick={handleNotifyParents}
                   className={`w-full py-2.5 rounded-lg text-xs font-sans font-extrabold uppercase border tracking-wider transition-all cursor-pointer ${
                     notified
-                      ? 'bg-green-600 text-white border-transparent'
+                      ? 'bg-green-600 text-slate-900 border-transparent'
                       : 'text-[#ba1a1a] border-red-200 hover:bg-red-500/10'
                   }`}
                 >

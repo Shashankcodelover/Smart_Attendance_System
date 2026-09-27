@@ -216,7 +216,7 @@ export default function TourGuide({ steps, tourKey, onComplete }: TourGuideProps
     <>
       {/* Dark Dimming Backdrop */}
       <div 
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-[2px] z-[9998] transition-all duration-300"
+        className="fixed inset-0 bg-slate-50/60 backdrop-blur-[2px] z-[9998] transition-all duration-300"
         style={getBackdropStyle()}
         onClick={handleSkip} // Allow closing on backdrop click
       />
@@ -274,7 +274,7 @@ export default function TourGuide({ steps, tourKey, onComplete }: TourGuideProps
 
           <button
             onClick={handleNext}
-            className="px-4 py-2 bg-gradient-to-r from-[#6b38d4] to-indigo-700 hover:from-indigo-750 hover:to-indigo-800 text-white font-sans font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-2 bg-gradient-to-r from-[#6b38d4] to-indigo-700 hover:from-indigo-750 hover:to-indigo-800 text-slate-900 font-sans font-bold text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
           >
             {currentStepIndex === steps.length - 1 ? 'Get Started' : 'Next'}
             <span className="material-symbols-outlined text-[10px] font-bold">arrow_forward</span>

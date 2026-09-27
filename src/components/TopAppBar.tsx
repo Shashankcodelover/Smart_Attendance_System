@@ -49,7 +49,7 @@ export default function TopAppBar({
         </button>
 
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
+          <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-slate-900 shadow-xs">
             <span className="material-symbols-outlined text-lg">school</span>
           </div>
           <div>
@@ -72,7 +72,7 @@ export default function TopAppBar({
               onClick={() => setCurrentPage(currentPage === 'resources' ? 'student-dashboard' : 'resources')}
               className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all text-xs font-bold shadow-xs cursor-pointer ${
                 currentPage === 'resources'
-                  ? 'bg-[#00687a] text-white shadow-cyan-200'
+                  ? 'bg-[#00687a] text-slate-900 shadow-cyan-200'
                   : 'bg-cyan-50 text-cyan-800 border border-cyan-300 hover:bg-cyan-100'
               }`}
               title="Syllabus & Academic Resources"
@@ -85,7 +85,7 @@ export default function TopAppBar({
               onClick={() => setCurrentPage(currentPage === 'biometric-presence' ? 'student-dashboard' : 'biometric-presence')}
               className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all text-xs font-bold shadow-xs cursor-pointer ${
                 currentPage === 'biometric-presence'
-                  ? 'bg-[#10b981] text-white shadow-emerald-200'
+                  ? 'bg-[#10b981] text-slate-900 shadow-emerald-200'
                   : 'bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100'
               }`}
               title="Open 3D Face Mesh & ZK Biometric Presence Protocol"
@@ -125,7 +125,7 @@ export default function TopAppBar({
         >
           <span className="material-symbols-outlined text-sm">sync</span>
           {pendingOfflineCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-slate-900 text-[9px] rounded-full flex items-center justify-center font-bold">
               {pendingOfflineCount}
             </span>
           )}
@@ -137,7 +137,7 @@ export default function TopAppBar({
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center gap-2 p-1.5 pr-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl transition-all cursor-pointer select-none"
           >
-            <div className="w-7 h-7 rounded-lg bg-[#6b38d4] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+            <div className="w-7 h-7 rounded-lg bg-[#6b38d4] text-slate-900 flex items-center justify-center font-bold text-xs shadow-xs">
               {initials}
             </div>
             <div className="text-left hidden md:block leading-none">

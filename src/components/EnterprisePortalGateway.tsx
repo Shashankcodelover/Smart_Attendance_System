@@ -288,7 +288,7 @@ export default function EnterprisePortalGateway({
             <div className="pt-4">
               <button
                 onClick={() => handleRoleClick('lecturer')}
-                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
               >
                 Enter Lecturer Site
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -335,7 +335,7 @@ export default function EnterprisePortalGateway({
             <div className="pt-4">
               <button
                 onClick={() => handleRoleClick('student')}
-                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
               >
                 Enter Student Site
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -382,7 +382,7 @@ export default function EnterprisePortalGateway({
             <div className="pt-4">
               <button
                 onClick={() => handleRoleClick('admin')}
-                className="w-full py-3.5 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-slate-700 hover:bg-slate-800 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
               >
                 Enter Admin Portal
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -511,7 +511,7 @@ export default function EnterprisePortalGateway({
                 <button
                   type="submit"
                   disabled={dbState === 'connecting'}
-                  className={`flex-1 py-3 font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer text-white flex items-center justify-center gap-1.5 disabled:opacity-60 ${
+                  className={`flex-1 py-3 font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer text-slate-900 flex items-center justify-center gap-1.5 disabled:opacity-60 ${
                     activeTab === 'student'
                       ? 'bg-emerald-600'
                       : 'bg-indigo-600'

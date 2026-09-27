@@ -77,8 +77,8 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
   };
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-      <div className="w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-white/80 backdrop-blur-md animate-in fade-in">
+      <div className="w-full max-w-lg bg-slate-50 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
         
         {/* Decorative background glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -87,11 +87,11 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-slate-900 shadow-lg">
               <UserPlus className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                 {role === 'student' ? 'Student Verification Onboarding' : 'Faculty Access Portal'}
               </h2>
               <p className="text-xs text-slate-600">
@@ -102,7 +102,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
             </div>
           </div>
           {onClose && (
-            <button onClick={onClose} className="text-slate-600 hover:text-white p-1 rounded-lg">
+            <button onClick={onClose} className="text-slate-600 hover:text-slate-900 p-1 rounded-lg">
               <X className="w-5 h-5" />
             </button>
           )}
@@ -336,7 +336,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-cyan-500 via-indigo-600 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs tracking-wide uppercase rounded-xl shadow-lg hover:shadow-cyan-500/20 active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3 bg-gradient-to-r from-cyan-500 via-indigo-600 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-900 font-bold text-xs tracking-wide uppercase rounded-xl shadow-lg hover:shadow-cyan-500/20 active:scale-98 transition-all disabled:opacity-50"
             >
               {loading ? 'Registering on Blockchain/SQLite Mesh...' : 'Complete Onboarding & Enter Portal'}
             </button>

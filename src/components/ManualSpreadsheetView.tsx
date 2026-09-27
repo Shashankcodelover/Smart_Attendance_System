@@ -429,14 +429,14 @@ export default function ManualSpreadsheetView({
                 <button
                   onClick={() => handleMarkAll(true)}
                   disabled={filteredStudents.length === 0}
-                  className="flex-1 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer text-center"
+                  className="flex-1 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-slate-900 rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer text-center"
                 >
                   ✓ All Present
                 </button>
                 <button
                   onClick={() => handleMarkAll(false)}
                   disabled={filteredStudents.length === 0}
-                  className="flex-1 py-1.5 bg-rose-700 hover:bg-rose-800 text-white rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer text-center"
+                  className="flex-1 py-1.5 bg-rose-700 hover:bg-rose-800 text-slate-900 rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer text-center"
                 >
                   ✗ All Absent
                 </button>
@@ -460,7 +460,7 @@ export default function ManualSpreadsheetView({
                 <button
                   type="button"
                   onClick={handleExportCsv}
-                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-sans font-black uppercase tracking-wider transition-colors shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-slate-900 rounded-xl text-[10px] font-sans font-black uppercase tracking-wider transition-colors shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-xs">download</span>
                   Export Section CSV
@@ -591,7 +591,7 @@ export default function ManualSpreadsheetView({
                                 isUpdating
                                   ? 'bg-gray-100 text-gray-400 border-gray-200 animate-pulse'
                                   : isPresent
-                                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-transparent'
+                                  ? 'bg-emerald-600 hover:bg-emerald-700 text-slate-900 border-transparent'
                                   : 'bg-white hover:bg-rose-50 text-rose-700 border-rose-200'
                               }`}
                             >

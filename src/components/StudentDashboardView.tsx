@@ -191,7 +191,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
           <div className="mt-6 flex flex-wrap gap-2.5 relative z-10">
             <button
               onClick={onCheckInClick}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-slate-900 font-sans text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
               Check-in with QR / OTP
@@ -246,7 +246,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               </p>
               <button
                 onClick={onCheckInClick}
-                className="mt-3 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 transition-all cursor-pointer shadow-xs"
+                className="mt-3 px-4 py-2 bg-emerald-600 text-slate-900 text-xs font-bold rounded-xl hover:bg-emerald-700 transition-all cursor-pointer shadow-xs"
               >
                 Scan Live QR &rarr;
               </button>
@@ -516,7 +516,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
 
       {/* --- MODAL 1: DIGITAL EXAM HALL TICKET PASSPORT --- */}
       {showHallTicketModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 shadow-sm rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl space-y-5 border border-slate-150 animate-in fade-in zoom-in duration-200">
             {/* Header */}
             <div className="flex justify-between items-start border-b border-slate-150 pb-4">
@@ -600,7 +600,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="px-5 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-xl font-bold text-xs shadow-sm flex items-center gap-1.5"
+                className="px-5 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-xl font-bold text-xs shadow-sm flex items-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-sm">print</span>
                 Print Hall Ticket
@@ -612,7 +612,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
 
       {/* --- MODAL 2: LEAVE APPLICATION --- */}
       {showLeaveModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="font-display font-bold text-lg text-slate-900">Apply for Leave / OD Claim</h3>
@@ -681,7 +681,7 @@ export default function StudentDashboardView({ onCheckInClick, onResourcesClick,
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#6b38d4] text-white rounded-lg font-bold hover:bg-[#8455ef] shadow-sm"
+                  className="px-5 py-2 bg-[#6b38d4] text-slate-900 rounded-lg font-bold hover:bg-[#8455ef] shadow-sm"
                 >
                   Submit Application
                 </button>

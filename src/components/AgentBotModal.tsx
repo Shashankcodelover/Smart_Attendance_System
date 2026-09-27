@@ -201,7 +201,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
       {/* Floating Glowing Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-[150] flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-cyan-600 via-indigo-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 group"
+        className="fixed bottom-6 right-6 z-[150] flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-cyan-600 via-indigo-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-slate-900 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 group"
         title="Open BUNKR Sovereign AI Agent Bot"
       >
         <div className="relative">
@@ -214,17 +214,17 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
 
       {/* Modal Popup Window */}
       {isOpen && (
-        <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
-          <div className="w-full max-w-xl h-[88vh] sm:h-[680px] bg-slate-900 border border-slate-700/80 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-white/75 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-xl h-[88vh] sm:h-[680px] bg-slate-50 border border-slate-700/80 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
             
             {/* Header */}
             <div className="px-5 py-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/60 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-slate-900 shadow-md">
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base flex items-center gap-2">
+                  <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
                     BUNKR Sovereign AI Agent
                     <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                       Live v26
@@ -239,7 +239,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                 <button
                   onClick={() => setTtsEnabled(!ttsEnabled)}
                   className={`p-2 rounded-xl transition-colors ${
-                    ttsEnabled ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-600 hover:text-white hover:bg-slate-800'
+                    ttsEnabled ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-800'
                   }`}
                   title={ttsEnabled ? 'Mute AI Voice' : 'Enable AI Spoken Audio'}
                 >
@@ -248,7 +248,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-xl text-slate-600 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-800 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -316,7 +316,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
             </div>
 
             {/* Chat Body / Timetable Ingestion View */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-900/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-50/50">
               {timetableMode ? (
                 <div className="bg-slate-800/90 border border-indigo-500/40 rounded-2xl p-4 space-y-3 shadow-lg">
                   <div className="flex items-center gap-2 text-indigo-300 font-semibold text-sm">
@@ -337,7 +337,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                     <button
                       onClick={handleParseTimetable}
                       disabled={loading || !timetableText.trim()}
-                      className="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-medium text-xs rounded-xl shadow transition-all disabled:opacity-50"
+                      className="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-slate-900 font-medium text-xs rounded-xl shadow transition-all disabled:opacity-50"
                     >
                       {loading ? 'AI Parsing & Organizing...' : 'Parse & Generate Sections Automatically'}
                     </button>
@@ -359,7 +359,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                   <div
                     className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-md ${
                       m.sender === 'user'
-                        ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white rounded-br-none'
+                        ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-slate-900 rounded-br-none'
                         : 'bg-slate-800 border border-slate-700/80 text-slate-200 rounded-bl-none'
                     }`}
                   >
@@ -403,7 +403,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                   onClick={toggleListening}
                   className={`p-2.5 rounded-xl transition-all ${
                     isListening 
-                      ? 'bg-rose-600 text-white animate-pulse' 
+                      ? 'bg-rose-600 text-slate-900 animate-pulse' 
                       : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                   }`}
                   title={isListening ? 'Listening...' : 'Voice Dictation'}
@@ -419,13 +419,13 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder={isListening ? 'Listening... Speak your command now' : 'Ask about attendance, safe bunks, or timetable scheduling...'}
-                className="flex-1 px-4 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-700/80 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
                 aria-label="Agent chat input"
               />
               <button
                 onClick={() => handleSendMessage()}
                 disabled={loading || !input.trim()}
-                className="px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white rounded-xl shadow disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center"
+                className="px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-900 rounded-xl shadow disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center"
                 aria-label="Send message"
               >
                 <Send className="w-4 h-4" />

@@ -1022,7 +1022,7 @@ export default function LecturerApp() {
 
                     <button
                       type="submit"
-                      className="w-full py-3 bg-indigo-700 hover:bg-indigo-800 text-white font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm cursor-pointer"
+                      className="w-full py-3 bg-indigo-700 hover:bg-indigo-800 text-slate-900 font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm cursor-pointer"
                     >
                       ✓ Add Candidate To DB
                     </button>
@@ -1101,7 +1101,7 @@ export default function LecturerApp() {
             type="button"
             data-tour="alpine-trigger"
             onClick={() => setAgentOpen(!agentOpen)}
-            className="h-12 px-4 rounded-full bg-indigo-700 text-white shadow-xl hover:bg-indigo-800 transition-all active:scale-95 flex items-center gap-2 font-semibold font-sans text-xs border border-white/20 select-none cursor-pointer"
+            className="h-12 px-4 rounded-full bg-indigo-700 text-slate-900 shadow-xl hover:bg-indigo-800 transition-all active:scale-95 flex items-center gap-2 font-semibold font-sans text-xs border border-white/20 select-none cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px] animate-pulse">smart_toy</span>
             <span>Alpine Assistant ✦</span>
@@ -1132,7 +1132,7 @@ export default function LecturerApp() {
                     </span>
                     <div className={`px-3 py-2 rounded-xl leading-relaxed ${
                       m.sender === 'lecturer' 
-                        ? 'bg-indigo-700 text-white rounded-tr-none' 
+                        ? 'bg-indigo-700 text-slate-900 rounded-tr-none' 
                         : 'bg-gray-100 text-gray-800 rounded-tl-none border border-gray-200/50'
                     }`}>
                       {m.text}
@@ -1152,7 +1152,7 @@ export default function LecturerApp() {
                               handleActivateSession(m.actionCard.data.id);
                               setAgentOpen(false);
                             }}
-                            className="w-full py-1.5 bg-[#6b38d4] text-white font-sans font-bold rounded-lg hover:bg-[#8455ef] transition-colors cursor-pointer text-[9px] uppercase tracking-wider text-center"
+                            className="w-full py-1.5 bg-[#6b38d4] text-slate-900 font-sans font-bold rounded-lg hover:bg-[#8455ef] transition-colors cursor-pointer text-[9px] uppercase tracking-wider text-center"
                           >
                             Activate Live Code & QR
                           </button>

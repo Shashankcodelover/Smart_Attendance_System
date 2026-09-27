@@ -62,7 +62,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
         {/* Step 1: Department */}
         <div className="md:col-span-12 acrylic-card rounded-2xl p-6 shadow-sm border border-[#6b38d4]/10">
           <h3 className="text-xs font-sans font-bold tracking-widest text-[#494454] mb-4 flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-white flex items-center justify-center text-[10px]">1</span>
+            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-slate-900 flex items-center justify-center text-[10px]">1</span>
             SELECT DEPARTMENT
           </h3>
           <div className="flex flex-wrap gap-3">
@@ -77,7 +77,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
                 onClick={() => setDept(d)}
                 className={`px-4 py-2.5 rounded-xl border font-sans font-medium text-sm transition-all duration-200 cursor-pointer ${
                   dept === d
-                    ? 'bg-[#6b38d4] text-white border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
+                    ? 'bg-[#6b38d4] text-slate-900 border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
                     : 'border-[#cbc3d7]/30 text-[#494454] hover:bg-[#eceef0]/50'
                 }`}
               >
@@ -90,7 +90,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
         {/* Step 2: Course */}
         <div className="md:col-span-6 acrylic-card rounded-2xl p-6 shadow-sm border border-[#6b38d4]/10">
           <h3 className="text-xs font-sans font-bold tracking-widest text-[#494454] mb-4 flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-white flex items-center justify-center text-[10px]">2</span>
+            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-slate-900 flex items-center justify-center text-[10px]">2</span>
             SELECT COURSE
           </h3>
           <div className="grid grid-cols-2 gap-3">
@@ -103,7 +103,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
                 onClick={() => setCourse(c.id)}
                 className={`flex flex-col items-center justify-center py-4 rounded-xl border font-sans font-medium text-sm transition-all duration-200 cursor-pointer ${
                   course === c.id
-                    ? 'bg-[#6b38d4] text-white border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
+                    ? 'bg-[#6b38d4] text-slate-900 border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
                     : 'border-[#cbc3d7]/30 text-[#494454] hover:bg-[#eceef0]/50'
                 }`}
               >
@@ -117,7 +117,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
         {/* Step 3: Year */}
         <div className="md:col-span-6 acrylic-card rounded-2xl p-6 shadow-sm border border-[#6b38d4]/10">
           <h3 className="text-xs font-sans font-bold tracking-widest text-[#494454] mb-4 flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-white flex items-center justify-center text-[10px]">3</span>
+            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-slate-900 flex items-center justify-center text-[10px]">3</span>
             SELECT YEAR
           </h3>
           <div className="flex gap-2 w-full">
@@ -127,7 +127,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
                 onClick={() => setYear(y)}
                 className={`flex-1 flex justify-center items-center py-4 rounded-xl border font-sans font-semibold text-sm transition-all duration-200 cursor-pointer ${
                   year === y
-                    ? 'bg-[#6b38d4] text-white border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
+                    ? 'bg-[#6b38d4] text-slate-900 border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
                     : 'border-[#cbc3d7]/30 text-[#494454] hover:bg-[#eceef0]/50'
                 }`}
               >
@@ -140,7 +140,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
         {/* Step 4: Section */}
         <div className="md:col-span-4 acrylic-card rounded-2xl p-6 shadow-sm border border-[#6b38d4]/10">
           <h3 className="text-xs font-sans font-bold tracking-widest text-[#494454] mb-4 flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-white flex items-center justify-center text-[10px]">4</span>
+            <span className="w-5 h-5 rounded-full bg-[#6b38d4] text-slate-900 flex items-center justify-center text-[10px]">4</span>
             SECTION
           </h3>
           <div className="flex gap-3 w-full">
@@ -150,7 +150,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
                 onClick={() => setSection(s)}
                 className={`flex-1 flex justify-center items-center py-3 rounded-xl border font-sans font-semibold text-sm transition-all duration-200 cursor-pointer ${
                   section === s
-                    ? 'bg-[#6b38d4] text-white border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
+                    ? 'bg-[#6b38d4] text-slate-900 border-transparent shadow-[0_4px_12px_rgba(107,56,212,0.2)]'
                     : 'border-[#cbc3d7]/30 text-[#494454] hover:bg-[#eceef0]/50'
                 }`}
               >
@@ -161,7 +161,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
         </div>
 
         {/* Class Preview Card */}
-        <div className="md:col-span-8 acrylic-card bg-[#8455ef]/90 text-white rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-[0_8px_32px_rgba(107,56,212,0.15)] relative overflow-hidden">
+        <div className="md:col-span-8 acrylic-card bg-[#8455ef]/90 text-slate-900 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-[0_8px_32px_rgba(107,56,212,0.15)] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
           <div className="flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
@@ -170,7 +170,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
                 {dept.split(' ')[0]} &bull; {course} &bull; Year {year} &bull; Section {section}
               </h4>
             </div>
-            <p className="text-xs text-white/80 mb-3 block italic">
+            <p className="text-xs text-slate-900/80 mb-3 block italic">
               Upcoming Lecture: {preview.subject}
             </p>
             <div className="grid grid-cols-2 gap-4 mt-2">
@@ -204,7 +204,7 @@ export default function ClassSelectionView({ onProceed }: ClassSelectionViewProp
             subjectName: preview.subject || 'Computer Architecture',
             timeline: '10:00 AM - 11:00 AM'
           })}
-          className="bg-[#6b38d4] hover:bg-[#8455ef] text-white px-8 py-3.5 rounded-full font-display text-base font-bold flex items-center gap-3 shadow-lg active:scale-95 transition-all duration-200 cursor-pointer"
+          className="bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 px-8 py-3.5 rounded-full font-display text-base font-bold flex items-center gap-3 shadow-lg active:scale-95 transition-all duration-200 cursor-pointer"
         >
           <span className="material-symbols-outlined">qr_code_2</span>
           Launch Live Attendance & QR Gate

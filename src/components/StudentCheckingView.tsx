@@ -733,7 +733,7 @@ export default function StudentCheckingView({
               data-tour="scan-trigger"
               type="button"
               onClick={() => startCamera(null)}
-              className="w-24 h-24 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer pulse-glowing"
+              className="w-24 h-24 rounded-full bg-indigo-600 text-slate-900 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer pulse-glowing"
             >
               <span className="material-symbols-outlined text-[40px]">qr_code_scanner</span>
             </button>
@@ -770,7 +770,7 @@ export default function StudentCheckingView({
               <button
                 type="button"
                 onClick={() => handleManualQrPaste(manualQrText)}
-                className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-white rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0"
+                className="px-4 py-2 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 rounded-lg text-[10px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0"
               >
                 Sync Link
               </button>
@@ -821,7 +821,7 @@ export default function StudentCheckingView({
 
           <div className="rounded-2xl border border-dashed border-[#6b38d4]/50 p-4 bg-[#f8f6fc] relative overflow-hidden transition-all duration-300">
             <div className="text-center space-y-1 mb-3.5">
-              <span className="text-[10px] bg-[#6b38d4] text-white px-2 py-0.5 rounded-full font-sans font-black uppercase inline-block animate-pulse">
+              <span className="text-[10px] bg-[#6b38d4] text-slate-900 px-2 py-0.5 rounded-full font-sans font-black uppercase inline-block animate-pulse">
                 {scanProgress === 'searching' ? '📷 SEARCHING FOR QR CODE...' : scanProgress === 'locked' ? '⚡ SECURING QR TOKEN...' : '✓ COMPLETE'}
               </span>
               <p className="text-xs text-slate-600">
@@ -852,7 +852,7 @@ export default function StudentCheckingView({
               )}
               
               {(!cameraStream || !videoLoaded) && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-center p-6 space-y-4 z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-center p-6 space-y-4 z-10">
                   {/* Animated Radar/Scanner rings */}
                   <div className="relative w-20 h-20 flex items-center justify-center">
                     <div className="absolute inset-0 rounded-full border border-violet-500/30 animate-ping"></div>
@@ -896,7 +896,7 @@ export default function StudentCheckingView({
               {scanProgress === 'success' && (
                 <div className="absolute inset-0 bg-green-950/40 flex items-center justify-center flex-col space-y-1">
                   <span className="material-symbols-outlined text-[48px] text-[#00e676]">check_circle</span>
-                  <span className="text-xs font-bold text-white uppercase bg-green-600 px-3 py-1 rounded-full">
+                  <span className="text-xs font-bold text-slate-900 uppercase bg-green-600 px-3 py-1 rounded-full">
                     HANDSHAKE SUCCESS
                   </span>
                 </div>
@@ -939,7 +939,7 @@ export default function StudentCheckingView({
                     <p className="text-[10px] text-emerald-950 mt-0.5 font-sans">Please verify and submit your credentials before the OTP rotates!</p>
                   </div>
                 </div>
-                <div className="bg-emerald-600 text-white font-mono text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shrink-0">
+                <div className="bg-emerald-600 text-slate-900 font-mono text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shrink-0">
                   <span className="material-symbols-outlined text-xs">timer</span>
                   <span>{timeLeft}s remaining</span>
                 </div>
@@ -1066,7 +1066,7 @@ export default function StudentCheckingView({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`flex-[2] py-3.5 bg-indigo-600 text-white rounded-xl font-sans font-extrabold text-sm shadow-md shadow-[#6b38d4]/10 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`flex-[2] py-3.5 bg-indigo-600 text-slate-900 rounded-xl font-sans font-extrabold text-sm shadow-md shadow-[#6b38d4]/10 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
                     submitting ? 'opacity-40 cursor-not-allowed' : ''
                   }`}
                 >
@@ -1186,7 +1186,7 @@ export default function StudentCheckingView({
               setIsUnlocked(false);
               onSuccessCheckIn();
             }}
-            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-sans font-extrabold text-sm shadow-md transition-all cursor-pointer"
+            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-slate-900 rounded-xl font-sans font-extrabold text-sm shadow-md transition-all cursor-pointer"
           >
             Done & Back to Dashboard
           </button>

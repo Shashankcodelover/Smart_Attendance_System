@@ -212,7 +212,7 @@ export default function AIDataExplorerView({
                   {/* Main Bubble Card layout */}
                   <div className={`px-4 py-3 rounded-2xl max-w-[85%] font-sans text-sm ${
                     msg.sender === 'user'
-                      ? 'bg-[#6b38d4] text-white rounded-tr-none'
+                      ? 'bg-[#6b38d4] text-slate-900 rounded-tr-none'
                       : 'bg-[#eceef0]/50 text-[#191c1e] rounded-tl-none border border-[#6b38d4]/5'
                   }`}>
                     {msg.text}
@@ -285,7 +285,7 @@ export default function AIDataExplorerView({
                           </button>
                           <button
                             onClick={() => alert("Informed all low-attendance students via system dashboard toast notifications.")}
-                            className="px-3 py-1.5 rounded-lg bg-[#6b38d4] text-white hover:bg-[#8455ef]/90 flex items-center gap-1 cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-[#6b38d4] text-slate-900 hover:bg-[#8455ef]/90 flex items-center gap-1 cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-[14px]">mail</span>
                             Notify Cohort
@@ -334,7 +334,7 @@ export default function AIDataExplorerView({
                 <button 
                   onClick={() => handleSend()}
                   disabled={loading}
-                  className="ml-2 w-10 h-10 bg-[#6b38d4] text-white rounded-full flex items-center justify-center hover:shadow-lg active:scale-90 transition-all cursor-pointer hover:bg-[#8455ef]"
+                  className="ml-2 w-10 h-10 bg-[#6b38d4] text-slate-900 rounded-full flex items-center justify-center hover:shadow-lg active:scale-90 transition-all cursor-pointer hover:bg-[#8455ef]"
                 >
                   <span className="material-symbols-outlined text-md">send</span>
                 </button>
@@ -350,7 +350,7 @@ export default function AIDataExplorerView({
               onClick={() => handleSend("What are the attendance patterns and trends this week?")}
               className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#6b38d4]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10 w-full text-left"
             >
-              <div className="p-2.5 rounded-lg bg-[#e9ddff] text-[#6b38d4] group-hover:bg-[#6b38d4] group-hover:text-white transition-colors flex items-center justify-center">
+              <div className="p-2.5 rounded-lg bg-[#e9ddff] text-[#6b38d4] group-hover:bg-[#6b38d4] group-hover:text-slate-900 transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">auto_graph</span>
               </div>
               <div>
@@ -363,7 +363,7 @@ export default function AIDataExplorerView({
               onClick={() => handleSend("Show me the student roster")}
               className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#00687a]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10 w-full text-left"
             >
-              <div className="p-2.5 rounded-lg bg-[#acedff] text-[#004e5c] group-hover:bg-[#00687a] group-hover:text-white transition-colors flex items-center justify-center">
+              <div className="p-2.5 rounded-lg bg-[#acedff] text-[#004e5c] group-hover:bg-[#00687a] group-hover:text-slate-900 transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">groups</span>
               </div>
               <div>
@@ -376,7 +376,7 @@ export default function AIDataExplorerView({
               onClick={() => handleSend("Who is on the critical red list in Section A?")}
               className="acrylic-card p-4 rounded-xl flex items-center gap-3 hover:bg-[#ba1a1a]/5 transition-all cursor-pointer group active:scale-[0.98] border border-[#6b38d4]/10 w-full text-left"
             >
-              <div className="p-2.5 rounded-lg bg-[#ffdadb] text-[#40000d] group-hover:bg-[#ba1a1a] group-hover:text-white transition-colors flex items-center justify-center">
+              <div className="p-2.5 rounded-lg bg-[#ffdadb] text-[#40000d] group-hover:bg-[#ba1a1a] group-hover:text-slate-900 transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">report</span>
               </div>
               <div>

@@ -129,7 +129,7 @@ export default function UserProfileView({
                 alt="Profile Avatar"
                 className="w-24 h-24 object-cover rounded-full border-4 border-indigo-50 shadow-md transition-all group-hover:scale-105"
               />
-              <div className="absolute bottom-0 right-0 w-7 h-7 bg-[#6b38d4] text-white rounded-full flex items-center justify-center border-2 border-white shadow-md">
+              <div className="absolute bottom-0 right-0 w-7 h-7 bg-[#6b38d4] text-slate-900 rounded-full flex items-center justify-center border-2 border-white shadow-md">
                 <span className="material-symbols-outlined text-sm font-bold">verified</span>
               </div>
             </div>
@@ -360,7 +360,7 @@ export default function UserProfileView({
             <button
               type="submit"
               disabled={saving}
-              className="w-full py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-white font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5 active:scale-[0.99]"
+              className="w-full py-3 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5 active:scale-[0.99]"
             >
               {saving ? (
                 <>

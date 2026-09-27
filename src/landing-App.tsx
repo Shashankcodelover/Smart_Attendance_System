@@ -21,7 +21,7 @@ export default function LandingApp() {
       <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-4">
         <h1 className="text-6xl font-black text-slate-800 mb-4">404</h1>
         <p className="text-lg text-slate-600 mb-8">Page not found on SJCE Server.</p>
-        <a href="/" className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-md">Return Home</a>
+        <a href="/" className="px-6 py-3 bg-indigo-600 text-slate-900 font-bold rounded-xl shadow-md">Return Home</a>
       </div>
     );
   }
@@ -177,10 +177,10 @@ export default function LandingApp() {
               className="text-center space-y-4 max-w-sm px-6 flex flex-col items-center select-none"
             >
               <div className="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-[#6b38d4]/30 animate-pulse">
-                <span className="material-symbols-outlined text-white text-3xl">school</span>
+                <span className="material-symbols-outlined text-slate-900 text-3xl">school</span>
               </div>
               <div className="space-y-1">
-                <h1 className="text-xl font-display font-extrabold text-white tracking-tight">
+                <h1 className="text-xl font-display font-extrabold text-slate-900 tracking-tight">
                   Smart Attendance System
                 </h1>
                 <p className="text-xs text-slate-600 font-sans">
@@ -195,13 +195,13 @@ export default function LandingApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden flex flex-col justify-between selection:bg-[#6b38d4] selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden flex flex-col justify-between selection:bg-[#6b38d4] selection:text-slate-900">
       
       {/* Top Navbar */}
       <header className="bg-white border-b border-slate-200/60 sticky top-0 z-[100] px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-slate-900 shadow-xs">
               <span className="material-symbols-outlined text-lg">school</span>
             </div>
             <div>
@@ -282,7 +282,7 @@ export default function LandingApp() {
             <div className="pt-6 space-y-2">
               <button
                 onClick={() => handleRoleClick('student')}
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-900 text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Sign In as Student
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -328,7 +328,7 @@ export default function LandingApp() {
             <div className="pt-6 space-y-2">
               <button
                 onClick={() => handleRoleClick('lecturer')}
-                className="w-full py-2.5 bg-[#6b38d4] hover:bg-[#8455ef] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-[#6b38d4] hover:bg-[#8455ef] text-slate-900 text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Sign In as Faculty
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -374,7 +374,7 @@ export default function LandingApp() {
             <div className="pt-6 space-y-2">
               <button
                 onClick={() => handleRoleClick('admin')}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-slate-800 hover:bg-slate-50 text-slate-900 text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Admin Command Center
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -489,7 +489,7 @@ export default function LandingApp() {
                 <button
                   type="submit"
                   disabled={dbState === 'connecting'}
-                  className={`flex-1 py-2 text-white font-bold rounded-lg transition-all shadow-xs ${
+                  className={`flex-1 py-2 text-slate-900 font-bold rounded-lg transition-all shadow-xs ${
                     activeTab === 'student' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#6b38d4] hover:bg-[#8455ef]'
                   }`}
                 >
@@ -509,7 +509,7 @@ export default function LandingApp() {
             const panel = document.getElementById('campus-pulse-panel');
             if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
           }}
-          className="w-14 h-14 rounded-full bg-indigo-600 text-white shadow-xl hover:scale-105 transition-transform flex items-center justify-center"
+          className="w-14 h-14 rounded-full bg-indigo-600 text-slate-900 shadow-xl hover:scale-105 transition-transform flex items-center justify-center"
         >
           <span className="material-symbols-outlined text-3xl">hub</span>
         </button>
@@ -519,7 +519,7 @@ export default function LandingApp() {
           style={{ display: 'none' }}
           className="absolute bottom-16 right-0 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex-col origin-bottom-right transition-all"
         >
-          <div className="bg-indigo-600 p-4 text-white">
+          <div className="bg-indigo-600 p-4 text-slate-900">
             <h3 className="font-bold flex items-center gap-2"><span className="material-symbols-outlined text-sm">analytics</span> Campus Pulse AI</h3>
             <p className="text-xs opacity-90">Real-time neuromorphic attendance tracking</p>
           </div>

@@ -317,7 +317,7 @@ export default function VerificationSessionView({
             <button
               onClick={handleSyncClick}
               disabled={isOffline || pendingOfflineCount === 0}
-              className={`w-full py-3 bg-gradient-to-r from-[#6b38d4] to-[#00687a] text-white font-sans font-bold rounded-xl shadow-md shadow-[#6b38d4]/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`w-full py-3 bg-gradient-to-r from-[#6b38d4] to-[#00687a] text-slate-900 font-sans font-bold rounded-xl shadow-md shadow-[#6b38d4]/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 isOffline || pendingOfflineCount === 0 ? 'opacity-40 cursor-not-allowed' : ''
               }`}
             >
@@ -380,7 +380,7 @@ export default function VerificationSessionView({
           </div>
 
           {/* Telemetry System Log Ticker */}
-          <div className="acrylic-card p-4 rounded-2xl bg-slate-900 border border-slate-800 text-left space-y-2.5 font-mono text-[10.5px]">
+          <div className="acrylic-card p-4 rounded-2xl bg-slate-50 border border-slate-800 text-left space-y-2.5 font-mono text-[10.5px]">
             <div className="flex items-center justify-between text-slate-600 border-b border-slate-800 pb-1.5 font-sans">
               <span className="flex items-center gap-1 font-bold text-[9px] uppercase tracking-wider text-teal-400">
                 <span className="h-1.5 w-1.5 bg-teal-400 rounded-full animate-ping"></span>
