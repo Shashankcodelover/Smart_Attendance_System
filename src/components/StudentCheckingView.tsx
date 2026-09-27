@@ -830,7 +830,7 @@ export default function StudentCheckingView({
             </div>
 
             {/* Viewfinder box */}
-            <div className="w-64 h-64 sm:w-80 sm:h-80 mx-auto rounded-3xl relative border-4 border-slate-800 bg-slate-950 overflow-hidden shadow-2xl flex items-center justify-center">
+            <div className="w-64 h-64 sm:w-80 sm:h-80 mx-auto rounded-3xl relative border-4 border-slate-800 bg-white overflow-hidden shadow-2xl flex items-center justify-center">
               {cameraStream && (
                 <video 
                   ref={(el) => {

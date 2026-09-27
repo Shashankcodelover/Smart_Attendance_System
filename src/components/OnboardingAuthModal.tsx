@@ -131,7 +131,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                       placeholder="e.g. 4JC21CS089"
                       value={usn}
                       onChange={(e) => setUsn(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
                     />
                   </div>
                 </div>
@@ -146,7 +146,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     placeholder="e.g. Rahul Sharma"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
                   />
                 </div>
               </div>
@@ -161,7 +161,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     placeholder="e.g. 089"
                     value={rollNumber}
                     onChange={(e) => setRollNumber(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
                   />
                 </div>
 
@@ -176,7 +176,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                       placeholder="e.g. +91 9876543210"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
                     />
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     placeholder="e.g. student@sjce.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
                   />
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                   <select
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
                   >
                     <option value="1">1st Year</option>
                     <option value="2">2nd Year</option>
@@ -223,7 +223,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                   <select
                     value={section}
                     onChange={(e) => setSection(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
                   >
                     <option value="A">Section A</option>
                     <option value="B">Section B</option>
@@ -239,7 +239,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-2.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-2.5 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
                   >
                     <option value="Computer Science (CSE)">CSE</option>
                     <option value="Information Science (ISE)">ISE</option>
@@ -264,7 +264,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                       placeholder="e.g. FAC_CSE_042"
                       value={teacherId}
                       onChange={(e) => setTeacherId(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
                     />
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     placeholder="e.g. Dr. Aradhya"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
                   />
                 </div>
               </div>
@@ -296,7 +296,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     placeholder="e.g. aradhya@sjce.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500"
                   />
                 </div>
               </div>
@@ -309,7 +309,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                   <select
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
                   >
                     <option value="Computer Science (CSE)">Computer Science (CSE)</option>
                     <option value="Information Science (ISE)">Information Science (ISE)</option>
@@ -325,7 +325,7 @@ export default function OnboardingAuthModal({ role, onComplete, onClose }: Onboa
                     type="text"
                     value={designation}
                     onChange={(e) => setDesignation(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-2 bg-white border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
                   />
                 </div>
               </div>

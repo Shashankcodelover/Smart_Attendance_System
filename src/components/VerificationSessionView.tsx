@@ -157,7 +157,7 @@ export default function VerificationSessionView({
       width: 350,
       margin: 2,
       color: {
-        dark: '#6b38d4',
+         '#6b38d4',
         light: '#ffffff'
       }
     })

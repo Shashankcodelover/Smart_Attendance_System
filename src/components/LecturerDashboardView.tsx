@@ -634,7 +634,7 @@ export default function LecturerDashboardView({
                   <span className="material-symbols-outlined text-[16px]">verified_user</span> 
                   Cryptographically certified match rate
                 </p>
-                <div className="absolute right-4 bottom-4 text-gray-200 pointer-events-none select-none">
+                <div className="absolute right-4 bottom-4 text-gray-800 pointer-events-none select-none">
                   <span className="material-symbols-outlined text-[48px]">trending_up</span>
                 </div>
               </div>
@@ -649,7 +649,7 @@ export default function LecturerDashboardView({
                 <p className="text-xs text-[#494454] font-sans mt-1.5 font-medium">
                   SJCE Roster Database Synced
                 </p>
-                <div className="absolute right-4 bottom-4 text-gray-200 pointer-events-none select-none">
+                <div className="absolute right-4 bottom-4 text-gray-800 pointer-events-none select-none">
                   <span className="material-symbols-outlined text-[48px]">groups</span>
                 </div>
               </div>

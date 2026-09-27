@@ -394,7 +394,7 @@ export default function EnterprisePortalGateway({
 
       {/* CENTERED POPUP AUTHENTICATION MODAL (Brought in front with z-[150]) */}
       {showModal && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-white/60 backdrop-blur-md">
           <div className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative border border-slate-200/50">
             
             {/* Modal Header */}

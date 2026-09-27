@@ -52,7 +52,7 @@ describe('Smart Attendance System - End-to-End User Journey Verification', () =>
     const dataUrl = await QRCode.toDataURL(qrConnectText, {
       width: 350,
       margin: 2,
-      color: { dark: '#6b38d4', light: '#ffffff' }
+      color: {  '#6b38d4', light: '#ffffff' }
     });
 
     assert.ok(dataUrl.startsWith('data:image/png;base64,'));

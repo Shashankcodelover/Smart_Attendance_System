@@ -163,7 +163,7 @@ export default function UserProfileView({
                   <svg className="w-14 h-14">
                     <circle 
                       cx="28" cy="28" r="23" 
-                      className="text-slate-200 stroke-current" 
+                      className="text-slate-800 stroke-current" 
                       strokeWidth="4" fill="transparent"
                     />
                     <circle 

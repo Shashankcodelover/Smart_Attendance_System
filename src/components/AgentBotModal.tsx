@@ -256,7 +256,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
             </div>
 
             {/* Quick Action Chips Bar */}
-            <div className="px-4 py-2.5 bg-slate-950/70 border-b border-slate-800 flex gap-2 overflow-x-auto text-xs no-scrollbar">
+            <div className="px-4 py-2.5 bg-white/70 border-b border-slate-800 flex gap-2 overflow-x-auto text-xs no-scrollbar">
               {userRole === 'lecturer' ? (
                 <>
                   <button
@@ -331,7 +331,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                     value={timetableText}
                     onChange={(e) => setTimetableText(e.target.value)}
                     placeholder={`Monday 09:00 AM - 10:00 AM: CS301 Data Structures (Room LH-101, Year 2, Sec A)\nMonday 10:00 AM - 11:00 AM: CS302 OOP in Java (Room LH-102, Year 2, Sec B)\nTuesday 11:00 AM - 12:00 PM: CS501 Computer Architecture (Room LH-204, Year 3, Sec A)...`}
-                    className="w-full p-3 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-mono"
+                    className="w-full p-3 bg-white border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-mono"
                   />
                   <div className="flex gap-2">
                     <button
@@ -343,7 +343,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                     </button>
                     <button
                       onClick={() => setTimetableMode(false)}
-                      className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium text-xs rounded-xl transition-colors"
+                      className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-800 font-medium text-xs rounded-xl transition-colors"
                     >
                       Cancel
                     </button>
@@ -360,14 +360,14 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
                     className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-md ${
                       m.sender === 'user'
                         ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-slate-900 rounded-br-none'
-                        : 'bg-slate-800 border border-slate-700/80 text-slate-200 rounded-bl-none'
+                        : 'bg-slate-800 border border-slate-700/80 text-slate-800 rounded-bl-none'
                     }`}
                   >
                     <div className="whitespace-pre-wrap">{m.text}</div>
                     
                     {/* Render Action Card if present */}
                     {m.actionPayload && (
-                      <div className="mt-3 p-3 bg-slate-950/80 border border-cyan-500/30 rounded-xl space-y-1.5">
+                      <div className="mt-3 p-3 bg-white/80 border border-cyan-500/30 rounded-xl space-y-1.5">
                         <div className="flex items-center gap-1.5 text-cyan-300 font-semibold text-[11px]">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           {m.actionPayload.title}
@@ -397,7 +397,7 @@ export default function AgentBotModal({ userRole, userEmail, userName, onRefresh
             </div>
 
             {/* Input Bar with Mic Dictation */}
-            <div className="p-3.5 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
+            <div className="p-3.5 bg-white border-t border-slate-800 flex items-center gap-2">
               {hasSpeechSupport && (
                 <button
                   onClick={toggleListening}

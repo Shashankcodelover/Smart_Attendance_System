@@ -303,7 +303,7 @@ export function BiometricPresenceHUD({
             3D Edge Liveness, Chromatic Anti-Spoofing & ZK Presence Protocol
           </h2>
           <p className="text-xs text-slate-600 mt-0.5">
-            Student: <strong className="text-slate-200">{studentName} ({studentUsn})</strong> · Session: <span className="font-mono text-emerald-400">SES-LIVE-SJCE-101</span>
+            Student: <strong className="text-slate-800">{studentName} ({studentUsn})</strong> · Session: <span className="font-mono text-emerald-400">SES-LIVE-SJCE-101</span>
           </p>
         </div>
 
@@ -319,11 +319,11 @@ export function BiometricPresenceHUD({
       </div>
 
       {/* Randomized Micro-Gesture Challenge Bar */}
-      <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2.5">
+      <div className="p-4 bg-white rounded-xl border border-slate-800 space-y-2.5">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-amber-400" />
-            <span className="font-bold text-slate-200 uppercase tracking-wider text-[11px]">
+            <span className="font-bold text-slate-800 uppercase tracking-wider text-[11px]">
               Micro-Gesture Challenge Sequence (ISO PAD Protocol)
             </span>
           </div>
@@ -417,7 +417,7 @@ export function BiometricPresenceHUD({
         <div className="space-y-4">
           {/* Tri-Band Geofence Signals */}
           <div className="p-4 bg-slate-800/80 rounded-xl border border-slate-700 space-y-3 text-xs">
-            <div className="font-bold text-slate-200 flex items-center justify-between">
+            <div className="font-bold text-slate-800 flex items-center justify-between">
               <span>Tri-Band Physical Proximity & Acoustic Containment</span>
               <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
                 INDOOR GEOFENCE LOCKED
@@ -460,7 +460,7 @@ export function BiometricPresenceHUD({
                 </span>
               </div>
 
-              <div className="p-3 bg-slate-950/80 rounded-lg space-y-1 font-mono text-[11px] text-slate-300 border border-slate-800">
+              <div className="p-3 bg-white/80 rounded-lg space-y-1 font-mono text-[11px] text-slate-300 border border-slate-800">
                 <div>Proof ID: <span className="text-emerald-400">{zkProof.proofId}</span></div>
                 <div className="truncate">Commitment Hash: <span className="text-amber-400">{zkProof.commitmentHash}</span></div>
                 <div className="truncate">Merkle Root: <span className="text-slate-600">{zkProof.merkleRoot}</span></div>

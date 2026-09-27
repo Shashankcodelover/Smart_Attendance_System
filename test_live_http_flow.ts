@@ -86,7 +86,7 @@ async function testFullUserFlow() {
     const qrDataUrl = await QRCode.toDataURL(qrConnectText, {
       width: 350,
       margin: 2,
-      color: { dark: '#6b38d4', light: '#ffffff' }
+      color: {  '#6b38d4', light: '#ffffff' }
     });
     assert.ok(qrDataUrl.startsWith('data:image/png;base64,'), 'QR must be valid PNG base64 Data URL');
     console.log(`✓ QR Code Data URL generated (Length: ${qrDataUrl.length} chars)`);

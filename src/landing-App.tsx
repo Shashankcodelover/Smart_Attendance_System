@@ -393,7 +393,7 @@ export default function LandingApp() {
 
       {/* Pop-up Clean Auth Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-white/60 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-7 max-w-sm w-full shadow-2xl relative">
             
             {/* Header */}
