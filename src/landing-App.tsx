@@ -235,11 +235,25 @@ export default function LandingApp() {
             Presence Verification & Academic Portal
           </span>
           <h1 className="text-3xl md:text-5xl font-display font-extrabold text-slate-900 tracking-tight leading-tight">
-            Seamless Attendance for <span className="text-transparent bg-clip-text bg-indigo-600">Modern Campuses</span>
+            Seamless Attendance for <span className="text-transparent bg-clip-text bg-indigo-600 text-indigo-600">Modern Campuses</span>
           </h1>
           <p className="text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
             Select your authorized portal to check in to live classes, schedule timetables, and monitor real-time attendance analytics.
           </p>
+          <div className="flex justify-center gap-4 mt-6 pt-2">
+            <button 
+              onClick={() => handleRoleClick('student')} 
+              className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition"
+            >
+              Sign Up / Login
+            </button>
+            <button 
+              onClick={() => handleQuickDemoLogin('student')} 
+              className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl border border-indigo-200 shadow-md hover:bg-indigo-50 transition flex items-center gap-2"
+            >
+              ▶ Demo
+            </button>
+          </div>
         </motion.div>
 
         {/* 3 Clean Modern Cards */}
