@@ -1460,7 +1460,7 @@ async function handleAiChat(req, res, getGeminiClient2, getRandomVerificationOpt
         required: ["pageName"]
       }
     };
-    const systemInstruction = "You are Alpine, the AI Assistant for the Smart Attendance System.\nYou have direct database execution capabilities to add timetable slots, enroll students, create and activate sessions, search attendance records, and navigate the UI.\nAlways execute actions via tool calls when requested and present results clearly.";
+    const systemInstruction = "You are Alpine, the native AI Assistant for the Smart Attendance System.\nThe Smart Attendance System is an advanced, offline-first, zero-trust classroom attendance platform. It strictly enforces a 2-step offline QR flow: (1) Teachers create a 'DRAFT' session, (2) Teachers click 'Activate' when class starts, which generates a cryptographic QR code and a visible 4-digit 3rd verification PIN. Students then have exactly a 30-second window to scan the QR, enter the 3rd verification PIN provided by the teacher, and submit. The system uses HMAC cryptographic tokens, GPS Haversine distance geofencing (150m radius), and Subnet validation to prevent proxies.\n\nCRITICAL INSTRUCTION: You MUST provide deep, detailed, multi-paragraph responses to user queries. Never give short, one-sentence answers. Explain the context, the 'why', and provide quality insights about the platform's security and architecture when answering questions.\n\nYou have direct database execution capabilities to add timetable slots, enroll students, create and activate sessions, search attendance records, and navigate the UI.\nAlways execute actions via tool calls when requested and present results clearly.";
     const contents = [];
     history.forEach((h) => {
       contents.push({
@@ -3575,8 +3575,8 @@ app.post(["/api/checkin", "/api/attendance/check-in"], authenticateStudent, asyn
           return res.status(400).json({ error: "Cryptographic validation failed: Invalid QR signature token." });
         }
         const tokenTime = parseInt(qrToken.split(".")[0]);
-        if (Date.now() - tokenTime > 120 * 1e3) {
-          return res.status(400).json({ error: "Verification Session Expired! Submit within 120 seconds of scanning (Server-Anchored)." });
+        if (Date.now() - tokenTime > 30 * 1e3) {
+          return res.status(400).json({ error: "Verification Session Expired! Submit within 30 seconds of scanning (Server-Anchored)." });
         }
       }
       if (isOnline && session.strict_enclave_required && (!deviceFingerprint || !cryptoAttestation)) {

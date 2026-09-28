@@ -616,8 +616,8 @@ app.post(['/api/checkin', '/api/attendance/check-in'], authenticateStudent, asyn
         
         // Extract server-anchored timestamp from verified token
         const tokenTime = parseInt(qrToken.split('.')[0]);
-        if (Date.now() - tokenTime > 120 * 1000) {
-          return res.status(400).json({ error: 'Verification Session Expired! Submit within 120 seconds of scanning (Server-Anchored).' });
+        if (Date.now() - tokenTime > 30 * 1000) {
+          return res.status(400).json({ error: 'Verification Session Expired! Submit within 30 seconds of scanning (Server-Anchored).' });
         }
       }
 

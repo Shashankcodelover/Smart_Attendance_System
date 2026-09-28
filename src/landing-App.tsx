@@ -248,7 +248,7 @@ export default function LandingApp() {
               Sign Up / Login
             </button>
             <button 
-              onClick={() => handleQuickDemoLogin('student')} 
+              onClick={() => window.location.href='/dashboard'} 
               className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl border border-indigo-200 shadow-md hover:bg-indigo-50 transition flex items-center gap-2"
             >
               ▶ Demo
@@ -302,7 +302,7 @@ export default function LandingApp() {
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
               </button>
               <button
-                onClick={() => handleQuickDemoLogin('student')}
+                onClick={() => window.location.href='/dashboard'}
                 className="w-full py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center"
               >
                 ⚡ 1-Click Instant Demo
